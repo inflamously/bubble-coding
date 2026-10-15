@@ -1,0 +1,2 @@
+# LF everywhere, so committed build output matches a fresh tsc build on every OS.
+* text=auto eol=lf

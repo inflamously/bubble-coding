@@ -1,0 +1,25 @@
+description = "Bubble Planner: show / plan / walk the task track (fog-of-war planning)"
+prompt = '''
+Use the Bubble Planner skill (activate the "bubble" skill). The CLI is: node "{{CLI}}" <command>
+
+Current track:
+!{node "{{CLI}}" show}
+
+Request: {{args}}
+
+If the request is empty, summarize where we are and what is next.
+If the request is `switch <name>`: run it right away and don't ask why. If you see a better name
+(e.g. `single commit` -> `single-commit`), use it and say so in one line. If it says "resumed", read every
+bubble and hint and continue at the active bubble. If it says "created", sketch the new track with the human,
+then list every fog bubble by number and ask the human to answer each one as `N: <their content>`
+(then `fill`) or `N:kk|ku|uk|uu` (then `type`).
+If the request is a bubble command (move, insert, remove, rename, hint, fog, type, fill, done, ...),
+run exactly that through the CLI and show the result. Don't reinterpret it.
+If the human asks for something that doesn't belong to the active bubble, don't `add` it: `fork <name>` if it
+builds on the bubble, `diverge <name>` if it goes a different direction. Ask the human first (suggest one: fork / diverge /
+keep here), run it only after they pick, then sketch the new track fresh.
+After `done`, stop (⏸): show the track and wait for the human before starting the next bubble.
+If the active bubble is fog: STOP. Never plan fog yourself. Ask the human to classify it
+(known-known, known-unknown, unknown-known, unknown-unknown) and wait for their content before `fill`.
+After every change, show the rendered track line.
+'''

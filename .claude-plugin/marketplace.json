@@ -1,0 +1,22 @@
+{
+  "name": "bubble-coding",
+  "owner": {
+    "name": "nflamously"
+  },
+  "metadata": {
+    "description": "Bubble Planner: fog-of-war planning for coding agents."
+  },
+  "plugins": [
+    {
+      "name": "bubble-planner",
+      "source": "./",
+      "description": "Gamified fog-of-war planning on a track of task bubbles.",
+      "author": { "name": "nflamously" },
+      "homepage": "https://github.com/inflamously/bubble-coding",
+      "repository": "https://github.com/inflamously/bubble-coding",
+      "license": "MIT",
+      "keywords": ["planning", "statusline", "hooks", "skills"],
+      "category": "productivity"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Fix generation",
+  "bubbles": [
+    { "title": "Repro bug", "state": "done" },
+    { "title": "Read logs", "state": "done" },
+    { "title": "???", "state": "fog", "type": "unknown-unknown" },
+    { "title": "Write failing test", "state": "todo" },
+    { "title": "Patch", "state": "todo" },
+    { "title": "Release", "state": "todo" }
+  ]
+}
