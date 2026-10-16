@@ -4,7 +4,7 @@
     "name": "nflamously"
   },
   "metadata": {
-    "description": "Bubble Planner: fog-of-war planning for coding agents."
+    "description": "Bubble Coding: Gamified fog-of-war planning on a track of task bubbles."
   },
   "plugins": [
     {
