@@ -10,7 +10,7 @@ const read = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8'));
 
 test('package.json, plugin.json and marketplace.json agree', () => {
   const pkg = read('package.json');
-  const plugin = read('.claude-plugin/plugin.json');
+  const plugin = read('.claude-plugin/bubble-coding/plugin.json');
   const market = read('.claude-plugin/marketplace.json');
   const entry = market.plugins.find((p) => p.name === plugin.name);
   assert.ok(entry, `marketplace.json lists no plugin named "${plugin.name}"`);

@@ -110,6 +110,27 @@ test('close: needs --force, marks the track closed, stays current, only once', (
   assert.match(run('close', 'track', '--force').stderr, /already closed/);
 });
 
+test('closed track is read-only: every change is refused, nothing is written', () => {
+  const { run, track } = repo();
+  run('hint', '2', 'note');
+  run('fog', '3');
+  run('close', 'track', '--force');
+  const before = JSON.stringify(track());
+  const changes = [
+    ['add', 'D'], ['add', '?'], ['insert', 'at', '1', 'Z'], ['remove', '1'], ['move', '1', 'to', '3'],
+    ['rename', '1', 'X'], ['title', 'New'], ['hint', '1', 'h'], ['hint', '2', '-'], ['fog', '2'],
+    ['type', '3', 'kk'], ['fill', '3', 'F'], ['done'], ['handoff', 'note'],
+  ];
+  for (const args of changes) {
+    const r = run(...args);
+    assert.strictEqual(r.status, 1, args.join(' '));
+    assert.match(r.stderr, /track "track" is closed \(read-only\) — fork, diverge or switch/, args.join(' '));
+  }
+  assert.strictEqual(JSON.stringify(track()), before);
+  assert.strictEqual(run('show').status, 0);
+  assert.match(run('move', '1').stderr, /usage: move/); // bad input still gets its usage line
+});
+
 test('legacy track.json is the track named "track"', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-legacy-'));
   fs.mkdirSync(path.join(dir, '.bubbles'));

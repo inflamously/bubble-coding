@@ -106,6 +106,9 @@ function runBubbleCommand(cmd, args, { dir, opts, renderOpts }) {
         default:
             throw new Error(`unknown command "${cmd}" — try: help`);
     }
+    // A closed track is archived: every change above is refused before anything is written.
+    if (track.closed)
+        throw new Error(`track "${found.name}" is closed (read-only) — fork, diverge or switch to keep working`);
     T.saveTrack(file, track);
     const linked = after ? after() : '';
     console.log(linked ? `${msg}\n${linked}` : msg);
