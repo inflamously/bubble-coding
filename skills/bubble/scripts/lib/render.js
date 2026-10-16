@@ -7,8 +7,8 @@ exports.render = render;
 exports.list = list;
 const model_1 = require("./model");
 exports.SYMBOLS = {
-    unicode: { done: '●', active: '◐', todo: '○', fog: '❓', sep: '──', prev: ' ‹ ', next: ' › ', more: '…', fork: '⑂', side: '↗' },
-    ascii: { done: '*', active: '@', todo: 'o', fog: '?', sep: '--', prev: ' < ', next: ' > ', more: '...', fork: 'Y', side: '/' },
+    unicode: { done: '●', active: '◐', todo: '○', fog: '❓', sep: '──', prev: ' ‹ ', next: ' › ', more: '…', fork: '⑂', side: '↗', lock: '🔒' },
+    ascii: { done: '*', active: '@', todo: 'o', fog: '?', sep: '--', prev: ' < ', next: ' > ', more: '...', fork: 'Y', side: '/', lock: '#' },
 };
 // ANSI colors: title dark green, track blue, prev ‹ active › next dark yellow.
 const COLORS = { title: '\x1b[32m', track: '\x1b[34m', context: '\x1b[33m', reset: '\x1b[0m' };
@@ -42,14 +42,16 @@ function shorten(title, sym) {
     const cut = text.slice(0, room + 1).lastIndexOf(' ');
     return text.slice(0, cut > room / 2 ? cut : room).trimEnd() + sym.more;
 }
-/** One-line render: `Title   S ●──●──◐──❓ F   prev ‹ ◐ active › next` */
+/** One-line render: `Title   S ●──●──◐──❓ F   prev ‹ ◐ active › next`, or `… F   🔒 closed` (nothing active). */
 function render(track, opts) {
     const sym = symbolsFor(opts);
     const bubbles = track.bubbles || [];
-    const index = (0, model_1.activeIndex)(track);
+    const index = track.closed ? -1 : (0, model_1.activeIndex)(track);
     const color = useColor(opts);
     const line = bubbles.map((b, i) => symbolFor(b, i === index, sym)).join(sym.sep);
     const head = `${paint(color, 'title', track.title || 'Plan')}   ${paint(color, 'track', `S ${line}${line ? ' ' : ''}F`)}   `;
+    if (track.closed)
+        return head + paint(color, 'context', `${sym.lock} closed`);
     const active = bubbles[index];
     if (!active)
         return head + paint(color, 'context', 'all done');
@@ -62,7 +64,7 @@ function render(track, opts) {
 /** Multi-line listing of the track, with addressable indexes. */
 function list(track, opts) {
     const sym = symbolsFor(opts);
-    const index = (0, model_1.activeIndex)(track);
+    const index = track.closed ? -1 : (0, model_1.activeIndex)(track);
     return (track.bubbles || [])
         .map((b, i) => {
         const mark = i === index ? '→' : ' ';

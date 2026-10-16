@@ -7,11 +7,11 @@ export interface RenderOpts {
   color?: boolean;
 }
 
-type Symbols = Record<'done' | 'active' | 'todo' | 'fog' | 'sep' | 'prev' | 'next' | 'more' | 'fork' | 'side', string>;
+type Symbols = Record<'done' | 'active' | 'todo' | 'fog' | 'sep' | 'prev' | 'next' | 'more' | 'fork' | 'side' | 'lock', string>;
 
 export const SYMBOLS: { unicode: Symbols; ascii: Symbols } = {
-  unicode: { done: '●', active: '◐', todo: '○', fog: '❓', sep: '──', prev: ' ‹ ', next: ' › ', more: '…', fork: '⑂', side: '↗' },
-  ascii: { done: '*', active: '@', todo: 'o', fog: '?', sep: '--', prev: ' < ', next: ' > ', more: '...', fork: 'Y', side: '/' },
+  unicode: { done: '●', active: '◐', todo: '○', fog: '❓', sep: '──', prev: ' ‹ ', next: ' › ', more: '…', fork: '⑂', side: '↗', lock: '🔒' },
+  ascii: { done: '*', active: '@', todo: 'o', fog: '?', sep: '--', prev: ' < ', next: ' > ', more: '...', fork: 'Y', side: '/', lock: '#' },
 };
 
 // ANSI colors: title dark green, track blue, prev ‹ active › next dark yellow.
@@ -48,14 +48,15 @@ export function shorten(title: string | undefined, sym: Symbols): string {
   return text.slice(0, cut > room / 2 ? cut : room).trimEnd() + sym.more;
 }
 
-/** One-line render: `Title   S ●──●──◐──❓ F   prev ‹ ◐ active › next` */
+/** One-line render: `Title   S ●──●──◐──❓ F   prev ‹ ◐ active › next`, or `… F   🔒 closed` (nothing active). */
 export function render(track: Track, opts?: RenderOpts): string {
   const sym = symbolsFor(opts);
   const bubbles = track.bubbles || [];
-  const index = activeIndex(track);
+  const index = track.closed ? -1 : activeIndex(track);
   const color = useColor(opts);
   const line = bubbles.map((b, i) => symbolFor(b, i === index, sym)).join(sym.sep);
   const head = `${paint(color, 'title', track.title || 'Plan')}   ${paint(color, 'track', `S ${line}${line ? ' ' : ''}F`)}   `;
+  if (track.closed) return head + paint(color, 'context', `${sym.lock} closed`);
   const active = bubbles[index];
   if (!active) return head + paint(color, 'context', 'all done');
   const prev = bubbles[index - 1];
@@ -68,7 +69,7 @@ export function render(track: Track, opts?: RenderOpts): string {
 /** Multi-line listing of the track, with addressable indexes. */
 export function list(track: Track, opts?: RenderOpts): string {
   const sym = symbolsFor(opts);
-  const index = activeIndex(track);
+  const index = track.closed ? -1 : activeIndex(track);
   return (track.bubbles || [])
     .map((b, i) => {
       const mark = i === index ? '→' : ' ';

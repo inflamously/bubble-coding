@@ -1,4 +1,4 @@
-// What `show` and every mutation print: the track line, the listing, the handoff note, the fog warning.
+// What `show` and every mutation print: the track line, the listing, the handoff note or closed line, the fog warning.
 
 import T = require('../track');
 
@@ -10,6 +10,11 @@ export function printTrack(track: T.Track, opts?: T.RenderOpts): number {
   if (track.origin) console.log(`${side} diverged from #${track.origin.bubble} "${track.origin.title}" in ${track.origin.track}`);
   console.log('');
   console.log(T.list(track, opts));
+  if (track.closed) {
+    console.log('');
+    console.log(`${T.SYMBOLS.unicode.lock} closed ${track.closed.at} — read-only; fork, diverge or switch to keep working`);
+    return 0; // archived: nothing is active, so fog here never needs the human
+  }
   if (track.handoff && track.handoff.note) {
     console.log('');
     console.log(`✎ handoff (${track.handoff.at}): ${track.handoff.note}`);

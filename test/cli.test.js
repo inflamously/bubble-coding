@@ -106,7 +106,7 @@ test('close: needs --force, marks the track closed, stays current, only once', (
   const t = track();
   assert.ok(!Number.isNaN(Date.parse(t.closed.at)));
   assert.deepStrictEqual(t.bubbles.map((b) => b.state), ['done', 'todo', 'todo']); // open bubbles keep their state
-  assert.match(run('show').stdout, /◐ B/); // still current
+  assert.match(run('tracks').stdout, /→ track .*S ●──○──○ F   🔒 closed/); // still current, nothing active
   assert.match(run('close', 'track', '--force').stderr, /already closed/);
 });
 
@@ -129,6 +129,19 @@ test('closed track is read-only: every change is refused, nothing is written', (
   assert.strictEqual(JSON.stringify(track()), before);
   assert.strictEqual(run('show').status, 0);
   assert.match(run('move', '1').stderr, /usage: move/); // bad input still gets its usage line
+});
+
+test('show on a closed track: every title and hint, nothing active, fog never exits 3', () => {
+  const { run } = repo();
+  run('hint', '2', 'the detail');
+  run('fog', '1');
+  assert.strictEqual(run('show').status, 3);
+  run('close', 'track', '--force');
+  const r = run('show');
+  assert.strictEqual(r.status, 0);
+  assert.match(r.stdout, /  1   ❓ fog    A\n  2   ○ todo   B\n        ↳ the detail\n  3   ○ todo   C/);
+  assert.doesNotMatch(r.stdout, /→|needs the human|is fog/);
+  assert.match(r.stdout, /🔒 closed \d{4}-\d\d-\d\dT.* — read-only/);
 });
 
 test('legacy track.json is the track named "track"', () => {

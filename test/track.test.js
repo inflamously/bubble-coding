@@ -31,6 +31,14 @@ test('render with active todo, and all done', () => {
   assert.strictEqual(T.render({ title: 'E', bubbles: [] }, { ascii: true }), 'E   S F   all done');
 });
 
+test('render closed: nothing active, a lock instead of prev ‹ active › next', () => {
+  const at = '2026-10-16T00:00:00.000Z';
+  const t = { title: 'P', closed: { at }, bubbles: [{ title: 'A', state: 'done' }, { title: 'B', state: 'todo' }, { title: '???', state: 'fog' }] };
+  assert.strictEqual(T.render(t, { ascii: false }), 'P   S ●──○──❓ F   🔒 closed');
+  assert.strictEqual(T.render(t, { ascii: true }), 'P   S *--o--? F   # closed');
+  assert.strictEqual(T.render({ title: 'E', closed: { at }, bubbles: [] }, { ascii: false }), 'E   S F   🔒 closed');
+});
+
 test('done refuses fog; fill lifts it', () => {
   const t = sample();
   assert.throws(() => T.done(t), /fog/);
