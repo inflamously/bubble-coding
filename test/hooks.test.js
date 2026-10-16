@@ -37,6 +37,13 @@ test('extractTargetPaths: claude, gemini, codex apply_patch', () => {
   );
 });
 
+test('gate ignores a closed track, even at fog', () => {
+  const dir = repo({ ...fogTrack, closed: { at: '2026-10-16T00:00:00.000Z' } });
+  const r = run('fog-gate.js', { cwd: dir, tool_name: 'Edit', tool_input: { file_path: path.join(dir, 'src', 'a.js') } });
+  assert.strictEqual(r.status, 0);
+  assert.strictEqual(r.stderr, '');
+});
+
 test('gate blocks edits at fog for every payload shape', () => {
   const dir = repo(fogTrack);
   const payloads = [
@@ -92,8 +99,8 @@ test('CLI: init, add, show exit 3 at fog, fill, done', () => {
   assert.match(cli('done').stdout, /all done/);
   const saved = JSON.parse(fs.readFileSync(path.join(dir, '.bubbles', 'track.json'), 'utf8'));
   assert.deepStrictEqual(saved.bubbles, [
-    { title: 'First', state: 'done' },
-    { title: 'Second', state: 'done', type: 'known-known' },
+    { title: 'First', state: 'done', id: 1 },
+    { title: 'Second', state: 'done', type: 'known-known', id: 2 },
   ]);
 });
 

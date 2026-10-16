@@ -1,6 +1,6 @@
 // Track mutations: each changes the track in place and returns a short message for the CLI.
 
-import { normalizeType, checkType, activeIndex, resolve, resolveRange, type Bubble, type Track } from './model';
+import { normalizeType, checkType, activeIndex, resolve, resolveRange, ensureId, type Bubble, type Track } from './model';
 
 type Addr = string | number | undefined;
 
@@ -15,6 +15,7 @@ export function add(track: Track, title: string | undefined, { fog = false, at }
   } else {
     bubbles.push(bubble);
   }
+  ensureId(track, bubble);
   return `added ${fog ? 'fog' : 'bubble'} "${bubble.title}"`;
 }
 
@@ -113,16 +114,6 @@ export function setTitle(track: Track, title: string): string {
   const old = track.title;
   track.title = title;
   return `track "${old}" → "${title}"`;
-}
-
-/** A bubble's stable id, assigned on first need from the track's counter. Positions shift on move/insert/remove; ids don't. */
-export function ensureId(track: Track, b: Bubble): number {
-  if (b.id === undefined) {
-    const used = track.bubbles.map((x) => x.id).filter((id): id is number => Number.isInteger(id));
-    b.id = Math.max(track.nextId || 1, ...used.map((id) => id + 1));
-    track.nextId = b.id + 1;
-  }
-  return b.id;
 }
 
 /** Link a bubble to the child track forked from it; its state stays as is. Returns the bubble (with its id). */

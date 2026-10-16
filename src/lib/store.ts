@@ -4,7 +4,7 @@
 
 import fs = require('node:fs');
 import path = require('node:path');
-import type { Track } from './model';
+import { ensureIds, type Track } from './model';
 
 export const TRACK_DIR = '.bubbles';
 const CURRENT_FILE = 'current';
@@ -65,7 +65,7 @@ export function listTracks(bubblesDir: string): string[] {
 export function loadTrack(file: string): Track {
   const track = JSON.parse(fs.readFileSync(file, 'utf8'));
   if (!track || !Array.isArray(track.bubbles)) throw new Error('missing "bubbles" array');
-  return track;
+  return ensureIds(track); // older tracks: ids in memory now, on disk with the next save (close saves too)
 }
 
 export interface Found {

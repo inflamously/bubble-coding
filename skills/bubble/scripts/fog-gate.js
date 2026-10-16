@@ -9,8 +9,8 @@ async function main() {
     const input = await (0, io_1.readStdinJson)();
     const root = (0, io_1.resolveRoot)(input);
     const found = T.findTrack(root);
-    if (!found || !found.track)
-        return 0;
+    if (!found || !found.track || found.track.closed)
+        return 0; // a closed track is an archive: it gates nothing
     const targets = (0, io_1.extractTargetPaths)(input, root);
     // Editing the plan itself is always allowed — that's how fog gets filled.
     if (targets.length && targets.every((f) => (0, io_1.isInsideBubblesDir)(f, found.file)))

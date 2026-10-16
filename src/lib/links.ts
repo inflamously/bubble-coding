@@ -24,12 +24,13 @@ export function checkForkFinished(file: string, bubble: Bubble, { force = false 
   }
 }
 
-/** Load the parent track and the bubble a child was forked from, or null if the link is broken. */
+/** Load the parent track and the bubble a child was forked from, or null if the link is broken or the parent is closed. */
 function parentOf(childFile: string, child: Track): { file: string; track: Track; bubble: Bubble } | null {
   if (!child.parent) return null;
   const file = linked(childFile, child.parent.track);
   if (!fs.existsSync(file)) return null;
   const track = loadTrack(file);
+  if (track.closed) return null; // a closed parent is read-only: the child runs on, nothing flows back
   const bubble = track.bubbles.find((b) => b.id === child.parent!.bubble);
   return bubble ? { file, track, bubble } : null;
 }
@@ -51,6 +52,7 @@ export function syncForkTitle(file: string, bubble: Bubble): string {
   const childFile = linked(file, bubble.fork);
   if (!fs.existsSync(childFile)) return '';
   const child = loadTrack(childFile);
+  if (child.closed) return '';
   child.title = bubble.title;
   if (child.parent) child.parent.title = bubble.title;
   saveTrack(childFile, child);

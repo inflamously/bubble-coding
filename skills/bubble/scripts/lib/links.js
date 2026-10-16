@@ -28,7 +28,7 @@ function checkForkFinished(file, bubble, { force = false } = {}) {
         throw new Error(`"${bubble.title}" waits for its fork ${bubble.fork} — finish that track first (switch to it)`);
     }
 }
-/** Load the parent track and the bubble a child was forked from, or null if the link is broken. */
+/** Load the parent track and the bubble a child was forked from, or null if the link is broken or the parent is closed. */
 function parentOf(childFile, child) {
     if (!child.parent)
         return null;
@@ -36,6 +36,8 @@ function parentOf(childFile, child) {
     if (!fs.existsSync(file))
         return null;
     const track = (0, store_1.loadTrack)(file);
+    if (track.closed)
+        return null; // a closed parent is read-only: the child runs on, nothing flows back
     const bubble = track.bubbles.find((b) => b.id === child.parent.bubble);
     return bubble ? { file, track, bubble } : null;
 }
@@ -58,6 +60,8 @@ function syncForkTitle(file, bubble) {
     if (!fs.existsSync(childFile))
         return '';
     const child = (0, store_1.loadTrack)(childFile);
+    if (child.closed)
+        return '';
     child.title = bubble.title;
     if (child.parent)
         child.parent.title = bubble.title;

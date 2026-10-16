@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TYPES = void 0;
 exports.normalizeType = normalizeType;
 exports.checkType = checkType;
+exports.ensureId = ensureId;
+exports.ensureIds = ensureIds;
 exports.activeIndex = activeIndex;
 exports.activeBubble = activeBubble;
 exports.resolve = resolve;
@@ -18,6 +20,21 @@ function checkType(type) {
     if (type !== undefined && !exports.TYPES.includes(type)) {
         throw new Error(`unknown fog type "${type}" (use: ${exports.TYPES.join(', ')} — or kk, ku, uk, uu)`);
     }
+}
+/** A bubble's stable id from the track's counter. Positions shift on move/insert/remove; ids don't. */
+function ensureId(track, b) {
+    if (b.id === undefined) {
+        const used = track.bubbles.map((x) => x.id).filter((id) => Number.isInteger(id));
+        b.id = Math.max(track.nextId || 1, ...used.map((id) => id + 1));
+        track.nextId = b.id + 1;
+    }
+    return b.id;
+}
+/** Give every bubble an id, in track order. New bubbles get one on creation; this upgrades older tracks. */
+function ensureIds(track) {
+    for (const b of track.bubbles)
+        ensureId(track, b);
+    return track;
 }
 /** Index of the active bubble: the first one that isn't done. -1 = everything done. */
 function activeIndex(track) {

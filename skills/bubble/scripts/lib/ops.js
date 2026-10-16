@@ -11,7 +11,6 @@ exports.remove = remove;
 exports.move = move;
 exports.setHandoff = setHandoff;
 exports.setTitle = setTitle;
-exports.ensureId = ensureId;
 exports.markFork = markFork;
 exports.markDiverge = markDiverge;
 exports.done = done;
@@ -30,6 +29,7 @@ function add(track, title, { fog = false, at } = {}) {
     else {
         bubbles.push(bubble);
     }
+    (0, model_1.ensureId)(track, bubble);
     return `added ${fog ? 'fog' : 'bubble'} "${bubble.title}"`;
 }
 /** Turn a bubble (or N:M range) into fog. Done bubbles need `force`. */
@@ -126,15 +126,6 @@ function setTitle(track, title) {
     track.title = title;
     return `track "${old}" → "${title}"`;
 }
-/** A bubble's stable id, assigned on first need from the track's counter. Positions shift on move/insert/remove; ids don't. */
-function ensureId(track, b) {
-    if (b.id === undefined) {
-        const used = track.bubbles.map((x) => x.id).filter((id) => Number.isInteger(id));
-        b.id = Math.max(track.nextId || 1, ...used.map((id) => id + 1));
-        track.nextId = b.id + 1;
-    }
-    return b.id;
-}
 /** Link a bubble to the child track forked from it; its state stays as is. Returns the bubble (with its id). */
 function markFork(track, addr, childRef) {
     const b = track.bubbles[(0, model_1.resolve)(track, addr)];
@@ -142,14 +133,14 @@ function markFork(track, addr, childRef) {
         throw new Error(`"${b.title}" is done — nothing left to fork`);
     if (b.fork)
         throw new Error(`"${b.title}" is already forked to ${b.fork}`);
-    const id = ensureId(track, b);
+    const id = (0, model_1.ensureId)(track, b);
     b.fork = childRef;
     return Object.assign(b, { id });
 }
 /** Link a bubble to a side track that went a different direction from it. Any state; the bubble doesn't wait for it. */
 function markDiverge(track, addr, childRef) {
     const b = track.bubbles[(0, model_1.resolve)(track, addr)];
-    const id = ensureId(track, b);
+    const id = (0, model_1.ensureId)(track, b);
     b.sides = [...(b.sides || []), childRef];
     return Object.assign(b, { id });
 }

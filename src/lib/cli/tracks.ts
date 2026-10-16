@@ -83,10 +83,12 @@ export function runTrackCommand(cmd: string, args: string[], { dir, opts, render
       const link: T.Link = { track: rel(childFile, found.file), bubble: bubble.id, title: bubble.title };
       const child: T.Track = { title: bubble.title, [cmd === 'fork' ? 'parent' : 'origin']: link, bubbles: [] };
       T.saveTrack(childFile, child);
-      T.saveTrack(found.file, found.track);
+      // A closed track stays untouched: the child links back to it, but it never learns about the child.
+      if (!found.track.closed) T.saveTrack(found.file, found.track);
       T.setCurrent(bubblesDir, name);
       const verb = cmd === 'fork' ? 'forked' : 'diverged from';
-      console.log(`${verb} "${bubble.title}" into track "${name}" — a fresh track: ask the human what to do, sketch it, classify all fog`);
+      const from = found.track.closed ? ` of closed track "${found.name}"` : '';
+      console.log(`${verb} "${bubble.title}"${from} into track "${name}" — a fresh track: ask the human what to do, sketch it, classify all fog`);
       console.log('');
       return printTrack(child, renderOpts);
     }

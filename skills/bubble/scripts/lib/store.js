@@ -14,6 +14,7 @@ exports.findTrack = findTrack;
 exports.saveTrack = saveTrack;
 const fs = require("node:fs");
 const path = require("node:path");
+const model_1 = require("./model");
 exports.TRACK_DIR = '.bubbles';
 const CURRENT_FILE = 'current';
 exports.DEFAULT_NAME = 'track';
@@ -75,7 +76,7 @@ function loadTrack(file) {
     const track = JSON.parse(fs.readFileSync(file, 'utf8'));
     if (!track || !Array.isArray(track.bubbles))
         throw new Error('missing "bubbles" array');
-    return track;
+    return (0, model_1.ensureIds)(track); // older tracks: ids in memory now, on disk with the next save (close saves too)
 }
 /** Current track: null (none), { file, name, bubblesDir, error } (unreadable), or { file, name, bubblesDir, track }. */
 function findTrack(dir) {

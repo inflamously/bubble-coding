@@ -26,7 +26,7 @@ test('grammar: optional "bubble" word, one quoted phrase, insert at N ?', () => 
   assert.strictEqual(run('move 2:3 to 1').status, 0);
   assert.strictEqual(titles(track()), 'CAB');
   run('insert', 'at', '2', '?');
-  assert.deepStrictEqual(track().bubbles[1], { title: '???', state: 'fog' });
+  assert.deepStrictEqual(track().bubbles[1], { title: '???', state: 'fog', id: 4 }); // A B C are 1 2 3
   run('add', '?');
   assert.strictEqual(track().bubbles[4].state, 'fog');
   run('insert', '1', 'Zero', 'first');
@@ -70,7 +70,7 @@ test('multiple tracks: switch creates then resumes, tracks lists, delete guards'
   assert.match(run('switch', 'idea-b').stdout, /created track "idea-b"/);
   run('add', 'other');
   assert.strictEqual(current(), 'idea-b');
-  assert.deepStrictEqual(read('idea-a'), { title: 'Idea A', bubbles: [{ title: 'first', state: 'todo' }] });
+  assert.deepStrictEqual(read('idea-a'), { title: 'Idea A', bubbles: [{ title: 'first', state: 'todo', id: 1 }], nextId: 2 });
 
   assert.match(run('switch').stdout, /resumed track "idea-b"/); // bare switch: the current track
   fs.writeFileSync(path.join(dir, '.bubbles', 'current'), 'gone\n');
@@ -144,6 +144,85 @@ test('show on a closed track: every title and hint, nothing active, fog never ex
   assert.match(r.stdout, /🔒 closed \d{4}-\d\d-\d\dT.* — read-only/);
 });
 
+test('fork and diverge from a closed track: the child links back, the closed track is never written', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-closed-'));
+  const run = (...args) =>
+    spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
+  const raw = (name) => fs.readFileSync(path.join(dir, '.bubbles', `${name}.json`), 'utf8');
+  const current = () => fs.readFileSync(path.join(dir, '.bubbles', 'current'), 'utf8').trim();
+  run('switch', 'old');
+  for (const t of ['A', 'B', 'C']) run('add', t);
+  run('done');
+  run('close', 'old', '--force');
+  const before = raw('old');
+
+  const side = run('diverge', '2', 'side');
+  assert.strictEqual(side.status, 0);
+  assert.match(side.stdout, /diverged from "B" of closed track "old" into track "side"/);
+  assert.deepStrictEqual(JSON.parse(raw('side')).origin, { track: 'old.json', bubble: 2, title: 'B' });
+  assert.strictEqual(current(), 'side');
+
+  run('switch', 'old');
+  assert.match(run('fork', '3', 'deeper').stdout, /forked "C" of closed track "old"/);
+  assert.strictEqual(JSON.parse(raw('deeper')).parent.title, 'C');
+  assert.strictEqual(current(), 'deeper');
+  assert.strictEqual(raw('old'), before);
+});
+
+test('older tracks without ids: any write saves them, close freezes them, ids never collide', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-ids-'));
+  fs.mkdirSync(path.join(dir, '.bubbles'));
+  const file = path.join(dir, '.bubbles', 'track.json');
+  const write = (bubbles, extra = {}) => fs.writeFileSync(file, JSON.stringify({ title: 'Old', bubbles, ...extra }));
+  const run = (...args) => spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8' });
+  const ids = () => JSON.parse(fs.readFileSync(file, 'utf8')).bubbles.map((b) => b.id);
+
+  write([{ title: 'A', state: 'todo' }, { title: 'B', state: 'todo', id: 5 }, { title: 'C', state: 'todo' }], { nextId: 3 });
+  assert.strictEqual(run('show').status, 0);
+  assert.deepStrictEqual(ids(), [undefined, 5, undefined]); // reading never writes
+  run('hint', '1', 'x');
+  assert.deepStrictEqual(ids(), [6, 5, 7]); // past both nextId and the highest id
+
+  write([{ title: 'A', state: 'todo' }, { title: 'B', state: 'done' }]);
+  run('close', 'track', '--force');
+  assert.deepStrictEqual(ids(), [1, 2]);
+});
+
+test('links skip closed tracks: no title sync either way, no pop into a closed parent', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-links-'));
+  const run = (...args) =>
+    spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
+  const raw = (name) => fs.readFileSync(path.join(dir, '.bubbles', `${name}.json`), 'utf8');
+
+  // closed parent: the child runs on, nothing flows back
+  run('switch', 'top');
+  run('add', 'A');
+  run('add', 'B');
+  run('fork', '1', 'kid');
+  run('add', 'only');
+  run('close', 'top', '--force');
+  const top = raw('top');
+  assert.strictEqual(run('title', 'Renamed').status, 0);
+  assert.strictEqual(JSON.parse(raw('kid')).parent.title, 'A'); // still names the bubble it came from
+  const done = run('done');
+  assert.strictEqual(done.status, 0);
+  assert.doesNotMatch(done.stdout, /popped "A"/);
+  assert.strictEqual(raw('top'), top);
+
+  // closed child: renaming the open parent's bubble leaves it alone
+  run('switch', 'p2');
+  run('add', 'X');
+  run('fork', '1', 'k2');
+  run('add', 'y');
+  run('close', 'k2', '--force');
+  const k2 = raw('k2');
+  run('switch', 'p2');
+  const r = run('rename', '1', 'Z');
+  assert.strictEqual(r.status, 0);
+  assert.doesNotMatch(r.stdout, /renamed too/);
+  assert.strictEqual(raw('k2'), k2);
+});
+
 test('legacy track.json is the track named "track"', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-legacy-'));
   fs.mkdirSync(path.join(dir, '.bubbles'));
@@ -172,9 +251,9 @@ test('fork: child track links to the parent bubble by relative path and becomes 
   const res = run('fork', '2', 'b-sub');
   assert.strictEqual(res.status, 0, res.stderr);
   assert.match(res.stdout, /forked "B" into track "b-sub"/);
-  assert.match(res.stdout, /fork of #1 "B" in track\.json/);
+  assert.match(res.stdout, /fork of #2 "B" in track\.json/);
   assert.strictEqual(track().bubbles[1].fork, 'b-sub.json');
-  assert.strictEqual(track().bubbles[1].id, 1);
+  assert.strictEqual(track().bubbles[1].id, 2);
   assert.strictEqual(track().bubbles[1].state, 'todo');
   assert.match(run('show').stdout, /^B {3}S F/); // current is now the child, titled after the parent bubble
   assert.match(run('switch', 'track').stdout, /B ⑂ b-sub\.json/);
@@ -182,12 +261,10 @@ test('fork: child track links to the parent bubble by relative path and becomes 
   assert.match(run('fork', '3', 'b-sub').stderr, /already exists/);
   // ids survive reordering and are never reused
   run('move', '2', 'to', '1');
-  run('fork', '3', 'c-sub');
-  assert.deepStrictEqual(track().bubbles.map((b) => b.id), [1, undefined, 2]);
-  run('switch', 'track');
+  assert.deepStrictEqual(track().bubbles.map((b) => b.id), [2, 1, 3]);
   run('remove', '3');
-  run('fork', '2', 'a-sub');
-  assert.strictEqual(track().bubbles[1].id, 3);
+  run('add', 'D');
+  assert.deepStrictEqual(track().bubbles.map((b) => b.id), [2, 1, 4]);
 });
 
 test('diverge: side track links back by origin; the bubble keeps any state and can have several', () => {
