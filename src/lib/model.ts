@@ -30,6 +30,7 @@ export interface Track {
   handoff?: { note: string; at: string };
   parent?: Link; // forked from this bubble
   origin?: Link; // diverged from this bubble
+  closed?: { at: string }; // finished and archived: read-only for good
 }
 
 /** Expand kk/ku/uk/uu shorthands; undefined stays undefined. */

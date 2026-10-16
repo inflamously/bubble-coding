@@ -1,4 +1,4 @@
-// Track-level commands: which track is current (init, create, switch, tracks, delete, fork, diverge).
+// Track-level commands: which track is current (init, create, switch, tracks, close, delete, fork, diverge).
 
 import fs = require('node:fs');
 import path = require('node:path');
@@ -89,6 +89,19 @@ export function runTrackCommand(cmd: string, args: string[], { dir, opts, render
       console.log(`${verb} "${bubble.title}" into track "${name}" — a fresh track: ask the human what to do, sketch it, classify all fog`);
       console.log('');
       return printTrack(child, renderOpts);
+    }
+    case 'close': {
+      const name = T.checkName(args.shift());
+      const file = T.trackPath(bubblesDir, name);
+      if (!fs.existsSync(file)) throw new Error(`no track "${name}"`);
+      const track = T.loadTrack(file);
+      if (track.closed) throw new Error(`track "${name}" is already closed`);
+      if (!opts.force) throw new Error(`closing "${name}" is permanent (read-only, no reopen) — confirm with the human, then re-run with --force`);
+      track.closed = { at: new Date().toISOString() };
+      T.saveTrack(file, track);
+      console.log(`closed track "${name}" — read-only from now on; fork, diverge or switch to keep working`);
+      console.log('');
+      return printTrack(track, renderOpts);
     }
     case 'delete': {
       const name = T.checkName(args.shift());

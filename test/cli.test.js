@@ -94,6 +94,22 @@ test('multiple tracks: switch creates then resumes, tracks lists, delete guards'
   assert.match(run('show').stderr, /current track "gone" not found .*idea-a/);
 });
 
+test('close: needs --force, marks the track closed, stays current, only once', () => {
+  const { run, track } = repo();
+  run('done');
+  assert.match(run('close', 'nope', '--force').stderr, /no track "nope"/);
+  assert.match(run('close', 'track').stderr, /permanent .*--force/);
+  assert.strictEqual(track().closed, undefined);
+  const r = run('close', 'track', '--force');
+  assert.strictEqual(r.status, 0);
+  assert.match(r.stdout, /closed track "track" — read-only/);
+  const t = track();
+  assert.ok(!Number.isNaN(Date.parse(t.closed.at)));
+  assert.deepStrictEqual(t.bubbles.map((b) => b.state), ['done', 'todo', 'todo']); // open bubbles keep their state
+  assert.match(run('show').stdout, /◐ B/); // still current
+  assert.match(run('close', 'track', '--force').stderr, /already closed/);
+});
+
 test('legacy track.json is the track named "track"', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-legacy-'));
   fs.mkdirSync(path.join(dir, '.bubbles'));
