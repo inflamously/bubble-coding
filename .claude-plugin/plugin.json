@@ -1,5 +1,5 @@
 {
-  "name": "bubble-planner",
+  "name": "bubble-coding",
   "version": "0.1.0",
   "description": "Gamified fog-of-war planning: a track of task bubbles in the status line, a /bubble skill, and a hook that stops edits while the active bubble is unplanned fog.",
   "author": { "name": "nflamously" },

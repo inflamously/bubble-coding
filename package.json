@@ -1,5 +1,5 @@
 {
-  "name": "bubble-planner",
+  "name": "bubble-coding",
   "version": "0.1.0",
   "private": true,
   "description": "Gamified fog-of-war planning for coding agents (Claude Code, Codex CLI, Gemini CLI, AGENTS.md).",
@@ -13,7 +13,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsc -p . && tsc -p tsconfig.install.json",
     "test": "node --test"
   },
   "devDependencies": {

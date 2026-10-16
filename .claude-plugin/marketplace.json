@@ -8,7 +8,7 @@
   },
   "plugins": [
     {
-      "name": "bubble-planner",
+      "name": "bubble-coding",
       "source": "./",
       "description": "Gamified fog-of-war planning on a track of task bubbles.",
       "author": { "name": "nflamously" },

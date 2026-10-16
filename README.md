@@ -33,7 +33,7 @@ Everything portable lives in **`skills/bubble/`**: `SKILL.md` plus zero-dependen
 1. Install the plugin. Inside Claude Code, run:
    ```
    /plugin marketplace add inflamously/bubble-coding
-   /plugin install bubble-planner@bubble-coding
+   /plugin install bubble-coding@bubble-coding
    ```
    From a local checkout, use `/plugin marketplace add /path/to/bubble-coding`. For development, run `claude --plugin-dir /path/to/bubble-coding` instead.
 2. Add the status line. Plugins can't set it, so either run `node install.js claude --apply-statusline`, or add this to `~/.claude/settings.json`:
@@ -136,11 +136,11 @@ The MVP stores the type. The skill tells the agent how to behave for each type, 
 
 ## Develop
 
-The source is TypeScript in `src/`. It builds into `skills/bubble/scripts/`, and that JS is committed, because it's what the hooks, the status line and installed copies run. Users never need a build step or any dependency.
+The source is TypeScript in `src/`. It builds into `skills/bubble/scripts/`, and that JS is committed, because it's what the hooks, the status line and installed copies run. The installer (`src/install/`) builds separately into `install/`, so it isn't copied along with the skill. Users never need a build step or any dependency.
 
 ```
 npm install     # dev only: typescript + @types/node
-npm run build   # src/*.ts -> skills/bubble/scripts/*.js
+npm run build   # src/*.ts -> skills/bubble/scripts/*.js, src/install/*.ts -> install/*.js
 npm test        # node --test; fails if the committed JS drifts from src/
 ```
 

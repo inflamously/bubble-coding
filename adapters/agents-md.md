@@ -1,4 +1,4 @@
-<!-- bubble-planner:start -->
+<!-- bubble-coding:start -->
 ## Bubble Planner (fog-of-war planning)
 
 This repo plans work as linear tracks of task bubbles in `.bubbles/` (one `.json` per track; `.bubbles/current` names the active one).
@@ -22,4 +22,4 @@ Rules:
 - After `done`, stop (⏸): show the track and wait for the human before starting the next bubble.
 - When the human writes `bubble <command>`, run exactly that command through the CLI and show the result.
 - After every change, show the user the rendered track line.
-<!-- bubble-planner:end -->
+<!-- bubble-coding:end -->

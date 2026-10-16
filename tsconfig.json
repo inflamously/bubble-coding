@@ -1,5 +1,5 @@
 {
-  // src/*.ts compiles into skills/bubble/scripts, the committed JS that hooks and agents run.
+  // src/*.ts (except the installer, see tsconfig.install.json) compiles into skills/bubble/scripts, the committed JS that hooks and agents run.
   // test/build.test.js fails when the committed JS drifts from what this config builds.
   "compilerOptions": {
     "target": "es2024",
@@ -12,5 +12,6 @@
     "newLine": "lf",
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/install"]
 }
