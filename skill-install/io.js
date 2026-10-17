@@ -10,7 +10,7 @@ exports.template = template;
 exports.createWriter = createWriter;
 const fs = require("node:fs");
 const path = require("node:path");
-/** This compiles to install/io.js, one level below the repo root. */
+/** This compiles to skill-install/io.js, one level below the repo root. */
 exports.REPO = path.join(__dirname, '..');
 exports.SKILL_SRC = path.join(exports.REPO, 'skills', 'bubble');
 const ADAPTERS = path.join(exports.REPO, 'adapters');

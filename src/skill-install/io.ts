@@ -3,7 +3,7 @@
 import fs = require('node:fs');
 import path = require('node:path');
 
-/** This compiles to install/io.js, one level below the repo root. */
+/** This compiles to skill-install/io.js, one level below the repo root. */
 export const REPO = path.join(__dirname, '..');
 export const SKILL_SRC = path.join(REPO, 'skills', 'bubble');
 const ADAPTERS = path.join(REPO, 'adapters');
