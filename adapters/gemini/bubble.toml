@@ -1,6 +1,6 @@
-description = "Bubble Planner: show / plan / walk the task track (fog-of-war planning)"
+description = "bubble-coding: show / plan / walk the task track (fog-of-war planning)"
 prompt = '''
-Use the Bubble Planner skill (activate the "bubble" skill). The CLI is: node "{{CLI}}" <command>
+Use the bubble-coding skill (activate the "bubble" skill). The CLI is: node "{{CLI}}" <command>
 
 Current track:
 !{node "{{CLI}}" show}

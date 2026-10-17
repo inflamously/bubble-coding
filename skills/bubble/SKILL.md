@@ -1,9 +1,9 @@
 ---
 name: bubble
-description: Bubble Planner — iterative, fog-of-war planning on a linear track of task bubbles (S ○──○──❓──○ F) stored in .bubbles/ (one .json per track, switchable). Use when the user runs /bubble or $bubble (e.g. /bubble switch <track> to resume), asks to plan/sketch a task, asks "what's next" or "where are we", marks something done, or when an edit is blocked because the active bubble is fog/unplanned.
+description: bubble-coding — iterative, fog-of-war planning on a linear track of task bubbles (S ○──○──❓──○ F) stored in .bubbles/ (one .json per track, switchable). Use when the user runs /bubble or $bubble (e.g. /bubble switch <track> to resume), asks to plan/sketch a task, asks "what's next" or "where are we", marks something done, or when an edit is blocked because the active bubble is fog/unplanned.
 ---
 
-# Bubble Planner
+# bubble-coding
 
 A plan is a linear track from **S**tart to **F**inish. Each bubble is a task:
 `●` done · `◐` active · `○` todo · `❓` fog (unplanned — the human plans it).

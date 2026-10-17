@@ -1,0 +1,17 @@
+{
+  // Shared by src/site/bubble-web, src/site/terminal and src/site/build. Each folder has its own tsconfig with
+  // the libs it may use; all of them emit ESM (.mts -> .mjs) into dist/site/, which `npm run site`
+  // assembles into _site/ (what GitHub Pages serves).
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "rootDir": ".",
+    "outDir": "../../dist/site",
+    "strict": true,
+    "erasableSyntaxOnly": true,
+    "noEmitOnError": true,
+    "newLine": "lf",
+    "skipLibCheck": true
+  }
+}

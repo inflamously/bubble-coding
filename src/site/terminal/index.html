@@ -3,43 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bubble Planner</title>
+<title>bubble-coding</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Bubble Planner keeps a coding agent on a linear track of task bubbles, with fog for what is not planned yet. Watch the real CLI run in your browser, then try it.">
+<meta name="description" content="bubble-coding keeps a coding agent on a linear track of task bubbles, with fog for what is not planned yet. Watch the real CLI run in your browser, then try it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="masthead wrap">
-  <p class="eyebrow">bubble-coding</p>
-  <h1>Plan only as far as you can see.</h1>
-  <p class="lede">Bubble Planner keeps a coding agent on one linear track of task bubbles. Anything not planned yet stays fog, and only the human plans fog. The terminal below runs the real CLI in your browser, on a disk that lives in this tab.</p>
-  <p class="legend" aria-label="Bubble states">
-    <span><b>●</b> done</span><span><b>◐</b> active</span><span><b>○</b> todo</span><span><b>❓</b> fog</span>
-  </p>
+<header class="topbar">
+  <div class="topbar-in wrap">
+    <div class="brand">
+      <p class="eyebrow">bubble-coding</p>
+      <p class="scene-now"><span class="scene-num" id="scene-num">Intro</span> <span class="scene-title" id="scene-title">Welcome</span></p>
+    </div>
+    <div class="scene-track" aria-label="Scenes">
+      <span class="end">S</span><ol id="scenes"></ol><span class="end">F</span>
+    </div>
+    <div class="controls">
+      <button type="button" id="play" class="primary">Play</button>
+      <button type="button" id="step">Step</button>
+      <button type="button" id="skip">Skip to end</button>
+      <button type="button" id="restart">Restart</button>
+      <button type="button" id="speed" aria-label="Playback speed">1×</button>
+    </div>
+  </div>
 </header>
 
 <main class="stage wrap">
-  <section class="console" aria-labelledby="scene-title">
-    <div class="scenebar">
-      <div class="scene-now">
-        <p class="scene-num" id="scene-num">Scene 1 of 11</p>
-        <h2 id="scene-title">Sketch</h2>
-        <p class="scene-note" id="scene-note"></p>
-      </div>
-      <div class="scene-track" aria-label="Scenes">
-        <span class="end">S</span><ol id="scenes"></ol><span class="end">F</span>
-      </div>
-      <div class="controls">
-        <button type="button" id="play" class="primary">Pause</button>
-        <button type="button" id="step">Step</button>
-        <button type="button" id="skip">Skip to end</button>
-        <button type="button" id="restart">Restart</button>
-      </div>
-    </div>
-
+  <section class="console" aria-label="Demo terminal">
     <div class="term">
       <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="term-title">demo@bubble: ~/todo-app</span></div>
       <div class="screen" id="screen">
@@ -74,9 +67,6 @@
   </div>
 </footer>
 
-<script src="cli-sources.js"></script>
-<script src="story.js"></script>
-<script src="bubble-web.js"></script>
-<script src="terminal.js"></script>
+<script type="module" src="terminal/main.mjs"></script>
 </body>
 </html>

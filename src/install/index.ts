@@ -1,4 +1,4 @@
-// Bubble Planner installer — wires the portable skill into each agent.
+// bubble-coding installer — wires the portable skill into each agent.
 // Arguments live in args, shared I/O in io, and one adapter per agent in agents/.
 
 import os = require('node:os');
@@ -18,7 +18,7 @@ function main(): void {
   if (opts.help || !opts.agents.length) return log(HELP);
   if (opts.user && opts.project) throw new Error('use either --user or --project, not both');
   const base = opts.user ? os.homedir() : path.resolve(opts.project || process.cwd());
-  log(`Bubble Planner -> ${opts.user ? 'user' : 'project'}: ${base}${opts.dryRun ? '  (dry run)' : ''}`);
+  log(`bubble-coding -> ${opts.user ? 'user' : 'project'}: ${base}${opts.dryRun ? '  (dry run)' : ''}`);
 
   const ctx = createCtx(opts, base);
   for (const agent of opts.agents) ADAPTERS[agent](ctx);

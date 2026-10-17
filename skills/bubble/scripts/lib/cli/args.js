@@ -6,7 +6,7 @@ exports.isRange = exports.isAddr = exports.HELP = void 0;
 exports.parseArgs = parseArgs;
 exports.needAddr = needAddr;
 const model_1 = require("../model");
-exports.HELP = `Bubble Planner — the bubble language
+exports.HELP = `bubble-coding — the bubble language
 
   switch [name] [title]         resume track <name>, or create it; no name = the current (else default) track
   create <name> [title]         create a new track (refuses if it exists) and make it current

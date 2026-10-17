@@ -1,4 +1,4 @@
-/* Layout: a masthead, then the terminal as the stage with the .bubbles/ disk beside it (stacked on phones). */
+/* Layout: a sticky top bar (scene track + controls), then the terminal as the stage with the .bubbles/ disk beside it (stacked on phones). */
 :root {
   --paper: #edf1f5;
   --panel: #f8fafc;
@@ -71,25 +71,40 @@ a { color: var(--accent); text-underline-offset: 0.18em; }
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
-/* Masthead */
-.masthead { padding-block: 3rem 1.75rem; display: grid; gap: 0.75rem; }
+/* Top bar: who we are, where the story is, and the controls */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--panel);
+}
+.topbar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 5;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-in {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem 1.5rem;
+  padding-block: 0.7rem;
+}
+.brand { min-width: 0; }
 .eyebrow {
   margin: 0;
-  font: 600 0.78rem/1 var(--font-mono);
+  font: 600 0.72rem/1.2 var(--font-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);
 }
-h1 {
-  margin: 0;
-  font: 700 clamp(2rem, 1.2rem + 3.4vw, 3.4rem)/1.05 var(--font-display);
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-  max-width: 18ch;
-}
-.lede { margin: 0; max-width: 62ch; font-size: 1.08rem; color: var(--muted); }
-.legend { margin: 0.25rem 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; font: 400 0.9rem var(--font-mono); color: var(--muted); }
-.legend b { color: var(--ink); font-weight: 600; margin-right: 0.3em; }
+.scene-now { margin: 0.15rem 0 0; display: flex; align-items: baseline; gap: 0.6rem; min-width: 0; }
+.scene-num { flex: none; font: 600 0.72rem/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.scene-title { font: 600 1.15rem/1.25 var(--font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Stage */
 .stage {
@@ -97,25 +112,12 @@ h1 {
   grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
   gap: 1.25rem;
   align-items: start;
-  padding-block: 0 2.5rem;
+  padding-block: 1.25rem 2.5rem;
 }
-.console { min-width: 0; display: grid; gap: 0.9rem; }
-
-.scenebar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.75rem 1.5rem;
-  align-items: end;
-}
-.scene-now { min-width: 0; }
-.scene-num { margin: 0; font: 600 0.75rem/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.scene-now h2 { margin: 0.1rem 0 0; font: 600 1.45rem/1.2 var(--font-display); text-wrap: balance; }
-.scene-note { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.95rem; max-width: 60ch; }
-.scene-note:empty { display: none; }
+.console { min-width: 0; }
 
 /* The scenes, drawn as a bubble track: S ●──●──◐──○ F */
 .scene-track {
-  grid-column: 1 / -1;
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -127,35 +129,35 @@ h1 {
 .scene-track .end { font-weight: 600; }
 .scene-track ol { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
 .scene-track li { display: flex; align-items: center; }
-.scene-track li + li::before { content: ""; width: 1.1rem; height: 2px; background: var(--line); }
+.scene-track li + li::before { content: ""; width: 0.9rem; height: 2px; background: var(--line); }
 .scene-track li.done + li::before,
 .scene-track li.done + li.active::before { background: var(--accent); }
 .scene-track button {
-  width: 1.55rem;
-  height: 1.55rem;
+  width: 1.45rem;
+  height: 1.45rem;
   border-radius: 50%;
   border: 2px solid var(--line);
   background: var(--panel);
   padding: 0;
   cursor: pointer;
-  position: relative;
 }
 .scene-track button:hover { border-color: var(--accent); }
 .scene-track li.done button { background: var(--accent); border-color: var(--accent); }
 .scene-track li.active button { border-color: var(--accent); background: linear-gradient(90deg, var(--accent) 50%, var(--panel) 50%); }
 
-.controls { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end; }
-button { font: 500 0.9rem/1 var(--font-body); color: var(--ink); }
+.controls { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: flex-end; }
+button { font: 500 0.88rem/1 var(--font-body); color: var(--ink); }
 .controls button {
-  padding: 0.55rem 0.85rem;
+  padding: 0.5rem 0.75rem;
   border: 1px solid var(--line);
   border-radius: 0.45rem;
-  background: var(--panel);
+  background: var(--paper);
   cursor: pointer;
 }
 .controls button:hover { border-color: var(--accent); }
 .controls button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); min-width: 5.5rem; }
 .controls button:disabled { opacity: 0.45; cursor: default; }
+#speed { font-family: var(--font-mono); min-width: 3rem; }
 
 /* Terminal */
 .term {
@@ -179,7 +181,8 @@ button { font: 500 0.9rem/1 var(--font-body); color: var(--ink); }
 .dots { display: flex; gap: 0.35rem; }
 .dots i { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--term-dim); opacity: 0.45; }
 .screen {
-  height: clamp(22rem, 62vh, 40rem);
+  height: clamp(24rem, calc(100vh - 9.5rem), 56rem);
+  height: clamp(24rem, calc(100dvh - 9.5rem), 56rem);
   overflow: auto;
   padding: 0.9rem 1rem 1.2rem;
   font: 400 0.86rem/1.5 var(--font-mono);
@@ -208,6 +211,10 @@ button { font: 500 0.9rem/1 var(--font-body); color: var(--ink); }
 .say .who.human { color: var(--who-human); }
 .say .who.agent { color: var(--who-agent); }
 .err { color: var(--ansi-red); }
+.banner { color: var(--ansi-green); font-weight: 600; white-space: pre !important; overflow-wrap: normal !important; }
+.scene-head { color: var(--ansi-yellow); margin-top: 0.6rem; }
+.note { color: var(--term-dim); font-style: italic; }
+.countdown { color: var(--ansi-yellow); }
 .hint { color: var(--term-dim); }
 .a-b { font-weight: 600; }
 .a-d { opacity: 0.7; }
@@ -230,7 +237,7 @@ button { font: 500 0.9rem/1 var(--font-body); color: var(--ink); }
   display: grid;
   gap: 0.75rem;
   position: sticky;
-  top: calc(env(safe-area-inset-top, 0px) + 1rem);
+  top: calc(env(safe-area-inset-top, 0px) + 5.5rem);
 }
 .disk-head h2 { margin: 0; font: 600 1rem var(--font-mono); }
 .disk-head p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.88rem; }
@@ -277,15 +284,20 @@ button { font: 500 0.9rem/1 var(--font-body); color: var(--ink); }
 .colophon h2 { margin: 0 0 0.35rem; font: 600 1.05rem var(--font-display); }
 .colophon p { margin: 0; color: var(--muted); max-width: 62ch; }
 
+@media (max-width: 72rem) {
+  .topbar-in { grid-template-columns: minmax(0, 1fr) auto; }
+  .scene-track { grid-column: 1 / -1; grid-row: 2; }
+}
 @media (max-width: 60rem) {
   .stage { grid-template-columns: minmax(0, 1fr); }
   .disk { position: static; }
 }
 @media (max-width: 40rem) {
-  .scenebar { grid-template-columns: minmax(0, 1fr); }
+  .topbar-in { grid-template-columns: minmax(0, 1fr); }
+  .scene-track { grid-row: auto; }
   .controls { justify-content: flex-start; }
-  .masthead { padding-block: 2rem 1.25rem; }
-  .screen { font-size: 0.8rem; padding: 0.75rem; }
+  .controls button { padding: 0.45rem 0.6rem; }
+  .screen { font-size: 0.78rem; padding: 0.75rem; height: clamp(22rem, 70vh, 40rem); }
 }
 @media (prefers-reduced-motion: reduce) {
   .files button.flash { animation: none; }

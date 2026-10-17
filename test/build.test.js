@@ -11,7 +11,7 @@ const ROOT = path.join(__dirname, '..');
 // Each tsconfig and the committed folder its build must match.
 const BUILDS = [
   { config: 'tsconfig.json', out: 'skills/bubble/scripts' },
-  { config: 'tsconfig.install.json', out: 'install' },
+  { config: 'tsconfig.install.json', out: 'dist/install' },
 ];
 
 /** Every file under `dir`, as sorted forward-slash relative paths. */

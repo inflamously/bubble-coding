@@ -1,5 +1,5 @@
 <!-- bubble-coding:start -->
-## Bubble Planner (fog-of-war planning)
+## bubble-coding (fog-of-war planning)
 
 This repo plans work as linear tracks of task bubbles in `.bubbles/` (one `.json` per track; `.bubbles/current` names the active one).
 Manage it only through the CLI, never by hand-editing the JSON:

@@ -1,5 +1,5 @@
 "use strict";
-// Bubble Planner CLI — agent-neutral. Speaks the bubble domain language:
+// bubble-coding CLI — agent-neutral. Speaks the bubble domain language:
 //   node bubble.js move 2 to 5   ·   node bubble.js "fog 4:8"   ·   node bubble.js bubble insert at 3 ?
 // Parsing lives in lib/cli/args, track commands in lib/cli/tracks, bubble commands in lib/cli/bubbles.
 Object.defineProperty(exports, "__esModule", { value: true });

@@ -12,7 +12,7 @@ export interface InstallOpts {
   help?: boolean;
 }
 
-export const HELP = `Bubble Planner installer
+export const HELP = `bubble-coding installer
 
   node install.js <agent...> [--project <dir> | --user] [--apply-statusline] [--dry-run]
 

@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsc -p . && tsc -p tsconfig.install.json",
     "test": "node --test",
-    "site": "node site/build.js"
+    "site": "tsc -p src/site/bubble-web && tsc -p src/site/terminal && tsc -p src/site/build && node dist/site/build/build.mjs"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

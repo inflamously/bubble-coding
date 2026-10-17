@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HELP = exports.AGENTS = void 0;
 exports.parseArgs = parseArgs;
 exports.AGENTS = ['claude', 'codex', 'gemini', 'agents-md'];
-exports.HELP = `Bubble Planner installer
+exports.HELP = `bubble-coding installer
 
   node install.js <agent...> [--project <dir> | --user] [--apply-statusline] [--dry-run]
 
