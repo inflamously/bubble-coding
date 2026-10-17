@@ -12,7 +12,11 @@ TypeScript (`.mts`, compiled to ES modules) in three standalone folders, each wi
 ```
 npm run site                          # tsc each folder into dist/site/, then assemble dist/pages/
 python3 -m http.server -d dist/pages  # preview at http://localhost:8000
+npm run deploy                        # redeploy GitHub Pages from master (gh workflow run)
 ```
+
+Every push to `master` deploys too: `.github/workflows/pages.yml` runs the tests, `npm run site`,
+and publishes `dist/pages/`. One-time setup: Settings → Pages → Source: GitHub Actions.
 
 `test/web.test.js` compiles all three and replays every `bubble …` line of the story on both
 bubble-web and the real CLI; the output and the files on disk must match.

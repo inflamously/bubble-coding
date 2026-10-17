@@ -1,10 +1,10 @@
 {
-  // src/install/*.ts compiles into dist/install/, the committed JS that `node install.js` runs.
+  // src/install/*.ts compiles into install/, the committed JS that `node install.js` runs.
   // It is kept out of skills/bubble/scripts because that folder is copied into every installed repo.
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "rootDir": "src/install",
-    "outDir": "dist/install"
+    "outDir": "install"
   },
   "include": ["src/install"],
   "exclude": []

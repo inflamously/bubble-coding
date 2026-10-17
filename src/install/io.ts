@@ -3,8 +3,8 @@
 import fs = require('node:fs');
 import path = require('node:path');
 
-/** This compiles to dist/install/io.js, two levels below the repo root. */
-export const REPO = path.join(__dirname, '..', '..');
+/** This compiles to install/io.js, one level below the repo root. */
+export const REPO = path.join(__dirname, '..');
 export const SKILL_SRC = path.join(REPO, 'skills', 'bubble');
 const ADAPTERS = path.join(REPO, 'adapters');
 

@@ -1,0 +1,40 @@
+"use strict";
+// Installer arguments: which agents to wire up, where, and whether to write anything.
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.HELP = exports.AGENTS = void 0;
+exports.parseArgs = parseArgs;
+exports.AGENTS = ['claude', 'codex', 'gemini', 'agents-md'];
+exports.HELP = `bubble-coding installer
+
+  node install.js <agent...> [--project <dir> | --user] [--apply-statusline] [--dry-run]
+
+  agents: claude | codex | gemini | agents-md | all
+  --project <dir>     install into a repo (default: current directory)
+  --user              install user-wide (~/.agents, ~/.codex, ~/.gemini)
+  --apply-statusline  (claude) write the statusLine into ~/.claude/settings.json
+  --dry-run           print what would change, write nothing`;
+const isAgent = (a) => exports.AGENTS.includes(a);
+function parseArgs(argv) {
+    const opts = { agents: [] };
+    for (let i = 0; i < argv.length; i++) {
+        const a = argv[i];
+        if (a === '--project')
+            opts.project = argv[++i];
+        else if (a === '--user')
+            opts.user = true;
+        else if (a === '--apply-statusline')
+            opts.applyStatusline = true;
+        else if (a === '--dry-run')
+            opts.dryRun = true;
+        else if (a === '-h' || a === '--help')
+            opts.help = true;
+        else if (a === 'all')
+            opts.agents.push(...exports.AGENTS);
+        else if (isAgent(a))
+            opts.agents.push(a);
+        else
+            throw new Error(`unknown argument "${a}"`);
+    }
+    opts.agents = [...new Set(opts.agents)];
+    return opts;
+}

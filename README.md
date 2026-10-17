@@ -144,11 +144,11 @@ The MVP stores the type. The skill tells the agent how to behave for each type, 
 
 ## Develop
 
-The source is TypeScript in `src/`. It builds into `skills/bubble/scripts/`, and that JS is committed, because it's what the hooks, the status line and installed copies run. The installer (`src/install/`) builds separately into `dist/install/`, so it isn't copied along with the skill. Users never need a build step or any dependency.
+The source is TypeScript in `src/`. It builds into `skills/bubble/scripts/`, and that JS is committed, because it's what the hooks, the status line and installed copies run. The installer (`src/install/`) builds separately into `install/`, so it isn't copied along with the skill. Users never need a build step or any dependency.
 
 ```
 npm install     # dev only: typescript + @types/node
-npm run build   # src/*.ts -> skills/bubble/scripts/*.js, src/install/*.ts -> dist/install/*.js
+npm run build   # src/*.ts -> skills/bubble/scripts/*.js, src/install/*.ts -> install/*.js
 npm test        # node --test; fails if the committed JS drifts from src/
 ```
 
