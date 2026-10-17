@@ -1,4 +1,4 @@
-// Assembles _site/ (what GitHub Pages serves) after tsc has compiled src/site/ into dist/site/:
+// Assembles dist/pages/ (what GitHub Pages serves) after tsc has compiled src/site/ into dist/site/:
 //   index.html, style.css      from src/site/terminal/
 //   terminal/*.mjs             the page's compiled modules
 //   bubble-web/*.mjs           the CLI-in-a-browser modules the page imports
@@ -11,7 +11,7 @@ import { parseStory } from './story.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..', '..', '..'); // this runs as dist/site/build/build.mjs
 const COMPILED = path.join(ROOT, 'dist', 'site');
-const OUT = path.join(ROOT, process.argv[2] ?? '_site');
+const OUT = path.join(ROOT, process.argv[2] ?? path.join('dist', 'pages'));
 
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });

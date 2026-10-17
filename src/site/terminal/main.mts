@@ -23,7 +23,7 @@ let story: Scene[];
 try {
   [sources, story] = await Promise.all([json<Sources>('cli-sources.json'), json<Scene[]>('story.json')]);
 } catch (err) {
-  $('out').textContent = `The demo could not load its files (${(err as Error).message}). Serve _site/ over HTTP: npm run site && python3 -m http.server -d _site`;
+  $('out').textContent = `The demo could not load its files (${(err as Error).message}). Serve dist/pages/ over HTTP: npm run site && python3 -m http.server -d dist/pages`;
   throw err;
 }
 

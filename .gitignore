@@ -2,5 +2,4 @@
 node_modules/
 *.bak
 .idea
-_site/
-dist/site/
+dist

@@ -13,7 +13,7 @@ bubble-coding section the installer writes into *users'* AGENTS.md.)
 | `skills/bubble/` | the skill: `SKILL.md` + `scripts/` | `scripts/` from `src/` | yes |
 | `dist/install/` | the installer, built | `src/install/` | yes |
 | `dist/site/` | the demo, compiled | `src/site/` | no |
-| `_site/` | the demo, assembled for Pages | `dist/site/` + `demo/story.md` + the CLI | no |
+| `dist/pages/` | the demo, assembled for Pages (CI builds it on every deploy) | `dist/site/` + `demo/story.md` + the CLI | no |
 | `hooks/hooks.json`, `.claude-plugin/` | Claude Code plugin wiring | — | yes |
 | `adapters/` | templates the installer fills in for other agents | — | yes |
 | `demo/story.md` | the demo story, one source for the page and its test | — | yes |
@@ -45,6 +45,6 @@ bubble-coding section the installer writes into *users'* AGENTS.md.)
 npm install      # dev only
 npm run build    # src -> skills/bubble/scripts, src/install -> dist/install
 npm test         # all suites, including the build-drift and demo-parity checks
-npm run site     # src/site -> dist/site -> _site
-python3 -m http.server -d _site   # preview the demo
+npm run site     # src/site -> dist/site -> dist/pages
+python3 -m http.server -d dist/pages   # preview the demo
 ```

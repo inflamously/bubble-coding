@@ -7,11 +7,11 @@ TypeScript (`.mts`, compiled to ES modules) in three standalone folders, each wi
 |---|---|---|
 | `bubble-web/` | The committed CLI JS running on an in-memory machine: fake `node:fs`, POSIX `node:path`, per-run `process` and `console` | the language only (no DOM, no Node) |
 | `terminal/` | The page: `index.html`, `style.css` and the modules behind them (terminal, shell, disk panel, player, header) | the DOM; imports `bubble-web/` |
-| `build/` | Node scripts that assemble `_site/`: packs the CLI sources and parses the story into JSON | Node |
+| `build/` | Node scripts that assemble `dist/pages/`: packs the CLI sources and parses the story into JSON | Node |
 
 ```
-npm run site                          # tsc each folder into dist/site/, then assemble _site/
-python3 -m http.server -d _site       # preview at http://localhost:8000
+npm run site                          # tsc each folder into dist/site/, then assemble dist/pages/
+python3 -m http.server -d dist/pages  # preview at http://localhost:8000
 ```
 
 `test/web.test.js` compiles all three and replays every `bubble …` line of the story on both
