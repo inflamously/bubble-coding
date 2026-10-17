@@ -98,6 +98,7 @@ bubble handoff "next: List command, then Add; #5 fog (uu) needs an interview"
 ## 9. Fresh chat: look around
 
 ```
+clear
 bubble tracks
 bubble switch web-ui
 ```

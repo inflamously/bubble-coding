@@ -8,18 +8,17 @@ const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
 const { createMachine, words } = require('../site/bubble-web');
-const { cliSources } = require('../site/build');
+const { cliSources, parseStory } = require('../site/build');
 
 const ROOT = path.join(__dirname, '..');
 const CLI = path.join(ROOT, 'skills', 'bubble', 'scripts', 'bubble.js');
 
-/** The `bubble …` lines inside the story's code blocks, as argv arrays. */
+/** The `bubble …` lines of the story, as argv arrays. */
 function storyCommands() {
-  const blocks = fs.readFileSync(path.join(ROOT, 'demo', 'story.md'), 'utf8').match(/```\n[\s\S]*?```/g) || [];
-  return blocks
-    .flatMap((b) => b.split('\n'))
-    .filter((l) => l.startsWith('bubble '))
-    .map((l) => words(l).slice(1));
+  return parseStory(fs.readFileSync(path.join(ROOT, 'demo', 'story.md'), 'utf8'))
+    .flatMap((scene) => scene.steps)
+    .filter((step) => step.kind === 'run' && step.line.startsWith('bubble '))
+    .map((step) => words(step.line).slice(1));
 }
 
 test('the browser CLI prints what the real CLI prints, for every line of the demo story', () => {
@@ -45,6 +44,21 @@ test('the browser CLI prints what the real CLI prints, for every line of the dem
   for (const f of fs.readdirSync(realDir)) {
     assert.strictEqual(norm(web.fs.readFileSync(web.path.join(webDir, f))), norm(fs.readFileSync(path.join(realDir, f), 'utf8')), f);
   }
+});
+
+test('parseStory: scenes with captions, commands and notes', () => {
+  const scenes = parseStory('# Demo\n\nintro\n\n## 1. Sketch\n\n> human: plan `it`\n\n```\nbubble add A\nls\n```\n\nA note\nthat wraps.\n');
+  assert.deepStrictEqual(scenes, [
+    {
+      title: 'Sketch',
+      notes: ['A note that wraps.'],
+      steps: [
+        { kind: 'say', who: 'human', text: 'plan it' },
+        { kind: 'run', line: 'bubble add A' },
+        { kind: 'run', line: 'ls' },
+      ],
+    },
+  ]);
 });
 
 test('words: split a command line like a shell', () => {

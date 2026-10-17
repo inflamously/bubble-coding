@@ -8,6 +8,8 @@ Fix generation   S ●──●──❓──○ F   Read logs ‹ ❓ needs yo
 
 `●` done · `◐` active · `○` todo · `❓` fog (unplanned) · `prev ‹ active › next` tells you where you are
 
+**Live demo:** [inflamously.github.io/bubble-coding](https://inflamously.github.io/bubble-coding/) runs the real CLI in an emulated terminal and plays a full session. To preview it locally: `npm run site && python3 -m http.server -d _site`.
+
 In the status line and in a terminal, the track title is green, the track is blue, and `prev ‹ active › next` is yellow. Set `NO_COLOR=1` (or pass `--no-color` to `statusline.js`) to turn colors off, or `BUBBLES_COLOR=1` to force them on.
 
 - **Plan only as far as you can see.** Unclear steps stay fog until you reach them.
