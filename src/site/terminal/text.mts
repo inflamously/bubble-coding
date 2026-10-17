@@ -26,13 +26,20 @@ export const YOUR_TURN = '\nYour turn. This is the real CLI on a disk in this ta
 export const FRESH_DISK = 'A fresh disk. Start with: bubble switch my-plan "My plan"';
 export const countdown = (seconds: number) => `The demo starts in ${seconds}…  Press any key or Play to start now.`;
 
-/** "bubble" in figlet's standard font, built from its letters so the columns line up. */
+/** "bubble-tracks" in figlet's standard font, built from its letters so the columns line up. One line; the CSS shrinks it to fit. */
 export function banner(): string[] {
   const letters: Record<string, string[]> = {
     b: [' _     ', '| |__  ', "| '_ \\ ", '| |_) |', '|_.__/ '],
     u: ['       ', ' _   _ ', '| | | |', '| |_| |', ' \\__,_|'],
     l: [' _ ', '| |', '| |', '| |', '|_|'],
     e: ['      ', '  ___ ', ' / _ \\', '|  __/', ' \\___|'],
+    '-': ['       ', '       ', ' _____ ', '|_____|', '       '],
+    t: [' _   ', '| |_ ', '| __|', '| |_ ', ' \\__|'],
+    r: ['      ', ' _ __ ', "| '__|", '| |   ', '|_|   '],
+    a: ['       ', '  __ _ ', ' / _` |', '| (_| |', ' \\__,_|'],
+    c: ['      ', '  ___ ', ' / __|', '| (__ ', ' \\___|'],
+    k: [' _    ', '| | __', '| |/ /', '|   < ', '|_|\\_\\'],
+    s: ['     ', ' ___ ', '/ __|', '\\__ \\', '|___/'],
   };
-  return [0, 1, 2, 3, 4].map((row) => [...'bubble'].map((ch) => letters[ch][row]).join('').trimEnd());
+  return [0, 1, 2, 3, 4].map((row) => [...'bubble-tracks'].map((ch) => letters[ch][row]).join('').trimEnd());
 }

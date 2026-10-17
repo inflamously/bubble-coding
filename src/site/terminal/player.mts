@@ -172,7 +172,7 @@ export class Player {
       this.term.line(`── ${beat.si + 1} · ${scene.title} ${'─'.repeat(Math.max(3, 44 - scene.title.length))}`, 'scene-head');
       for (const note of scene.notes) this.term.line(`# ${note}`, 'note');
     } else if (beat.kind === 'say') {
-      this.term.line(el('span', '', el('span', `who ${beat.who}`, beat.who), ` › ${beat.text}`), 'say');
+      this.term.line(el('span', '', el('span', `who ${beat.who}`, beat.who), ` › ${beat.text}`), `say ${beat.who}`);
     } else {
       this.term.typed.textContent = '';
       this.shell.exec(beat.line);

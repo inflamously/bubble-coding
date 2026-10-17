@@ -197,6 +197,7 @@ button { font: 500 0.88rem/1 var(--font-body); color: var(--ink); }
   padding: 0.9rem 1rem 1.2rem;
   font: 400 0.86rem/1.5 var(--font-mono);
   cursor: text;
+  container-type: inline-size;
 }
 #out > div { white-space: pre-wrap; overflow-wrap: anywhere; min-height: 1.5em; }
 .promptline { display: flex; align-items: baseline; gap: 0.6ch; flex-wrap: wrap; }
@@ -220,8 +221,23 @@ button { font: 500 0.88rem/1 var(--font-body); color: var(--ink); }
 .say .who { font-weight: 600; }
 .say .who.human { color: var(--who-human); }
 .say .who.agent { color: var(--who-agent); }
+/* The conversation is the point of the demo: each caption reads as a chat bubble, not as output. */
+.say.human { --who: var(--who-human); }
+.say.agent { --who: var(--who-agent); }
+.say.human,
+.say.agent {
+  width: fit-content;
+  max-width: 100%;
+  margin-block: 0.75rem;
+  padding: 0.4rem 0.75rem;
+  border-left: 3px solid var(--who);
+  border-radius: 0 0.4rem 0.4rem 0;
+  background: color-mix(in srgb, var(--who) 8%, transparent);
+  color: var(--term-fg);
+}
 .err { color: var(--ansi-red); }
-.banner { color: var(--ansi-green); font-weight: 600; white-space: pre !important; overflow-wrap: normal !important; }
+/* The banner is 79 columns: on a narrow screen it shrinks to fit (a monospace column is about 0.6em) instead of wrapping. */
+.banner { color: var(--ansi-green); font-weight: 600; font-size: min(1em, 2cqw); white-space: pre !important; overflow-wrap: normal !important; }
 .scene-head { color: var(--ansi-yellow); margin-top: 0.6rem; }
 .note { color: var(--term-dim); font-style: italic; }
 .countdown { color: var(--ansi-yellow); }
