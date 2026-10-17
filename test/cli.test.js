@@ -194,13 +194,13 @@ test('links skip closed tracks: no title sync either way, no pop into a closed p
     spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
   const raw = (name) => fs.readFileSync(path.join(dir, '.bubbles', `${name}.json`), 'utf8');
 
-  // closed parent: the child runs on, nothing flows back
+  // closed parent: a child forked off it runs on, nothing flows back
   run('switch', 'top');
   run('add', 'A');
   run('add', 'B');
+  run('close', 'top', '--force');
   run('fork', '1', 'kid');
   run('add', 'only');
-  run('close', 'top', '--force');
   const top = raw('top');
   assert.strictEqual(run('title', 'Renamed').status, 0);
   assert.strictEqual(JSON.parse(raw('kid')).parent.title, 'A'); // still names the bubble it came from
@@ -244,13 +244,7 @@ test('closing a fork counts as finished: the parent bubble pops, on up the chain
   assert.strictEqual(load('leaf').bubbles[0].state, 'todo'); // open bubbles keep their state
   assert.deepStrictEqual(load('top').bubbles.map((b) => b.state), ['done', 'todo']);
 
-  // done on the parent no longer waits for a closed fork (here: one closed while its parent was closed too)
-  run('switch', 'p2');
-  run('add', 'X');
-  run('fork', '1', 'k2');
-  run('close', 'p2', '--force');
-  run('close', 'k2', '--force');
-  assert.strictEqual(load('p2').bubbles[0].state, 'todo'); // a closed parent is still skipped
+  // done on the parent no longer waits for a closed fork
   run('switch', 'p3');
   run('add', 'Y');
   run('fork', '1', 'k3');
@@ -258,6 +252,62 @@ test('closing a fork counts as finished: the parent bubble pops, on up the chain
   assert.match(run('done').stderr, /waits for its fork k3\.json/); // empty, open fork: still waits
   fs.writeFileSync(path.join(dir, '.bubbles', 'k3.json'), JSON.stringify({ ...load('k3'), closed: { at: '2026-10-17T00:00:00.000Z' } }));
   assert.match(run('done').stdout, /popped "Y"/);
+});
+
+test('close cascades top down to every fork, whatever its state; side tracks stay open; only the top pops', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-cascade-'));
+  const run = (...args) =>
+    spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
+  const load = (name) => JSON.parse(fs.readFileSync(path.join(dir, '.bubbles', `${name}.json`), 'utf8'));
+
+  // root #1 -> top; top #1 -> mid -> leaf, top #2 -> done-kid (finished), top #3 -> gone (deleted), top #3 -> side (diverged)
+  run('switch', 'root');
+  run('add', 'R');
+  run('fork', '1', 'top');
+  for (const t of ['A', 'B', 'C']) run('add', t);
+  run('fork', '2', 'done-kid');
+  run('add', 'd');
+  run('done');
+  run('switch', 'top');
+  run('fork', '3', 'gone');
+  run('switch', 'top');
+  run('diverge', '3', 'side');
+  run('add', 's');
+  run('switch', 'top');
+  run('fork', '1', 'mid');
+  run('add', 'm');
+  run('fork', '1', 'leaf');
+  run('add', '?');
+  run('switch', 'root');
+  run('delete', 'gone', '--force');
+
+  const ask = run('close', 'top');
+  assert.match(ask.stderr, /closing "top" \(and its forks "mid", "leaf", "done-kid"\) is permanent .*--force/);
+  assert.strictEqual(load('top').closed, undefined);
+
+  const r = run('close', 'top', '--force');
+  assert.strictEqual(r.status, 0, r.stderr);
+  const lines = r.stdout.split('\n');
+  const at = (re) => lines.findIndex((l) => re.test(l));
+  assert.ok(at(/^closed track "top"/) < at(/closed fork "mid"/) && at(/closed fork "mid"/) < at(/closed fork "leaf"/)); // top down
+  assert.match(r.stdout, /fork finished — popped "R" in root\.json/); // the top pops its own parent
+  assert.match(r.stdout, /closed fork "done-kid"/);
+  assert.match(r.stdout, /fork "gone": missing, skipped/);
+  for (const t of ['top', 'mid', 'leaf', 'done-kid']) assert.ok(load(t).closed, t);
+  assert.strictEqual(load('side').closed, undefined); // diverged: independent by design
+  assert.deepStrictEqual(load('top').bubbles.map((b) => b.state), ['todo', 'done', 'todo']); // forks never pop the closing parent
+  assert.strictEqual(load('leaf').bubbles[0].state, 'fog'); // any state
+
+  // re-running close on a closed track picks up forks still open (e.g. after a failure), notes the rest
+  const mid = load('mid');
+  delete mid.closed;
+  fs.writeFileSync(path.join(dir, '.bubbles', 'mid.json'), JSON.stringify(mid));
+  const again = run('close', 'top', '--force');
+  assert.strictEqual(again.status, 0, again.stderr);
+  assert.match(again.stdout, /track "top" is already closed — closing its open forks/);
+  assert.match(again.stdout, /closed fork "mid"/);
+  assert.match(again.stdout, /fork "leaf": already closed/);
+  assert.match(run('close', 'top', '--force').stderr, /track "top" is already closed/);
 });
 
 test('legacy track.json is the track named "track"', () => {

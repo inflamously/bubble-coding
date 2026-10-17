@@ -7,6 +7,7 @@ exports.checkForkFinished = checkForkFinished;
 exports.syncTitle = syncTitle;
 exports.syncForkTitle = syncForkTitle;
 exports.popFinishedParents = popFinishedParents;
+exports.forkTree = forkTree;
 const fs = require("node:fs");
 const path = require("node:path");
 const store_1 = require("./store");
@@ -82,4 +83,29 @@ function popFinishedParents(childFile, child) {
         track = p.track;
     }
     return msgs;
+}
+/** Every fork under `track`, forks of forks too, top down (a fork comes before its own forks). Side tracks aren't forks. */
+function forkTree(file, track, seen = new Set([path.resolve(file)])) {
+    const out = [];
+    for (const b of track.bubbles) {
+        if (!b.fork)
+            continue;
+        const childFile = linked(file, b.fork);
+        if (seen.has(childFile))
+            continue;
+        seen.add(childFile);
+        if (!fs.existsSync(childFile)) {
+            out.push({ file: childFile, track: null, problem: 'missing, skipped' });
+            continue;
+        }
+        try {
+            const child = (0, store_1.loadTrack)(childFile);
+            out.push({ file: childFile, track: child });
+            out.push(...forkTree(childFile, child, seen));
+        }
+        catch (err) {
+            out.push({ file: childFile, track: null, problem: `unreadable, skipped (${err.message})` });
+        }
+    }
+    return out;
 }

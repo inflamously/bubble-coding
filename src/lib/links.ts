@@ -74,3 +74,33 @@ export function popFinishedParents(childFile: string, child: Track): string[] {
   }
   return msgs;
 }
+
+/** A fork under a track: its file, and its track, or why it couldn't be loaded. */
+export interface Fork {
+  file: string;
+  track: Track | null;
+  problem?: string;
+}
+
+/** Every fork under `track`, forks of forks too, top down (a fork comes before its own forks). Side tracks aren't forks. */
+export function forkTree(file: string, track: Track, seen = new Set([path.resolve(file)])): Fork[] {
+  const out: Fork[] = [];
+  for (const b of track.bubbles) {
+    if (!b.fork) continue;
+    const childFile = linked(file, b.fork);
+    if (seen.has(childFile)) continue;
+    seen.add(childFile);
+    if (!fs.existsSync(childFile)) {
+      out.push({ file: childFile, track: null, problem: 'missing, skipped' });
+      continue;
+    }
+    try {
+      const child = loadTrack(childFile);
+      out.push({ file: childFile, track: child });
+      out.push(...forkTree(childFile, child, seen));
+    } catch (err) {
+      out.push({ file: childFile, track: null, problem: `unreadable, skipped (${(err as Error).message})` });
+    }
+  }
+  return out;
+}

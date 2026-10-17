@@ -102,23 +102,55 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
             return (0, print_1.printTrack)(child, renderOpts);
         }
         case 'close': {
+            // Closing cascades top down to every fork under the track, whatever its state; side tracks stay open.
             const name = T.checkName(args.shift());
             const file = T.trackPath(bubblesDir, name);
             if (!fs.existsSync(file))
                 throw new Error(`no track "${name}"`);
             const track = T.loadTrack(file);
-            if (track.closed)
+            const forks = links.forkTree(file, track);
+            const open = forks.filter((f) => f.track && !f.track.closed);
+            const label = (f) => `"${path.basename(f.file, '.json')}"`;
+            if (track.closed && !open.length)
                 throw new Error(`track "${name}" is already closed`);
-            if (!opts.force)
-                throw new Error(`closing "${name}" is permanent (read-only, no reopen) — confirm with the human, then re-run with --force`);
-            track.closed = { at: new Date().toISOString() };
-            T.saveTrack(file, track);
-            console.log(`closed track "${name}" — read-only from now on; fork, diverge or switch to keep working`);
-            // A closed fork counts as finished, so its parent bubble pops (and on up the chain).
-            for (const msg of links.popFinishedParents(file, track))
-                console.log(msg);
+            if (!opts.force) {
+                const also = open.length ? ` (and its forks ${open.map(label).join(', ')})` : '';
+                throw new Error(`closing "${name}"${also} is permanent (read-only, no reopen) — confirm with the human, then re-run with --force`);
+            }
+            const at = new Date().toISOString();
+            if (track.closed) {
+                console.log(`track "${name}" is already closed — closing its open forks`);
+            }
+            else {
+                track.closed = { at };
+                T.saveTrack(file, track);
+                console.log(`closed track "${name}" — read-only from now on; fork, diverge or switch to keep working`);
+                // A closed fork counts as finished, so its parent bubble pops (and on up the chain).
+                for (const msg of links.popFinishedParents(file, track))
+                    console.log(msg);
+            }
+            // Forks never pop anything: their parent is closed by now. One failing fork doesn't stop the rest.
+            let failed = 0;
+            for (const f of forks) {
+                if (!f.track)
+                    console.log(`  fork ${label(f)}: ${f.problem}`);
+                else if (f.track.closed)
+                    console.log(`  fork ${label(f)}: already closed`);
+                else {
+                    try {
+                        f.track.closed = { at };
+                        T.saveTrack(f.file, f.track);
+                        console.log(`  closed fork ${label(f)}`);
+                    }
+                    catch (err) {
+                        failed++;
+                        console.error(`  fork ${label(f)}: not closed (${err.message}) — re-run close to retry`);
+                    }
+                }
+            }
             console.log('');
-            return (0, print_1.printTrack)(track, renderOpts);
+            (0, print_1.printTrack)(track, renderOpts);
+            return failed ? 1 : 0;
         }
         case 'delete': {
             const name = T.checkName(args.shift());
