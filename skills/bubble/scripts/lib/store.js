@@ -1,7 +1,7 @@
 "use strict";
 // Where tracks live: find, name, load and save them.
 // Layout: .bubbles/<name>.json per track, .bubbles/current names the active one.
-// No `current` file = the legacy single track, .bubbles/track.json (name "track").
+// No `current` file = the default track, .bubbles/track.json (name "track").
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.trackPath = exports.DEFAULT_NAME = exports.TRACK_DIR = void 0;
 exports.findBubblesDir = findBubblesDir;
@@ -14,7 +14,6 @@ exports.findTrack = findTrack;
 exports.saveTrack = saveTrack;
 const fs = require("node:fs");
 const path = require("node:path");
-const model_1 = require("./model");
 exports.TRACK_DIR = '.bubbles';
 const CURRENT_FILE = 'current';
 exports.DEFAULT_NAME = 'track';
@@ -51,7 +50,7 @@ function currentName(bubblesDir) {
             return name;
     }
     catch {
-        /* no pointer: legacy single track */
+        /* no pointer: the default track */
     }
     return exports.DEFAULT_NAME;
 }
@@ -76,7 +75,7 @@ function loadTrack(file) {
     const track = JSON.parse(fs.readFileSync(file, 'utf8'));
     if (!track || !Array.isArray(track.bubbles))
         throw new Error('missing "bubbles" array');
-    return (0, model_1.ensureIds)(track); // older tracks: ids in memory now, on disk with the next save (close saves too)
+    return track;
 }
 /** Current track: null (none), { file, name, bubblesDir, error } (unreadable), or { file, name, bubblesDir, track }. */
 function findTrack(dir) {

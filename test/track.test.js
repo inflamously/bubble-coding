@@ -75,12 +75,6 @@ test('add at end, at position, fog, errors', () => {
   assert.throws(() => T.add(t, 'x', { at: 9 }), /bad position/);
 });
 
-test('legacy children are ignored: track stays flat', () => {
-  const t = { title: 'P', bubbles: [{ title: 'A', state: 'todo', children: { bubbles: [{ title: 'k', state: 'fog' }] } }] };
-  assert.strictEqual(T.activeBubble(t).title, 'A');
-  assert.strictEqual(T.render(t, { ascii: true }), 'P   S @ F   @ A');
-});
-
 const five = () => ({ title: 'P', bubbles: ['A', 'B', 'C', 'D', 'E'].map((title) => ({ title, state: 'todo' })) });
 const titles = (t) => t.bubbles.map((b) => b.title).join('');
 

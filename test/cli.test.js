@@ -169,25 +169,6 @@ test('fork and diverge from a closed track: the child links back, the closed tra
   assert.strictEqual(raw('old'), before);
 });
 
-test('older tracks without ids: any write saves them, close freezes them, ids never collide', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-ids-'));
-  fs.mkdirSync(path.join(dir, '.bubbles'));
-  const file = path.join(dir, '.bubbles', 'track.json');
-  const write = (bubbles, extra = {}) => fs.writeFileSync(file, JSON.stringify({ title: 'Old', bubbles, ...extra }));
-  const run = (...args) => spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8' });
-  const ids = () => JSON.parse(fs.readFileSync(file, 'utf8')).bubbles.map((b) => b.id);
-
-  write([{ title: 'A', state: 'todo' }, { title: 'B', state: 'todo', id: 5 }, { title: 'C', state: 'todo' }], { nextId: 3 });
-  assert.strictEqual(run('show').status, 0);
-  assert.deepStrictEqual(ids(), [undefined, 5, undefined]); // reading never writes
-  run('hint', '1', 'x');
-  assert.deepStrictEqual(ids(), [6, 5, 7]); // past both nextId and the highest id
-
-  write([{ title: 'A', state: 'todo' }, { title: 'B', state: 'done' }]);
-  run('close', 'track', '--force');
-  assert.deepStrictEqual(ids(), [1, 2]);
-});
-
 test('links skip closed tracks: no title sync either way, no pop into a closed parent', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-links-'));
   const run = (...args) =>
@@ -308,17 +289,6 @@ test('close cascades top down to every fork, whatever its state; side tracks sta
   assert.match(again.stdout, /closed fork "mid"/);
   assert.match(again.stdout, /fork "leaf": already closed/);
   assert.match(run('close', 'top', '--force').stderr, /track "top" is already closed/);
-});
-
-test('legacy track.json is the track named "track"', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-legacy-'));
-  fs.mkdirSync(path.join(dir, '.bubbles'));
-  fs.writeFileSync(path.join(dir, '.bubbles', 'track.json'), JSON.stringify({ title: 'Old', bubbles: [{ title: 'x', state: 'todo' }] }));
-  const run = (...args) => spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8' });
-  assert.match(run('show').stdout, /Old/);
-  assert.match(run('tracks').stdout, /→ track /);
-  run('switch', 'new-idea');
-  assert.match(run('switch', 'track').stdout, /resumed track "track"/);
 });
 
 test('handoff note survives switching away and is shown on resume', () => {

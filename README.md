@@ -105,7 +105,7 @@ After every `done` the agent stops (⏸) and waits, so you can reshape the path 
 
 ## State
 
-Tracks live in `.bubbles/`, one `.json` file per track, and `.bubbles/current` names the active one. Agents find `.bubbles/` by walking up from the directory they report. A repo with only `.bubbles/track.json` (no `current`) is a single track named `track`, so older repos keep working.
+Tracks live in `.bubbles/`, one `.json` file per track, and `.bubbles/current` names the active one. Agents find `.bubbles/` by walking up from the directory they report.
 
 ```
 bubble switch idea-a       resume idea-a, or create it if it doesn't exist
