@@ -11,7 +11,7 @@ export function claude(ctx: Ctx): void {
   const statusLine = { type: 'command', command: nodeCmd(scriptsOf(SKILL_SRC).statusline), padding: 0 };
   log(`  Plugin (skill /bubble + fog-gate hook) — inside Claude Code run:`);
   log(`    /plugin marketplace add ${slash(REPO)}`);
-  log(`    /plugin install bubble-coding@bubble-coding`);
+  log(`    /plugin install bubble-tracks@bubble-tracks`);
   log(`  or for development:  claude --plugin-dir "${slash(REPO)}"`);
 
   if (!ctx.applyStatusline) {

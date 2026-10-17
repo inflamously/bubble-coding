@@ -19,8 +19,8 @@ function repo(track) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-'));
   fs.mkdirSync(path.join(dir, 'src', 'deep'), { recursive: true });
   if (track !== undefined) {
-    fs.mkdirSync(path.join(dir, '.bubbles'));
-    fs.writeFileSync(path.join(dir, '.bubbles', 'track.json'), typeof track === 'string' ? track : JSON.stringify(track));
+    fs.mkdirSync(path.join(dir, '.bubble-tracks'));
+    fs.writeFileSync(path.join(dir, '.bubble-tracks', 'track.json'), typeof track === 'string' ? track : JSON.stringify(track));
   }
   return dir;
 }
@@ -61,9 +61,9 @@ test('gate blocks edits at fog for every payload shape', () => {
 
 test('gate allows: track edits, todo bubble, no track, corrupt track, subdir cwd', () => {
   const fog = repo(fogTrack);
-  assert.strictEqual(run('fog-gate.js', { cwd: fog, tool_input: { file_path: '.bubbles/track.json' } }).status, 0);
+  assert.strictEqual(run('fog-gate.js', { cwd: fog, tool_input: { file_path: '.bubble-tracks/track.json' } }).status, 0);
   assert.strictEqual(
-    run('fog-gate.js', { cwd: fog, tool_input: { command: `*** Update File: .bubbles/track.json\n*** Update File: src/a.js` } }).status,
+    run('fog-gate.js', { cwd: fog, tool_input: { command: `*** Update File: .bubble-tracks/track.json\n*** Update File: src/a.js` } }).status,
     2,
     'mixed patch still blocked'
   );
@@ -97,7 +97,7 @@ test('CLI: init, add, show exit 3 at fog, fill, done', () => {
   assert.strictEqual(cli('fill', 'Second').status, 0);
   assert.strictEqual(cli('show').status, 0);
   assert.match(cli('done').stdout, /all done/);
-  const saved = JSON.parse(fs.readFileSync(path.join(dir, '.bubbles', 'track.json'), 'utf8'));
+  const saved = JSON.parse(fs.readFileSync(path.join(dir, '.bubble-tracks', 'track.json'), 'utf8'));
   assert.deepStrictEqual(saved.bubbles, [
     { title: 'First', state: 'done', id: 1 },
     { title: 'Second', state: 'done', type: 'known-known', id: 2 },
@@ -118,11 +118,11 @@ test('statusline colors: title green, track blue, context yellow; --no-color and
 
 test('fog gate and statusline follow the current track', () => {
   const dir = repo(todoTrack);
-  fs.writeFileSync(path.join(dir, '.bubbles', 'foggy.json'), JSON.stringify(fogTrack));
+  fs.writeFileSync(path.join(dir, '.bubble-tracks', 'foggy.json'), JSON.stringify(fogTrack));
   const edit = { cwd: dir, tool_input: { file_path: path.join(dir, 'src', 'a.js') } };
   assert.strictEqual(run('fog-gate.js', edit).status, 0);
-  fs.writeFileSync(path.join(dir, '.bubbles', 'current'), 'foggy\n');
+  fs.writeFileSync(path.join(dir, '.bubble-tracks', 'current'), 'foggy\n');
   assert.strictEqual(run('fog-gate.js', edit).status, 2);
   assert.match(run('statusline.js', { cwd: dir }).stdout, /needs you/);
-  assert.strictEqual(run('fog-gate.js', { cwd: dir, tool_input: { file_path: path.join(dir, '.bubbles', 'current') } }).status, 0);
+  assert.strictEqual(run('fog-gate.js', { cwd: dir, tool_input: { file_path: path.join(dir, '.bubble-tracks', 'current') } }).status, 0);
 });

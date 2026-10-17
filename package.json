@@ -1,5 +1,5 @@
 {
-  "name": "bubble-coding",
+  "name": "bubble-tracks",
   "version": "0.1.0",
   "private": true,
   "description": "Gamified fog-of-war planning for coding agents (Claude Code, Codex CLI, Gemini CLI, AGENTS.md).",

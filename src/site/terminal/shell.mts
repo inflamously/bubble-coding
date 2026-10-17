@@ -48,7 +48,7 @@ export class Shell {
   /** A fresh disk with an empty project on it. */
   boot(): void {
     this.machine = createMachine(this.sources, { cwd: PROJECT });
-    this.machine.fs.writeFileSync(`${PROJECT}/README.md`, '# todo-app\n\nA tiny todo CLI. Planned with bubble-coding.\n');
+    this.machine.fs.writeFileSync(`${PROJECT}/README.md`, '# todo-app\n\nA tiny todo CLI. Planned with bubble-tracks.\n');
     this.term.clear();
     this.updatePrompt();
     this.hooks.booted();

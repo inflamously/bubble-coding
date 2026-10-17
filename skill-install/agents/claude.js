@@ -12,7 +12,7 @@ function claude(ctx) {
     const statusLine = { type: 'command', command: (0, io_1.nodeCmd)((0, context_1.scriptsOf)(io_1.SKILL_SRC).statusline), padding: 0 };
     (0, io_1.log)(`  Plugin (skill /bubble + fog-gate hook) — inside Claude Code run:`);
     (0, io_1.log)(`    /plugin marketplace add ${(0, io_1.slash)(io_1.REPO)}`);
-    (0, io_1.log)(`    /plugin install bubble-coding@bubble-coding`);
+    (0, io_1.log)(`    /plugin install bubble-tracks@bubble-tracks`);
     (0, io_1.log)(`  or for development:  claude --plugin-dir "${(0, io_1.slash)(io_1.REPO)}"`);
     if (!ctx.applyStatusline) {
         (0, io_1.log)(`  Status line (plugins can't set it) — add to ~/.claude/settings.json, or rerun with --apply-statusline:`);

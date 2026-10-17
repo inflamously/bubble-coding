@@ -14,34 +14,37 @@
     },
     {
       "title": "Move own tracks",
-      "state": "todo",
+      "state": "done",
       "id": 5,
       "hint": "git mv/mv .bubbles -> .bubble-tracks in this repo, .gitignore -> .bubble-tracks/current; check the plugin's hook still finds it"
     },
     {
       "title": "Update tests",
-      "state": "todo",
+      "state": "done",
       "id": 2,
       "hint": "test/cli, track, hooks, web .test.js"
     },
     {
       "title": "Update docs",
-      "state": "todo",
+      "state": "done",
       "id": 3,
       "hint": "README, SKILL.md, AGENTS.md, adapters/agents-md.md, demo/story.md"
     },
     {
       "title": "Update demo site",
-      "state": "todo",
+      "state": "done",
       "id": 4,
       "hint": "src/site/terminal: disk.mts, main.mts, index.html, style.css"
     },
     {
       "title": "Rename to bubble-tracks",
-      "state": "todo",
+      "state": "done",
       "id": 7,
       "hint": "Project name bubble-coding -> bubble-tracks: package.json, .claude-plugin/plugin.json + marketplace.json, README, SKILL.md frontmatter, installer, site. Outward-facing (ask first): GitHub repo rename, Pages URL, installed plugin id bubble-coding@bubble-coding."
     }
   ],
-  "nextId": 8
+  "nextId": 8,
+  "closed": {
+    "at": "2026-10-17T22:08:28.147Z"
+  }
 }

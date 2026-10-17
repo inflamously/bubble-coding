@@ -54,8 +54,8 @@ test('the browser CLI prints what the real CLI prints, for every line of the dem
     assert.strictEqual(got.code, real.status, line);
   }
   // And the disk ends up the same: every track file, byte for byte (but the handoff minute).
-  const realDir = path.join(dir, '.bubbles');
-  const webDir = web.path.join(web.cwd(), '.bubbles');
+  const realDir = path.join(dir, '.bubble-tracks');
+  const webDir = web.path.join(web.cwd(), '.bubble-tracks');
   assert.deepStrictEqual(web.fs.readdirSync(webDir), fs.readdirSync(realDir).sort());
   for (const f of fs.readdirSync(realDir)) {
     assert.strictEqual(norm(web.fs.readFileSync(web.path.join(webDir, f))), norm(fs.readFileSync(path.join(realDir, f), 'utf8')), f);
@@ -91,7 +91,7 @@ test('posix path: the calls the CLI makes', async () => {
   assert.strictEqual(p.resolve('q'), '/home/demo/x/q');
   assert.strictEqual(p.resolve('x', '/y', 'z'), '/y/z');
   assert.strictEqual(p.relative('/a/b/c', '/a/d'), '../../d');
-  assert.strictEqual(p.relative('/a/.bubbles/x.json', '/a/.bubbles/y.json'), '../y.json');
+  assert.strictEqual(p.relative('/a/.bubble-tracks/x.json', '/a/.bubble-tracks/y.json'), '../y.json');
   assert.strictEqual(p.dirname('/a/b.json'), '/a');
   assert.strictEqual(p.basename('/a/b.json', '.json'), 'b');
   assert.strictEqual(p.join('/a', '..', 'b', './c'), '/b/c');

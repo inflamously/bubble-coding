@@ -1,4 +1,4 @@
-// The real bubble-coding CLI on a machine that lives in memory. The committed JS from
+// The real bubble-tracks CLI on a machine that lives in memory. The committed JS from
 // skills/bubble/scripts runs unchanged; only what Node would provide is swapped: node:fs is an
 // in-memory disk, node:path is POSIX, and process and console are per-run fakes that capture output.
 import { makeFs, type MemoryFs } from './fs.mjs';

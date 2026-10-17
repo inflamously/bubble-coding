@@ -20,7 +20,7 @@ export interface Ctx {
   renderOpts: RenderOpts;
 }
 
-export const HELP = `bubble-coding — the bubble language
+export const HELP = `bubble-tracks — the bubble language
 
   switch [name] [title]         resume track <name>, or create it; no name = the current (else default) track
   create <name> [title]         create a new track (refuses if it exists) and make it current

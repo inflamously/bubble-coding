@@ -1,4 +1,4 @@
-/* Layout: a sticky top bar (scene track + controls), then the terminal as the stage with the .bubbles/ disk beside it (stacked on phones). */
+/* Layout: a sticky top bar (scene track + controls), then the terminal as the stage with the .bubble-tracks/ disk beside it (stacked on phones). */
 :root {
   --paper: #edf1f5;
   --panel: #f8fafc;

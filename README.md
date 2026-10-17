@@ -1,4 +1,4 @@
-# bubble-coding
+# bubble-tracks
 
 Gamified planning for coding agents, with fog of war. A plan is a linear track of task bubbles:
 
@@ -35,12 +35,12 @@ Everything portable lives in **`skills/bubble/`**: `SKILL.md` plus zero-dependen
 1. Install the plugin. Inside Claude Code, run:
    ```
    /plugin marketplace add inflamously/bubble-coding
-   /plugin install bubble-coding@bubble-coding
+   /plugin install bubble-tracks@bubble-tracks
    ```
-   From a local checkout, use `/plugin marketplace add /path/to/bubble-coding`. For development, run `claude --plugin-dir /path/to/bubble-coding` instead.
+   From a local checkout, use `/plugin marketplace add /path/to/bubble-tracks`. For development, run `claude --plugin-dir /path/to/bubble-tracks` instead.
 2. Add the status line. Plugins can't set it, so either run `node install.js claude --apply-statusline`, or add this to `~/.claude/settings.json`:
    ```json
-   "statusLine": { "type": "command", "command": "node \"/path/to/bubble-coding/skills/bubble/scripts/statusline.js\"" }
+   "statusLine": { "type": "command", "command": "node \"/path/to/bubble-tracks/skills/bubble/scripts/statusline.js\"" }
    ```
 
 If the symbols render badly, set `"env": { "BUBBLES_ASCII": "1" }` in settings. The line then looks like `S *--@--?--o F`.
@@ -76,7 +76,7 @@ close <name> --force           finish a track: read-only for good; closes its fo
 delete <name> --force          delete a track (not the current one)
 fork [N] <name>                build on bubble N in a child track; the bubble waits for it
 diverge [N] <name> [title]     go a different direction from bubble N in a side track; nothing waits
-init <title>                   create the default track (.bubbles/track.json)
+init <title>                   create the default track (.bubble-tracks/track.json)
 add <title> | add ?            append a todo (or fog) bubble
 insert at N <title> | insert at N ?
 remove N | remove N:M
@@ -105,7 +105,7 @@ After every `done` the agent stops (⏸) and waits, so you can reshape the path 
 
 ## State
 
-Tracks live in `.bubbles/`, one `.json` file per track, and `.bubbles/current` names the active one. Agents find `.bubbles/` by walking up from the directory they report.
+Tracks live in `.bubble-tracks/`, one `.json` file per track, and `.bubble-tracks/current` names the active one. Agents find `.bubble-tracks/` by walking up from the directory they report.
 
 ```
 bubble switch idea-a       resume idea-a, or create it if it doesn't exist

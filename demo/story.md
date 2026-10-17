@@ -117,9 +117,9 @@ bubble tracks
 ## 11. Under the hood
 
 ```
-ls .bubbles
-cat .bubbles/todo.json
-cat .bubbles/web-ui.json
+ls .bubble-tracks
+cat .bubble-tracks/todo.json
+cat .bubble-tracks/web-ui.json
 ```
 
 `todo.json` holds `"fork": "storage.json"` on "Persist to JSON", along with `sides`, the handoff note

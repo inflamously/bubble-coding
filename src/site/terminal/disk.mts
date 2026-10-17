@@ -1,7 +1,7 @@
 import type { Machine } from '../bubble-web/index.mjs';
 import { $, button, el } from './dom.mjs';
 
-/** The .bubbles/ panel: one button per file, and the open file's JSON. */
+/** The .bubble-tracks/ panel: one button per file, and the open file's JSON. */
 export class Disk {
   private files = new Map<string, string>(); // name -> content, as of the last refresh
   private selected: string | null = null;
@@ -13,7 +13,7 @@ export class Disk {
 
   constructor(machine: () => Machine, project: string) {
     this.machine = machine;
-    this.dir = `${project}/.bubbles`;
+    this.dir = `${project}/.bubble-tracks`;
   }
 
   reset(): void {
@@ -22,7 +22,7 @@ export class Disk {
     this.refresh();
   }
 
-  /** Read .bubbles/ again and open the file that changed last, unless one is pinned. */
+  /** Read .bubble-tracks/ again and open the file that changed last, unless one is pinned. */
   refresh(): void {
     const { fs, path } = this.machine();
     const names = fs.existsSync(this.dir) ? fs.readdirSync(this.dir) : [];

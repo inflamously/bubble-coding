@@ -5,7 +5,7 @@ import { type Ctx, scriptsOf } from '../context';
 import { log, readText, slash, template } from '../io';
 
 /** Also matches blocks from before the plugin was renamed from bubble-planner. */
-const BLOCK = /<!-- bubble-(?:coding|planner):start -->[\s\S]*?<!-- bubble-(?:coding|planner):end -->/;
+const BLOCK = /<!-- bubble-(?:tracks|coding|planner):start -->[\s\S]*?<!-- bubble-(?:tracks|coding|planner):end -->/;
 
 export function agentsMd(ctx: Ctx): void {
   log('\n[agents-md] AGENTS.md (soft gate, any AGENTS.md-aware agent)');

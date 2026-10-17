@@ -1,14 +1,14 @@
 {
-  "name": "bubble-coding",
+  "name": "bubble-tracks",
   "owner": {
     "name": "nflamously"
   },
   "metadata": {
-    "description": "Bubble Coding: Gamified fog-of-war planning on a track of task bubbles."
+    "description": "Bubble Tracks: Gamified fog-of-war planning on a track of task bubbles."
   },
   "plugins": [
     {
-      "name": "bubble-coding",
+      "name": "bubble-tracks",
       "source": "./",
       "description": "Gamified fog-of-war planning on a track of task bubbles.",
       "author": { "name": "nflamously" },

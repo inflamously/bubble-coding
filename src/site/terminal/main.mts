@@ -1,6 +1,6 @@
 // The demo page. It loads the committed CLI and the story, then wires the parts together:
 //   terminal – the screen shell  – runs a command line (bubble-web underneath)
-//   disk     – the .bubbles/ panel  player – plays demo/story.md after an intro
+//   disk     – the .bubble-tracks/ panel  player – plays demo/story.md after an intro
 //   header   – scene track and controls
 import type { Sources } from '../bubble-web/index.mjs';
 import { Disk } from './disk.mjs';

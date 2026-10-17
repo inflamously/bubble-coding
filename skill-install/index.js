@@ -1,5 +1,5 @@
 "use strict";
-// bubble-coding installer — wires the portable skill into each agent.
+// bubble-tracks installer — wires the portable skill into each agent.
 // Arguments live in args, shared I/O in io, and one adapter per agent in agents/.
 Object.defineProperty(exports, "__esModule", { value: true });
 const os = require("node:os");
@@ -19,7 +19,7 @@ function main() {
     if (opts.user && opts.project)
         throw new Error('use either --user or --project, not both');
     const base = opts.user ? os.homedir() : path.resolve(opts.project || process.cwd());
-    (0, io_1.log)(`bubble-coding -> ${opts.user ? 'user' : 'project'}: ${base}${opts.dryRun ? '  (dry run)' : ''}`);
+    (0, io_1.log)(`bubble-tracks -> ${opts.user ? 'user' : 'project'}: ${base}${opts.dryRun ? '  (dry run)' : ''}`);
     const ctx = (0, context_1.createCtx)(opts, base);
     for (const agent of opts.agents)
         ADAPTERS[agent](ctx);

@@ -1,7 +1,7 @@
-<!-- bubble-coding:start -->
-## bubble-coding (fog-of-war planning)
+<!-- bubble-tracks:start -->
+## bubble-tracks (fog-of-war planning)
 
-This repo plans work as linear tracks of task bubbles in `.bubbles/` (one `.json` per track; `.bubbles/current` names the active one).
+This repo plans work as linear tracks of task bubbles in `.bubble-tracks/` (one `.json` per track; `.bubble-tracks/current` names the active one).
 Manage it only through the CLI, never by hand-editing the JSON:
 
     node "{{CLI}}" show | switch <name> | tracks | fork [N] <name> | diverge [N] <name> | init <title>
@@ -22,4 +22,4 @@ Rules:
 - After `done`, stop (⏸): show the track and wait for the human before starting the next bubble.
 - When the human writes `bubble <command>`, run exactly that command through the CLI and show the result.
 - After every change, show the user the rendered track line.
-<!-- bubble-coding:end -->
+<!-- bubble-tracks:end -->

@@ -12,7 +12,7 @@ function repo() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-cli-'));
   const run = (...args) =>
     spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
-  const track = () => JSON.parse(fs.readFileSync(path.join(dir, '.bubbles', 'track.json'), 'utf8'));
+  const track = () => JSON.parse(fs.readFileSync(path.join(dir, '.bubble-tracks', 'track.json'), 'utf8'));
   run('init', 'P');
   for (const t of ['A', 'B', 'C']) run('add', t);
   return { run, track };
@@ -60,8 +60,8 @@ test('multiple tracks: switch creates then resumes, tracks lists, delete guards'
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-multi-'));
   const run = (...args) =>
     spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
-  const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, '.bubbles', `${name}.json`), 'utf8'));
-  const current = () => fs.readFileSync(path.join(dir, '.bubbles', 'current'), 'utf8').trim();
+  const read = (name) => JSON.parse(fs.readFileSync(path.join(dir, '.bubble-tracks', `${name}.json`), 'utf8'));
+  const current = () => fs.readFileSync(path.join(dir, '.bubble-tracks', 'current'), 'utf8').trim();
 
   assert.match(run('show').stderr, /switch <name>/);
   assert.match(run('switch').stderr, /no tracks yet/);
@@ -73,7 +73,7 @@ test('multiple tracks: switch creates then resumes, tracks lists, delete guards'
   assert.deepStrictEqual(read('idea-a'), { title: 'Idea A', bubbles: [{ title: 'first', state: 'todo', id: 1 }], nextId: 2 });
 
   assert.match(run('switch').stdout, /resumed track "idea-b"/); // bare switch: the current track
-  fs.writeFileSync(path.join(dir, '.bubbles', 'current'), 'gone\n');
+  fs.writeFileSync(path.join(dir, '.bubble-tracks', 'current'), 'gone\n');
   assert.match(run('switch', '--dir', dir).stderr, /no tracks yet/); // no current, no default
   run('switch', 'idea-b');
 
@@ -88,9 +88,9 @@ test('multiple tracks: switch creates then resumes, tracks lists, delete guards'
   assert.match(run('delete', 'idea-a', '--force').stderr, /current track/);
   assert.match(run('delete', 'idea-b').stderr, /--force/);
   assert.strictEqual(run('delete', 'idea-b', '--force').status, 0);
-  assert.ok(!fs.existsSync(path.join(dir, '.bubbles', 'idea-b.json')));
+  assert.ok(!fs.existsSync(path.join(dir, '.bubble-tracks', 'idea-b.json')));
 
-  fs.writeFileSync(path.join(dir, '.bubbles', 'current'), 'gone\n');
+  fs.writeFileSync(path.join(dir, '.bubble-tracks', 'current'), 'gone\n');
   assert.match(run('show').stderr, /current track "gone" not found .*idea-a/);
 });
 
@@ -148,8 +148,8 @@ test('fork and diverge from a closed track: the child links back, the closed tra
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-closed-'));
   const run = (...args) =>
     spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
-  const raw = (name) => fs.readFileSync(path.join(dir, '.bubbles', `${name}.json`), 'utf8');
-  const current = () => fs.readFileSync(path.join(dir, '.bubbles', 'current'), 'utf8').trim();
+  const raw = (name) => fs.readFileSync(path.join(dir, '.bubble-tracks', `${name}.json`), 'utf8');
+  const current = () => fs.readFileSync(path.join(dir, '.bubble-tracks', 'current'), 'utf8').trim();
   run('switch', 'old');
   for (const t of ['A', 'B', 'C']) run('add', t);
   run('done');
@@ -173,7 +173,7 @@ test('links skip closed tracks: no title sync either way, no pop into a closed p
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-links-'));
   const run = (...args) =>
     spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
-  const raw = (name) => fs.readFileSync(path.join(dir, '.bubbles', `${name}.json`), 'utf8');
+  const raw = (name) => fs.readFileSync(path.join(dir, '.bubble-tracks', `${name}.json`), 'utf8');
 
   // closed parent: a child forked off it runs on, nothing flows back
   run('switch', 'top');
@@ -208,7 +208,7 @@ test('closing a fork counts as finished: the parent bubble pops, on up the chain
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-closepop-'));
   const run = (...args) =>
     spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
-  const load = (name) => JSON.parse(fs.readFileSync(path.join(dir, '.bubbles', `${name}.json`), 'utf8'));
+  const load = (name) => JSON.parse(fs.readFileSync(path.join(dir, '.bubble-tracks', `${name}.json`), 'utf8'));
 
   // a closed fork pops its parent bubble, and the now finished parent pops its own parent
   run('switch', 'top');
@@ -231,7 +231,7 @@ test('closing a fork counts as finished: the parent bubble pops, on up the chain
   run('fork', '1', 'k3');
   run('switch', 'p3');
   assert.match(run('done').stderr, /waits for its fork k3\.json/); // empty, open fork: still waits
-  fs.writeFileSync(path.join(dir, '.bubbles', 'k3.json'), JSON.stringify({ ...load('k3'), closed: { at: '2026-10-17T00:00:00.000Z' } }));
+  fs.writeFileSync(path.join(dir, '.bubble-tracks', 'k3.json'), JSON.stringify({ ...load('k3'), closed: { at: '2026-10-17T00:00:00.000Z' } }));
   assert.match(run('done').stdout, /popped "Y"/);
 });
 
@@ -239,7 +239,7 @@ test('close cascades top down to every fork, whatever its state; side tracks sta
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-cascade-'));
   const run = (...args) =>
     spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
-  const load = (name) => JSON.parse(fs.readFileSync(path.join(dir, '.bubbles', `${name}.json`), 'utf8'));
+  const load = (name) => JSON.parse(fs.readFileSync(path.join(dir, '.bubble-tracks', `${name}.json`), 'utf8'));
 
   // root #1 -> top; top #1 -> mid -> leaf, top #2 -> done-kid (finished), top #3 -> gone (deleted), top #3 -> side (diverged)
   run('switch', 'root');
@@ -282,7 +282,7 @@ test('close cascades top down to every fork, whatever its state; side tracks sta
   // re-running close on a closed track picks up forks still open (e.g. after a failure), notes the rest
   const mid = load('mid');
   delete mid.closed;
-  fs.writeFileSync(path.join(dir, '.bubbles', 'mid.json'), JSON.stringify(mid));
+  fs.writeFileSync(path.join(dir, '.bubble-tracks', 'mid.json'), JSON.stringify(mid));
   const again = run('close', 'top', '--force');
   assert.strictEqual(again.status, 0, again.stderr);
   assert.match(again.stdout, /track "top" is already closed — closing its open forks/);

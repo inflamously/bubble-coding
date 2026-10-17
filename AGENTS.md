@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Notes for coding agents working on this repo. (`adapters/agents-md.md` is something else: the
-bubble-coding section the installer writes into *users'* AGENTS.md.)
+bubble-tracks section the installer writes into *users'* AGENTS.md.)
 
 ## Layout
 
@@ -38,7 +38,7 @@ bubble-coding section the installer writes into *users'* AGENTS.md.)
 - **No runtime dependencies.** Users run the committed JS with plain Node; `typescript` and
   `@types/node` are dev-only.
 - **LF line endings** (`.gitattributes`), so built output matches on every OS.
-- **Planning lives in `.bubbles/`** (git-ignored). Change it only through the CLI:
+- **Planning lives in `.bubble-tracks/`** (committed; only `current` is git-ignored). Change it only through the CLI:
   `node skills/bubble/scripts/bubble.js <command>`, never by editing the JSON.
 
 ## Commands

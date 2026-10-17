@@ -3,7 +3,7 @@
 export const INTRO = [
   '\x1b[34mS ●──●──◐──○──❓ F\x1b[0m   \x1b[33mPlan only as far as you can see.\x1b[0m',
   '',
-  'bubble-coding keeps a coding agent on one linear track of task bubbles.',
+  'bubble-tracks keeps a coding agent on one linear track of task bubbles.',
   'The agent plans what it can see. Anything unclear stays fog, and only',
   'the human plans fog. After every bubble the agent stops, so you can',
   'move, insert, remove or fork bubbles before the next one starts.',
@@ -14,7 +14,7 @@ export const INTRO = [
   '',
 ];
 
-export const HELP = `bubble <command>   the bubble-coding CLI (try: bubble help, bubble show, bubble tracks)
+export const HELP = `bubble <command>   the bubble-tracks CLI (try: bubble help, bubble show, bubble tracks)
 ls [-a] [path]     list a directory
 cat <file>         print a file
 cd [dir] · pwd     move around

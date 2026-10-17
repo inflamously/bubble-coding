@@ -1,6 +1,6 @@
 # src/site/
 
-The GitHub Pages demo: the real bubble-coding CLI in an emulated terminal, playing `demo/story.md`.
+The GitHub Pages demo: the real bubble-tracks CLI in an emulated terminal, playing `demo/story.md`.
 TypeScript (`.mts`, compiled to ES modules) in three standalone folders, each with its own tsconfig:
 
 | Folder | What it is | May use |

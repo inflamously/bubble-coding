@@ -6,7 +6,7 @@ const path = require("node:path");
 const context_1 = require("../context");
 const io_1 = require("../io");
 /** Also matches blocks from before the plugin was renamed from bubble-planner. */
-const BLOCK = /<!-- bubble-(?:coding|planner):start -->[\s\S]*?<!-- bubble-(?:coding|planner):end -->/;
+const BLOCK = /<!-- bubble-(?:tracks|coding|planner):start -->[\s\S]*?<!-- bubble-(?:tracks|coding|planner):end -->/;
 function agentsMd(ctx) {
     (0, io_1.log)('\n[agents-md] AGENTS.md (soft gate, any AGENTS.md-aware agent)');
     if (ctx.user) {

@@ -1,9 +1,9 @@
 ---
 name: bubble
-description: bubble-coding — iterative, fog-of-war planning on a linear track of task bubbles (S ○──○──❓──○ F) stored in .bubbles/ (one .json per track, switchable). Use when the user runs /bubble or $bubble (e.g. /bubble switch <track> to resume), asks to plan/sketch a task, asks "what's next" or "where are we", marks something done, or when an edit is blocked because the active bubble is fog/unplanned.
+description: bubble-tracks — iterative, fog-of-war planning on a linear track of task bubbles (S ○──○──❓──○ F) stored in .bubble-tracks/ (one .json per track, switchable). Use when the user runs /bubble or $bubble (e.g. /bubble switch <track> to resume), asks to plan/sketch a task, asks "what's next" or "where are we", marks something done, or when an edit is blocked because the active bubble is fog/unplanned.
 ---
 
-# bubble-coding
+# bubble-tracks
 
 A plan is a linear track from **S**tart to **F**inish. Each bubble is a task:
 `●` done · `◐` active · `○` todo · `❓` fog (unplanned — the human plans it).
@@ -14,7 +14,7 @@ So **titles are short names (2–4 words)**, like `Remove nesting` or `Fog-only 
 
 ## The CLI
 
-Every change goes through the CLI. **Don't hand-edit anything in `.bubbles/`.** The CLI lives next to this file:
+Every change goes through the CLI. **Don't hand-edit anything in `.bubble-tracks/`.** The CLI lives next to this file:
 
 ```
 node "<dir containing this SKILL.md>/scripts/bubble.js" <command> [args]
@@ -30,7 +30,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `tracks` | List all tracks, current marked `→` |
 | `close <name> --force` | Finish a track for good, after the human confirms: read-only, no reopen. Also closes all its forks (side tracks stay open) and pops its parent bubble. Without `--force` it refuses and lists every track it would close. |
 | `delete <name> --force` | Delete a track that isn't current, after the human confirms |
-| `init <title>` | Create the default track (`.bubbles/track.json`) |
+| `init <title>` | Create the default track (`.bubble-tracks/track.json`) |
 | `fork [N] <name>` | **Build on** bubble N in a new child track `<name>`, titled after the bubble, and make it current. The bubble keeps its state and gets `fork` (relative path to the child); the child gets `parent` (relative path, the bubble's stable `id`, and its title for display). The bubble waits for its fork. |
 | `diverge [N] <name> [title]` | Go **a different direction** from bubble N in a new side track `<name>` (titled after the bubble unless you give a title), and make it current. The bubble (any state) adds the path to its `sides`; the side track gets `origin`. Nothing waits for it. |
 | `add <title>` · `add ?` | Append a todo (or fog) bubble |
@@ -104,4 +104,4 @@ A **closed** track (`close`) is read-only: every bubble command on it refuses, a
 
 ## Fog gate
 
-Before editing project files, check `show`. If it exits 3, don't edit; go to step 3. Some agents (Claude Code, Codex CLI, Gemini CLI) also enforce this with a hook that blocks edits while the active bubble is fog. Edits under `.bubbles/` are always allowed.
+Before editing project files, check `show`. If it exits 3, don't edit; go to step 3. Some agents (Claude Code, Codex CLI, Gemini CLI) also enforce this with a hook that blocks edits while the active bubble is fog. Edits under `.bubble-tracks/` are always allowed.
