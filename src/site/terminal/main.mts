@@ -12,8 +12,11 @@ import type { Scene } from './story.mjs';
 import { Terminal } from './terminal.mjs';
 import { FRESH_DISK } from './text.mjs';
 
+/** This build's ?v= (see build.mts), so the JSON is as fresh as the page. */
+const VERSION = new URL(import.meta.url).search;
+
 async function json<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+  const res = await fetch(url + VERSION);
   if (!res.ok) throw new Error(`${url}: ${res.status} ${res.statusText}`);
   return res.json() as Promise<T>;
 }

@@ -59,6 +59,12 @@
       "hint": "one line, figlet standard font (text.mts banner()); .banner shrinks via 2cqw on narrow screens instead of wrapping"
     },
     {
+      "title": "Cache busting",
+      "state": "done",
+      "id": 12,
+      "hint": "build.mts stamps ?v=<build hash> on style.css + main.mjs, an import map versions the other modules, main.mjs passes its ?v= to the JSON fetches"
+    },
+    {
       "title": "README embed",
       "state": "todo",
       "id": 4
@@ -70,7 +76,7 @@
       "type": "unknown-unknown"
     }
   ],
-  "nextId": 12,
+  "nextId": 13,
   "handoff": {
     "note": "Fixed a stray 'k' on line 23 of this file (track was unreadable). Next: bubble 6 'Demo script' — not started. Fog 7 and 9 still unclassified: ask the human (N: text or N:kk|ku|uk|uu). Context: project renamed bubble-coding -> bubble-tracks and .bubbles/ -> .bubble-tracks/ (track rename-dir, closed); GitHub repo + Pages URL still say bubble-coding until the human renames the repo. Git: master was reset to no commits (single-commit track's squash), all files untracked — don't commit without asking. v1-release bubble 1 'Framework intro': human wants to skip it, open question move-to-end vs remove.",
     "at": "2026-10-17 22:31 UTC"
