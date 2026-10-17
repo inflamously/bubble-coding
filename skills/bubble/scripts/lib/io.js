@@ -57,7 +57,7 @@ function extractTargetPaths(input, root) {
     }
     return found.map((p) => path.resolve(root, p));
 }
-/** True if `file` is inside `<trackRoot>/.bubbles`. */
+/** True if `file` is inside `<trackRoot>/.bubble-tracks`. */
 function isInsideBubblesDir(file, trackFile) {
     const bubblesDir = path.dirname(trackFile);
     const rel = path.relative(bubblesDir, file);

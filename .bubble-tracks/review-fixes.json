@@ -1,0 +1,39 @@
+{
+  "title": "Review fixes",
+  "bubbles": [
+    {
+      "title": "Drop legacy compat",
+      "state": "done",
+      "id": 1,
+      "hint": "Analyze first: find all legacy-compat code (upgrades older tracks, legacy single-track mode), report it, human confirms before removing."
+    },
+    {
+      "title": "Gate blocks corrupt track",
+      "state": "todo",
+      "id": 2,
+      "hint": "Fog gate exits 2 when the current track exists but won't parse (keep fail-open only for real hook crashes). Message shows the way out: git restore .bubbles/<name>.json, or bubble switch <name>. .bubbles/ edits stay allowed. Docs: the gate is a workflow guardrail, not a security boundary (Bash isn't gated).",
+      "sides": [
+        "rename-dir.json"
+      ]
+    },
+    {
+      "title": "Document what to commit",
+      "state": "todo",
+      "id": 6,
+      "hint": "README: commit .bubbles/*.json (history + git restore as repair), ignore .bubbles/current (per-person pointer)."
+    },
+    {
+      "title": "Guard lost updates",
+      "state": "todo",
+      "id": 3,
+      "hint": "Two agents writing at once can overwrite each other. Atomic writes protect the file, not the read-modify-write edit (needs locking or a version check)."
+    },
+    {
+      "title": "Split tracks.ts switch",
+      "state": "todo",
+      "id": 4,
+      "hint": "Cosmetic: tracks.ts is one big switch — break it up."
+    }
+  ],
+  "nextId": 7
+}

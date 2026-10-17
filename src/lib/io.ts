@@ -60,7 +60,7 @@ export function extractTargetPaths(input: HookInput, root: string): string[] {
   return found.map((p) => path.resolve(root, p));
 }
 
-/** True if `file` is inside `<trackRoot>/.bubbles`. */
+/** True if `file` is inside `<trackRoot>/.bubble-tracks`. */
 export function isInsideBubblesDir(file: string, trackFile: string): boolean {
   const bubblesDir = path.dirname(trackFile);
   const rel = path.relative(bubblesDir, file);

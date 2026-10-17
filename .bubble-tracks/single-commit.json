@@ -1,0 +1,42 @@
+{
+  "title": "Single commit",
+  "bubbles": [
+    {
+      "title": "Structure the code: split the bubble.js god file into modules",
+      "state": "done",
+      "id": 2
+    },
+    {
+      "title": "Node latest LTS",
+      "state": "done",
+      "hint": "engines, README, CI to the current LTS: 24 today, 26 enters LTS late Oct 2026, check before pinning",
+      "id": 3
+    },
+    {
+      "title": "TypeScript build step",
+      "state": "done",
+      "hint": "src/*.ts -> committed JS in skills/bubble/scripts (what hooks run), tsc as devDep only, test fails on build drift",
+      "id": 4
+    },
+    {
+      "title": "Make the repo marketplace-ready",
+      "state": "done",
+      "id": 5
+    },
+    {
+      "title": "Squash everything down to one starting commit (clean history)",
+      "state": "todo",
+      "id": 1,
+      "sides": [
+        "close-track.json"
+      ]
+    },
+    {
+      "title": "Agent cleanup: check for missing AGENTS.md rules and context-bloating content",
+      "state": "todo",
+      "hint": "skipped for now (human: skip agent cleanup), parked after the squash",
+      "id": 6
+    }
+  ],
+  "nextId": 7
+}

@@ -1,7 +1,7 @@
 "use strict";
 // Where tracks live: find, name, load and save them.
-// Layout: .bubbles/<name>.json per track, .bubbles/current names the active one.
-// No `current` file = the default track, .bubbles/track.json (name "track").
+// Layout: .bubble-tracks/<name>.json per track, .bubble-tracks/current names the active one.
+// No `current` file = the default track, .bubble-tracks/track.json (name "track").
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.trackPath = exports.DEFAULT_NAME = exports.TRACK_DIR = void 0;
 exports.findBubblesDir = findBubblesDir;
@@ -14,11 +14,11 @@ exports.findTrack = findTrack;
 exports.saveTrack = saveTrack;
 const fs = require("node:fs");
 const path = require("node:path");
-exports.TRACK_DIR = '.bubbles';
+exports.TRACK_DIR = '.bubble-tracks';
 const CURRENT_FILE = 'current';
 exports.DEFAULT_NAME = 'track';
 const NAME_RE = /^[A-Za-z0-9_-]+$/;
-/** Walk up from `dir` looking for a .bubbles directory. */
+/** Walk up from `dir` looking for a .bubble-tracks directory. */
 function findBubblesDir(dir) {
     let current = path.resolve(dir || '.');
     for (;;) {
@@ -58,7 +58,7 @@ function setCurrent(bubblesDir, name) {
     fs.mkdirSync(bubblesDir, { recursive: true });
     fs.writeFileSync(path.join(bubblesDir, CURRENT_FILE), checkName(name) + '\n', 'utf8');
 }
-/** Track names in a .bubbles dir, sorted. */
+/** Track names in a .bubble-tracks dir, sorted. */
 function listTracks(bubblesDir) {
     try {
         return fs

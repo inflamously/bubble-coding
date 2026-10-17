@@ -1,0 +1,41 @@
+{
+  "title": "Dist layout",
+  "origin": {
+    "track": "command-demo.json",
+    "bubble": 2,
+    "title": "Demo script"
+  },
+  "bubbles": [
+    {
+      "title": "Installer to dist",
+      "state": "done",
+      "id": 1,
+      "hint": "tsconfig.install.json outDir install/ -> dist/install/ (still committed); install.js, build.test, anything resolving paths from __dirname"
+    },
+    {
+      "title": "Site build to dist",
+      "state": "done",
+      "id": 2,
+      "hint": ".site-build/ -> dist/site/ (ignored); build.mts paths, npm run site, .gitignore"
+    },
+    {
+      "title": "Pages to dist",
+      "state": "done",
+      "id": 3,
+      "hint": "_site/ -> dist/pages/ (ignored; CI builds it): build.mts default, pages.yml path, .gitignore, READMEs, AGENTS.md, main.mts message"
+    },
+    {
+      "title": "Installer out of dist",
+      "state": "done",
+      "id": 4,
+      "hint": "dist/ is fully git-ignored now, so the committed installer goes back to install/: tsconfig.install.json, io.ts REPO, install.js, build.test, README, AGENTS.md"
+    },
+    {
+      "title": "Hooks into manifest",
+      "state": "done",
+      "id": 5,
+      "hint": "plugin.json back to .claude-plugin/plugin.json (the only place Claude Code reads it); fog-gate hook inline there; drop hooks/; manifest test checks the hook script exists"
+    }
+  ],
+  "nextId": 6
+}

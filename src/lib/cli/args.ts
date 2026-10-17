@@ -31,7 +31,7 @@ export const HELP = `bubble-coding — the bubble language
   fork [N] <name>               build on bubble N in a child track <name>; the bubble waits for it. Makes it current
   diverge [N] <name> [title]    go a different direction from bubble N in a side track <name> (titled after
                                 the bubble unless given); nothing waits. Makes it current
-  init <title>                  create the default track (.bubbles/track.json)
+  init <title>                  create the default track (.bubble-tracks/track.json)
 
   show                          render the current track + list its bubbles
   add <title>   | add ?         append a todo (or fog) bubble

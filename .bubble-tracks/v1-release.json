@@ -1,0 +1,39 @@
+{
+  "title": "First release",
+  "bubbles": [
+    {
+      "title": "Framework intro",
+      "state": "todo",
+      "id": 1,
+      "hint": "what bubble coding is and why: fog of war, one linear track, human plans the fog, ⏸ after every bubble"
+    },
+    {
+      "title": "README rework",
+      "state": "todo",
+      "id": 2,
+      "hint": "short and easy to scan; animated SVG hero of S ●──◐──❓──○ F with a bubble mascot hopping along the path (GitHub renders SVG animation), ASCII fallback"
+    },
+    {
+      "title": "Marketplace deploy",
+      "state": "todo",
+      "id": 3,
+      "type": "known-unknown",
+      "hint": "own fork track; ku: research release/publish options (tag + GitHub release, official plugin directory, npm), human picks"
+    },
+    {
+      "title": "Benchmark track",
+      "state": "todo",
+      "id": 4,
+      "type": "known-unknown",
+      "hint": "own fork track; ku: research how to measure whether a change made bubbles better or far worse, human picks"
+    },
+    {
+      "title": "Install everywhere",
+      "state": "todo",
+      "id": 5,
+      "type": "known-known",
+      "hint": "own fork track; make the tooling available in every agentic CLI where possible"
+    }
+  ],
+  "nextId": 6
+}

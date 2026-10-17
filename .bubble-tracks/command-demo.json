@@ -1,0 +1,68 @@
+{
+  "title": "Command demo",
+  "origin": {
+    "track": "close-track.json",
+    "bubble": 9,
+    "title": "Tests, help and docs"
+  },
+  "bubbles": [
+    {
+      "title": "Demo story",
+      "state": "done",
+      "id": 1,
+      "hint": "shell opens, prompt entered -> rough track sketched; user classifies/fills fog; fork at one bubble, diverge at another; move two bubbles; remove a useless one; park further ideas as new tracks; handoff on context fill; tracks list; switch to another track (progress list + active bubble); finish that simple track; peek at .bubbles/*.json to show links + state. Written up in demo/story.md"
+    },
+    {
+      "title": "Diverge title",
+      "state": "done",
+      "id": 7,
+      "hint": "diverge [N] <name> [title]: optional title for the side track (default: the bubble's title); help, SKILL.md, README, test; story uses it"
+    },
+    {
+      "title": "Browser CLI build",
+      "state": "done",k
+      "id": 5,
+      "hint": "done: site/bubble-web.js runs the committed CLI JS unchanged (fake fs/path/process); site/build.js packs it verbatim into _site/cli-sources.js (npm run site); test/web.test.js replays every bubble line of demo/story.md on both and diffs output + disk"
+    },
+    {
+      "title": "Pages terminal",
+      "state": "done",
+      "id": 8,
+      "hint": "GitHub Pages static site (docs/ or similar): emulated terminal running the real browser CLI build; plays the story, then lets the visitor type",
+      "sides": [
+        "webgpu-agent.json"
+      ]
+    },
+    {
+      "title": "Site in TypeScript",
+      "state": "done",
+      "id": 9,
+      "hint": "site/ to TS (.mts -> ESM .mjs) in standalone folders: site/bubble-web (CLI in a browser, no DOM types), site/terminal (the page), site/build (assemble _site); one tsconfig each; data as JSON; tests compile with tsc"
+    },
+    {
+      "title": "Demo script",
+      "state": "todo",
+      "id": 2,
+      "hint": "a shell script that plays the story with the real CLI in a throwaway temp repo; the same script feeds the recording and the playground",
+      "sides": [
+        "dist-layout.json"
+      ]
+    },
+    {
+      "title": "???",
+      "state": "fog",
+      "id": 3
+    },
+    {
+      "title": "README embed",
+      "state": "todo",
+      "id": 4
+    },
+    {
+      "title": "???",
+      "state": "fog",
+      "id": 6
+    }
+  ],
+  "nextId": 10
+}
