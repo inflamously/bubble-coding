@@ -81,5 +81,8 @@
   "handoff": {
     "note": "#8-#10 done, uncommitted (src/lib/links.ts, src/lib/cli/{tracks,print,bubbles}.ts, rebuilt JS, test/cli.test.js; 43 tests pass). Decisions: closed track counts as finished (isFinished); close pops the top's own parent; close cascades top down to ALL forks (forkTree), side tracks stay open, per-fork failure keeps going + exit 1, re-run close on a closed track picks up open forks; printTrack(file, track, opts) + linkLabel show the linked bubble's live position. Next: #11 docs only (tests already in), then ask the human to commit.",
     "at": "2026-10-17 10:00 UTC"
+  },
+  "closed": {
+    "at": "2026-10-17T22:28:21.646Z"
   }
 }

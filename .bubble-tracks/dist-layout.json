@@ -37,5 +37,8 @@
       "hint": "plugin.json back to .claude-plugin/plugin.json (the only place Claude Code reads it); fog-gate hook inline there; drop hooks/; manifest test checks the hook script exists"
     }
   ],
-  "nextId": 6
+  "nextId": 6,
+  "closed": {
+    "at": "2026-10-17T22:28:21.716Z"
+  }
 }

@@ -72,5 +72,8 @@
     "note": "Bubbles 1-10 built in one chat: nesting removed; bubble language (insert/remove/move/rename/hint/title/handoff, fog N:M, --force guards); prev‹active›next line, 20-char labels; ANSI colors (status line + TTY only); multi-track (.bubbles/<name>.json + current; legacy track.json = 'track'). 27 tests pass. Open: status line not configured yet (node install.js claude --apply-statusline); no command to rename a track's file; heaviness heuristic is skill-only (a PreCompact hook could nudge). Next: bubble 11 — verify everything live from a fresh chat.",
     "at": "2026-10-15 20:42 UTC"
   },
-  "nextId": 12
+  "nextId": 12,
+  "closed": {
+    "at": "2026-10-17T22:28:21.790Z"
+  }
 }
