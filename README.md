@@ -70,7 +70,10 @@ show                           render + list the bubbles (exit 3 = active bubble
 switch [name] [title]          resume a track, or create it (no name: the current one)
 create <name> [title]          create a new track (refuses if it exists)
 tracks                         list tracks
+close <name> --force           finish a track: read-only for good; closes its forks, pops its parent bubble
 delete <name> --force          delete a track (not the current one)
+fork [N] <name>                build on bubble N in a child track; the bubble waits for it
+diverge [N] <name>             go a different direction from bubble N in a side track; nothing waits
 init <title>                   create the default track (.bubbles/track.json)
 add <title> | add ?            append a todo (or fog) bubble
 insert at N <title> | insert at N ?
@@ -105,10 +108,13 @@ Tracks live in `.bubbles/`, one `.json` file per track, and `.bubbles/current` n
 ```
 bubble switch idea-a       resume idea-a, or create it if it doesn't exist
 bubble tracks              list tracks, current marked →
+bubble close idea-a --force   finish idea-a for good (read-only, no reopen)
 bubble delete idea-b --force
 ```
 
 In a fresh chat, `/bubble switch idea-a` is enough to pick a track back up. Hints and the handoff note carry the context between chats. When a chat gets heavy, the agent offers to save a `bubble handoff <note>` (what's half done, the decisions made, the next step) and tells you to `/clear` and switch back. Every bubble command, the status line and the fog gate act on the current track.
+
+`close` finishes a track without deleting it. A closed track is read-only (every bubble command refuses), shows 🔒 closed instead of `prev ‹ active › next`, and the fog gate ignores it. You can still `fork` or `diverge` from it. A closed fork counts as finished, so closing a fork pops its parent bubble. Closing a track also closes all its forks, top down; side tracks from `diverge` stay open. Without `--force`, `close` refuses and lists every track it would close.
 
 A track file:
 

@@ -28,6 +28,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `switch [name] [title]` | Resume track `<name>`, or create it if it doesn't exist. It becomes current. No name: resume the current track (else the default `track`). |
 | `create <name> [title]` | Create a new track (refuses if it exists) and make it current |
 | `tracks` | List all tracks, current marked `→` |
+| `close <name> --force` | Finish a track for good, after the human confirms: read-only, no reopen. Also closes all its forks (side tracks stay open) and pops its parent bubble. Without `--force` it refuses and lists every track it would close. |
 | `delete <name> --force` | Delete a track that isn't current, after the human confirms |
 | `init <title>` | Create the default track (`.bubbles/track.json`) |
 | `fork [N] <name>` | **Build on** bubble N in a new child track `<name>`, titled after the bubble, and make it current. The bubble keeps its state and gets `fork` (relative path to the child); the child gets `parent` (relative path, the bubble's stable `id`, and its title for display). The bubble waits for its fork. |
@@ -98,6 +99,8 @@ A track stays clean when every bubble on it serves one goal. If the human asks f
 Links use the bubble's stable `id` (from the track's `nextId` counter), so `move`, `insert` and `remove` never break them.
 
 A fork stays in sync with its bubble. `title` on the fork renames the bubble, and `rename` on the bubble retitles the fork. The bubble can't be popped until its fork is finished (it has at least one bubble and all are done). When the fork's last bubble is popped, the parent bubble pops too, and so on up the chain. A side track from `diverge` never syncs.
+
+A **closed** track (`close`) is read-only: every bubble command on it refuses, and its line shows 🔒 closed. To keep working, `fork`, `diverge` or `switch`. A closed fork counts as finished, so closing it pops its parent bubble; closing a track closes all its forks too. A closed parent is skipped: its child runs on, but pops and title syncs never reach it.
 
 ## Fog gate
 

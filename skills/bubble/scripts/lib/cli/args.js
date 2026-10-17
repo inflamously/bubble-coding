@@ -11,7 +11,8 @@ exports.HELP = `Bubble Planner — the bubble language
   switch [name] [title]         resume track <name>, or create it; no name = the current (else default) track
   create <name> [title]         create a new track (refuses if it exists) and make it current
   tracks                        list all tracks, current marked →
-  close <name> --force          finish and archive a track: read-only for good, no reopen
+  close <name> --force          finish and archive a track: read-only for good, no reopen. Also closes
+                                all its forks (side tracks stay open) and pops its parent bubble
   delete <name> --force         delete a track (not the current one)
   fork [N] <name>               build on bubble N in a child track <name>; the bubble waits for it. Makes it current
   diverge [N] <name>            go a different direction from bubble N in a side track <name>; nothing waits. Makes it current
