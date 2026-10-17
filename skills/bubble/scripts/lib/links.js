@@ -11,8 +11,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const store_1 = require("./store");
 const linked = (fromFile, rel) => path.resolve(path.dirname(fromFile), rel);
-/** A track is finished when it has bubbles and all are done (an empty, unsketched track isn't). */
-const isFinished = (track) => track.bubbles.length > 0 && track.bubbles.every((b) => b.state === 'done');
+/** A track is finished when it's closed, or has bubbles and all are done (an empty, unsketched track isn't). */
+const isFinished = (track) => !!track.closed || (track.bubbles.length > 0 && track.bubbles.every((b) => b.state === 'done'));
 exports.isFinished = isFinished;
 /** Throw if `bubble` has a fork that isn't finished yet; a missing child file needs `force`. */
 function checkForkFinished(file, bubble, { force = false } = {}) {
@@ -68,7 +68,7 @@ function syncForkTitle(file, bubble) {
     (0, store_1.saveTrack)(childFile, child);
     return `fork ${bubble.fork} renamed too`;
 }
-/** Child finished -> pop its parent bubble, and so on up the chain. Returns one message per popped parent. */
+/** Child finished (or closed) -> pop its parent bubble, and so on up the chain. Returns one message per popped parent. */
 function popFinishedParents(childFile, child) {
     const msgs = [];
     for (let file = childFile, track = child; (0, exports.isFinished)(track);) {

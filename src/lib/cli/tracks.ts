@@ -3,6 +3,7 @@
 import fs = require('node:fs');
 import path = require('node:path');
 import T = require('../track');
+import links = require('../links');
 import { isAddr, type Ctx } from './args';
 import { printTrack } from './print';
 
@@ -102,6 +103,8 @@ export function runTrackCommand(cmd: string, args: string[], { dir, opts, render
       track.closed = { at: new Date().toISOString() };
       T.saveTrack(file, track);
       console.log(`closed track "${name}" — read-only from now on; fork, diverge or switch to keep working`);
+      // A closed fork counts as finished, so its parent bubble pops (and on up the chain).
+      for (const msg of links.popFinishedParents(file, track)) console.log(msg);
       console.log('');
       return printTrack(track, renderOpts);
     }

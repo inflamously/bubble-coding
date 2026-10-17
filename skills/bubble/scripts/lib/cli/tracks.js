@@ -5,6 +5,7 @@ exports.runTrackCommand = runTrackCommand;
 const fs = require("node:fs");
 const path = require("node:path");
 const T = require("../track");
+const links = require("../links");
 const args_1 = require("./args");
 const print_1 = require("./print");
 /** Run a track-level command; returns an exit code, or undefined if `cmd` isn't one. */
@@ -113,6 +114,9 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
             track.closed = { at: new Date().toISOString() };
             T.saveTrack(file, track);
             console.log(`closed track "${name}" — read-only from now on; fork, diverge or switch to keep working`);
+            // A closed fork counts as finished, so its parent bubble pops (and on up the chain).
+            for (const msg of links.popFinishedParents(file, track))
+                console.log(msg);
             console.log('');
             return (0, print_1.printTrack)(track, renderOpts);
         }

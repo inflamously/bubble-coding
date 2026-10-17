@@ -8,8 +8,9 @@ import type { Bubble, Track } from './model';
 
 const linked = (fromFile: string, rel: string) => path.resolve(path.dirname(fromFile), rel);
 
-/** A track is finished when it has bubbles and all are done (an empty, unsketched track isn't). */
-export const isFinished = (track: Track) => track.bubbles.length > 0 && track.bubbles.every((b) => b.state === 'done');
+/** A track is finished when it's closed, or has bubbles and all are done (an empty, unsketched track isn't). */
+export const isFinished = (track: Track) =>
+  !!track.closed || (track.bubbles.length > 0 && track.bubbles.every((b) => b.state === 'done'));
 
 /** Throw if `bubble` has a fork that isn't finished yet; a missing child file needs `force`. */
 export function checkForkFinished(file: string, bubble: Bubble, { force = false }: { force?: boolean } = {}): void {
@@ -59,7 +60,7 @@ export function syncForkTitle(file: string, bubble: Bubble): string {
   return `fork ${bubble.fork} renamed too`;
 }
 
-/** Child finished -> pop its parent bubble, and so on up the chain. Returns one message per popped parent. */
+/** Child finished (or closed) -> pop its parent bubble, and so on up the chain. Returns one message per popped parent. */
 export function popFinishedParents(childFile: string, child: Track): string[] {
   const msgs: string[] = [];
   for (let file = childFile, track = child; isFinished(track); ) {

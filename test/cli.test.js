@@ -223,6 +223,43 @@ test('links skip closed tracks: no title sync either way, no pop into a closed p
   assert.strictEqual(raw('k2'), k2);
 });
 
+test('closing a fork counts as finished: the parent bubble pops, on up the chain; done stops waiting', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-closepop-'));
+  const run = (...args) =>
+    spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
+  const load = (name) => JSON.parse(fs.readFileSync(path.join(dir, '.bubbles', `${name}.json`), 'utf8'));
+
+  // a closed fork pops its parent bubble, and the now finished parent pops its own parent
+  run('switch', 'top');
+  run('add', 'A');
+  run('add', 'B');
+  run('fork', '1', 'mid');
+  run('add', 'm');
+  run('fork', '1', 'leaf');
+  run('add', 'unfinished');
+  const r = run('close', 'leaf', '--force');
+  assert.strictEqual(r.status, 0);
+  assert.match(r.stdout, /fork finished — popped "m" in mid\.json/);
+  assert.match(r.stdout, /fork finished — popped "A" in top\.json/);
+  assert.strictEqual(load('leaf').bubbles[0].state, 'todo'); // open bubbles keep their state
+  assert.deepStrictEqual(load('top').bubbles.map((b) => b.state), ['done', 'todo']);
+
+  // done on the parent no longer waits for a closed fork (here: one closed while its parent was closed too)
+  run('switch', 'p2');
+  run('add', 'X');
+  run('fork', '1', 'k2');
+  run('close', 'p2', '--force');
+  run('close', 'k2', '--force');
+  assert.strictEqual(load('p2').bubbles[0].state, 'todo'); // a closed parent is still skipped
+  run('switch', 'p3');
+  run('add', 'Y');
+  run('fork', '1', 'k3');
+  run('switch', 'p3');
+  assert.match(run('done').stderr, /waits for its fork k3\.json/); // empty, open fork: still waits
+  fs.writeFileSync(path.join(dir, '.bubbles', 'k3.json'), JSON.stringify({ ...load('k3'), closed: { at: '2026-10-17T00:00:00.000Z' } }));
+  assert.match(run('done').stdout, /popped "Y"/);
+});
+
 test('legacy track.json is the track named "track"', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-legacy-'));
   fs.mkdirSync(path.join(dir, '.bubbles'));
