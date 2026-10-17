@@ -86,6 +86,7 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
 
    First save what only this chat knows: `handoff <note>` (what's half done, the decisions made and why, gotchas, and the next concrete step), plus `hint`s on the bubbles ahead. Keep the note to a few lines. Then tell the human: *"Context is getting heavy. Run `/clear`, then `/bubble switch <name>`."* The CLI prints that exact line, track name included. Don't push it: if they want to keep going, keep going.
 6. **Show progress.** After every change, show the user the rendered line the CLI prints. Most agents have no status line, so this is how they see the track.
+   When the human asks for a list or overview (`list`, "list tracks", "where are we"), run `tracks` (or `show` for one track) and paste its output **unchanged in a code block**: every line, aligned as printed, nothing summarized or reworded. Then add at most a few short bullets on what stands out (current track, broken or finished tracks).
 
 ## Fork or diverge: keep each track to one domain
 
