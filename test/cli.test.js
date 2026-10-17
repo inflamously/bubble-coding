@@ -352,6 +352,13 @@ test('fork: child track links to the parent bubble by relative path and becomes 
   run('remove', '3');
   run('add', 'D');
   assert.deepStrictEqual(track().bubbles.map((b) => b.id), [2, 1, 4]);
+  // the label shows where the bubble is now, and falls back to its title once it's gone
+  run('switch', 'b-sub');
+  assert.match(run('show').stdout, /fork of #1 "B" in track\.json/);
+  run('switch', 'track');
+  run('remove', '1');
+  run('switch', 'b-sub');
+  assert.match(run('show').stdout, /fork of "B" in track\.json/);
 });
 
 test('diverge: side track links back by origin; the bubble keeps any state and can have several', () => {
@@ -366,6 +373,9 @@ test('diverge: side track links back by origin; the bubble keeps any state and c
   run('switch', 'track');
   assert.deepStrictEqual(track().bubbles[0], { title: 'A', state: 'done', id: 1, sides: ['side-a.json', 'side-b.json'] });
   assert.match(run('show').stdout, /A ↗ side-a\.json ↗ side-b\.json/);
+  run('move', '1', 'to', '3');
+  run('rename', '3', 'A2');
+  assert.match(run('switch', 'side-a').stdout, /↗ diverged from #3 "A2" in track\.json/);
 });
 
 test('fork links: the parent bubble waits for its fork; titles and completion flow back', () => {

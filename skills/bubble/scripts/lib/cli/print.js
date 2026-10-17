@@ -3,14 +3,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.printTrack = printTrack;
 const T = require("../track");
-/** Print the track; returns 3 when the active bubble is fog (the human has to plan it), else 0. */
-function printTrack(track, opts) {
+const links = require("../links");
+/** Print the track saved at `file`; returns 3 when the active bubble is fog (the human has to plan it), else 0. */
+function printTrack(file, track, opts) {
     console.log(T.render(track, opts));
     const { fork, side } = T.SYMBOLS.unicode;
     if (track.parent)
-        console.log(`${fork} fork of #${track.parent.bubble} "${track.parent.title}" in ${track.parent.track}`);
+        console.log(`${fork} fork of ${links.linkLabel(file, track.parent)} in ${track.parent.track}`);
     if (track.origin)
-        console.log(`${side} diverged from #${track.origin.bubble} "${track.origin.title}" in ${track.origin.track}`);
+        console.log(`${side} diverged from ${links.linkLabel(file, track.origin)} in ${track.origin.track}`);
     console.log('');
     console.log(T.list(track, opts));
     if (track.closed) {

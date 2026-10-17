@@ -19,7 +19,7 @@ export function runTrackCommand(cmd: string, args: string[], { dir, opts, render
     T.setCurrent(bubblesDir, name);
     console.log(`created track "${name}" (${file})`);
     console.log('');
-    printTrack(track, renderOpts);
+    printTrack(file, track, renderOpts);
     return 0;
   };
 
@@ -48,7 +48,7 @@ export function runTrackCommand(cmd: string, args: string[], { dir, opts, render
       T.setCurrent(bubblesDir, name);
       console.log(`resumed track "${name}"`);
       console.log('');
-      return printTrack(track, renderOpts);
+      return printTrack(file, track, renderOpts);
     }
     case 'tracks': {
       const names = T.listTracks(bubblesDir);
@@ -91,7 +91,7 @@ export function runTrackCommand(cmd: string, args: string[], { dir, opts, render
       const from = found.track.closed ? ` of closed track "${found.name}"` : '';
       console.log(`${verb} "${bubble.title}"${from} into track "${name}" — a fresh track: ask the human what to do, sketch it, classify all fog`);
       console.log('');
-      return printTrack(child, renderOpts);
+      return printTrack(childFile, child, renderOpts);
     }
     case 'close': {
       // Closing cascades top down to every fork under the track, whatever its state; side tracks stay open.
@@ -134,7 +134,7 @@ export function runTrackCommand(cmd: string, args: string[], { dir, opts, render
         }
       }
       console.log('');
-      printTrack(track, renderOpts);
+      printTrack(file, track, renderOpts);
       return failed ? 1 : 0;
     }
     case 'delete': {

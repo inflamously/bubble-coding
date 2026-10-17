@@ -4,6 +4,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isFinished = void 0;
 exports.checkForkFinished = checkForkFinished;
+exports.linkLabel = linkLabel;
 exports.syncTitle = syncTitle;
 exports.syncForkTitle = syncForkTitle;
 exports.popFinishedParents = popFinishedParents;
@@ -28,6 +29,19 @@ function checkForkFinished(file, bubble, { force = false } = {}) {
     if (!(0, exports.isFinished)((0, store_1.loadTrack)(childFile))) {
         throw new Error(`"${bubble.title}" waits for its fork ${bubble.fork} — finish that track first (switch to it)`);
     }
+}
+/** `#<position> "<title>"` of the bubble a link points to, as it is now; just the stored title once the track or bubble is gone. */
+function linkLabel(fromFile, link) {
+    try {
+        const track = (0, store_1.loadTrack)(linked(fromFile, link.track));
+        const i = track.bubbles.findIndex((b) => b.id === link.bubble);
+        if (i !== -1)
+            return `#${i + 1} "${track.bubbles[i].title}"`;
+    }
+    catch {
+        /* missing or unreadable: fall back to the title */
+    }
+    return `"${link.title}"`;
 }
 /** Load the parent track and the bubble a child was forked from, or null if the link is broken or the parent is closed. */
 function parentOf(childFile, child) {

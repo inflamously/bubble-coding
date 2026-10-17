@@ -1,13 +1,14 @@
 // What `show` and every mutation print: the track line, the listing, the handoff note or closed line, the fog warning.
 
 import T = require('../track');
+import links = require('../links');
 
-/** Print the track; returns 3 when the active bubble is fog (the human has to plan it), else 0. */
-export function printTrack(track: T.Track, opts?: T.RenderOpts): number {
+/** Print the track saved at `file`; returns 3 when the active bubble is fog (the human has to plan it), else 0. */
+export function printTrack(file: string, track: T.Track, opts?: T.RenderOpts): number {
   console.log(T.render(track, opts));
   const { fork, side } = T.SYMBOLS.unicode;
-  if (track.parent) console.log(`${fork} fork of #${track.parent.bubble} "${track.parent.title}" in ${track.parent.track}`);
-  if (track.origin) console.log(`${side} diverged from #${track.origin.bubble} "${track.origin.title}" in ${track.origin.track}`);
+  if (track.parent) console.log(`${fork} fork of ${links.linkLabel(file, track.parent)} in ${track.parent.track}`);
+  if (track.origin) console.log(`${side} diverged from ${links.linkLabel(file, track.origin)} in ${track.origin.track}`);
   console.log('');
   console.log(T.list(track, opts));
   if (track.closed) {

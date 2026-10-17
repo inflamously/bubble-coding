@@ -27,7 +27,7 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
   switch (cmd) {
     case 'show':
     case 'status':
-      return printTrack(track, renderOpts);
+      return printTrack(file, track, renderOpts);
     case 'add': {
       const fog = opts.fog || (args.length === 1 && args[0] === '?');
       msg = T.add(track, fog && args[0] === '?' ? undefined : args.join(' '), { fog, at: opts.at });
@@ -105,7 +105,7 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
   const linked = after ? after() : '';
   console.log(linked ? `${msg}\n${linked}` : msg);
   console.log('');
-  printTrack(track, renderOpts);
+  printTrack(file, track, renderOpts);
   if (stop && T.activeBubble(track)) {
     console.log('');
     console.log(STOP);
