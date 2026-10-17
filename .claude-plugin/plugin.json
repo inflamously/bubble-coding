@@ -1,0 +1,31 @@
+{
+  "name": "bubble-coding",
+  "version": "0.1.0",
+  "description": "Gamified fog-of-war planning on a track of task bubbles in the status line, a /bubble skill, and a hook that stops edits while the active bubble is unplanned fog.",
+  "author": {
+    "name": "nflamously"
+  },
+  "homepage": "https://github.com/inflamously/bubble-coding",
+  "repository": "https://github.com/inflamously/bubble-coding",
+  "license": "MIT",
+  "keywords": [
+    "planning",
+    "statusline",
+    "hooks",
+    "skills"
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/bubble/scripts/fog-gate.js\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

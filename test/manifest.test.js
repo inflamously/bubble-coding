@@ -10,7 +10,7 @@ const read = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8'));
 
 test('package.json, plugin.json and marketplace.json agree', () => {
   const pkg = read('package.json');
-  const plugin = read('.claude-plugin/bubble-coding/plugin.json');
+  const plugin = read('.claude-plugin/plugin.json');
   const market = read('.claude-plugin/marketplace.json');
   const entry = market.plugins.find((p) => p.name === plugin.name);
   assert.ok(entry, `marketplace.json lists no plugin named "${plugin.name}"`);
@@ -20,4 +20,14 @@ test('package.json, plugin.json and marketplace.json agree', () => {
   assert.strictEqual(entry.license, pkg.license);
   assert.strictEqual(entry.repository, plugin.repository);
   assert.ok(fs.existsSync(path.join(ROOT, 'LICENSE')), 'LICENSE file missing');
+});
+
+test('plugin.json: the fog-gate hook runs a script that exists', () => {
+  // Claude Code reads the manifest only at .claude-plugin/plugin.json under the plugin root.
+  const plugin = read('.claude-plugin/plugin.json');
+  const commands = (plugin.hooks?.PreToolUse || []).flatMap((group) => group.hooks.map((h) => h.command));
+  const gate = commands.find((c) => c.includes('fog-gate.js'));
+  assert.ok(gate, 'plugin.json has no PreToolUse fog-gate hook');
+  const script = /\$\{CLAUDE_PLUGIN_ROOT\}\/([^"]+)/.exec(gate);
+  assert.ok(script && fs.existsSync(path.join(ROOT, script[1])), `the hook runs a missing script: ${gate}`);
 });

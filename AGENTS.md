@@ -14,7 +14,7 @@ bubble-coding section the installer writes into *users'* AGENTS.md.)
 | `install/` | the installer, built | `src/install/` | yes |
 | `dist/site/` | the demo, compiled | `src/site/` | no |
 | `dist/pages/` | the demo, assembled for Pages (CI builds it on every deploy) | `dist/site/` + `demo/story.md` + the CLI | no |
-| `hooks/hooks.json`, `.claude-plugin/` | Claude Code plugin wiring | — | yes |
+| `.claude-plugin/` | Claude Code plugin: `plugin.json` (manifest + the fog-gate hook), `marketplace.json` | — | yes |
 | `adapters/` | templates the installer fills in for other agents | — | yes |
 | `demo/story.md` | the demo story, one source for the page and its test | — | yes |
 | `install.js` | `node install.js …` entry, loads `install/` | — | yes |
