@@ -82,6 +82,10 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
                 throw new Error(`invalid ${found.file}: ${found.error}`);
             const addr = (0, args_1.isAddr)(args[0]) ? args.shift() : undefined;
             const name = T.checkName(args.shift());
+            // A side track can have its own title; a fork's title follows its bubble.
+            const title = args.join(' ').trim();
+            if (title && cmd === 'fork')
+                throw new Error(`fork takes no title — the fork is titled after its bubble and stays in sync (diverge takes one)`);
             const childFile = T.trackPath(bubblesDir, name);
             if (fs.existsSync(childFile))
                 throw new Error(`track "${name}" already exists — pick another name`);
@@ -89,7 +93,7 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
             const rel = (from, to) => path.relative(path.dirname(from), to).split(path.sep).join('/');
             const bubble = (cmd === 'fork' ? T.markFork : T.markDiverge)(found.track, addr, rel(found.file, childFile));
             const link = { track: rel(childFile, found.file), bubble: bubble.id, title: bubble.title };
-            const child = { title: bubble.title, [cmd === 'fork' ? 'parent' : 'origin']: link, bubbles: [] };
+            const child = { title: title || bubble.title, [cmd === 'fork' ? 'parent' : 'origin']: link, bubbles: [] };
             T.saveTrack(childFile, child);
             // A closed track stays untouched: the child links back to it, but it never learns about the child.
             if (!found.track.closed)

@@ -73,7 +73,7 @@ tracks                         list tracks
 close <name> --force           finish a track: read-only for good; closes its forks, pops its parent bubble
 delete <name> --force          delete a track (not the current one)
 fork [N] <name>                build on bubble N in a child track; the bubble waits for it
-diverge [N] <name>             go a different direction from bubble N in a side track; nothing waits
+diverge [N] <name> [title]     go a different direction from bubble N in a side track; nothing waits
 init <title>                   create the default track (.bubbles/track.json)
 add <title> | add ?            append a todo (or fog) bubble
 insert at N <title> | insert at N ?

@@ -15,7 +15,8 @@ exports.HELP = `Bubble Planner — the bubble language
                                 all its forks (side tracks stay open) and pops its parent bubble
   delete <name> --force         delete a track (not the current one)
   fork [N] <name>               build on bubble N in a child track <name>; the bubble waits for it. Makes it current
-  diverge [N] <name>            go a different direction from bubble N in a side track <name>; nothing waits. Makes it current
+  diverge [N] <name> [title]    go a different direction from bubble N in a side track <name> (titled after
+                                the bubble unless given); nothing waits. Makes it current
   init <title>                  create the default track (.bubbles/track.json)
 
   show                          render the current track + list its bubbles

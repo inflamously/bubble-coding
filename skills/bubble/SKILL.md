@@ -32,7 +32,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `delete <name> --force` | Delete a track that isn't current, after the human confirms |
 | `init <title>` | Create the default track (`.bubbles/track.json`) |
 | `fork [N] <name>` | **Build on** bubble N in a new child track `<name>`, titled after the bubble, and make it current. The bubble keeps its state and gets `fork` (relative path to the child); the child gets `parent` (relative path, the bubble's stable `id`, and its title for display). The bubble waits for its fork. |
-| `diverge [N] <name>` | Go **a different direction** from bubble N in a new side track `<name>`, and make it current. The bubble (any state) adds the path to its `sides`; the side track gets `origin`. Nothing waits for it. |
+| `diverge [N] <name> [title]` | Go **a different direction** from bubble N in a new side track `<name>` (titled after the bubble unless you give a title), and make it current. The bubble (any state) adds the path to its `sides`; the side track gets `origin`. Nothing waits for it. |
 | `add <title>` · `add ?` | Append a todo (or fog) bubble |
 | `insert at N <title>` · `insert at N ?` | Insert a todo (or fog) bubble at position N |
 | `remove N` · `remove N:M` | Delete a bubble or a range |

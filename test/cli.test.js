@@ -378,6 +378,16 @@ test('diverge: side track links back by origin; the bubble keeps any state and c
   assert.match(run('switch', 'side-a').stdout, /↗ diverged from #3 "A2" in track\.json/);
 });
 
+test('diverge takes an optional title; fork refuses one', () => {
+  const { run } = repo();
+  assert.match(run('diverge', '1', 'side', 'Web', 'UI').stdout, /^Web UI {3}S F/m);
+  assert.match(run('tracks').stdout, /side +Web UI/);
+  run('switch', 'track');
+  const fork = run('fork', '1', 'sub', 'Other');
+  assert.strictEqual(fork.status, 1);
+  assert.match(fork.stderr, /fork takes no title/);
+});
+
 test('fork links: the parent bubble waits for its fork; titles and completion flow back', () => {
   const { run, track } = repo();
   run('fork', '1', 'a-sub');
