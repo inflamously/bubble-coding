@@ -14,7 +14,8 @@
   },
   "scripts": {
     "build": "tsc -p . && tsc -p tsconfig.install.json",
-    "test": "node --test"
+    "test": "node --test",
+    "site": "node site/build.js"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
