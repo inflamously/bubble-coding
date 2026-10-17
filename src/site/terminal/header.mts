@@ -13,6 +13,7 @@ export interface PlayerState {
 export interface HeaderActions {
   toggle(): void;
   step(): void;
+  back(): void;
   skip(): void;
   restart(): void;
   toggleSpeed(): void;
@@ -32,7 +33,11 @@ export class Header {
       b.setAttribute('aria-label', `Play from scene ${si + 1}: ${scene.title}`);
       this.track.append(el('li', '', b));
     });
+    // The stage fills the window below the bar, whose height changes as its contents wrap.
+    const bar = $('topbar');
+    new ResizeObserver(() => document.documentElement.style.setProperty('--topbar-h', `${bar.offsetHeight}px`)).observe(bar);
     $('play').addEventListener('click', () => actions.toggle());
+    $('back').addEventListener('click', () => actions.back());
     $('step').addEventListener('click', () => actions.step());
     $('skip').addEventListener('click', () => actions.skip());
     $('restart').addEventListener('click', () => actions.restart());
@@ -54,6 +59,7 @@ export class Header {
   update(state: PlayerState): void {
     $('play').textContent = state.playing ? 'Pause' : state.atEnd ? 'Replay' : state.started ? 'Resume' : 'Play';
     $('speed').textContent = `${state.speed}×`;
+    $<HTMLButtonElement>('back').disabled = !state.started;
     $<HTMLButtonElement>('step').disabled = state.atEnd;
     $<HTMLButtonElement>('skip').disabled = state.atEnd;
   }

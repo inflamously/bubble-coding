@@ -35,5 +35,9 @@
       "hint": "Cosmetic: tracks.ts is one big switch — break it up."
     }
   ],
-  "nextId": 7
+  "nextId": 7,
+  "handoff": {
+    "note": "Bubble 1 done (legacy ensureIds + legacy tests removed). Next: bubble 2 'Gate blocks corrupt track' — decided: fog gate exits 2 when the current track exists but won't parse; keep fail-open only for real hook crashes; message points to git restore .bubble-tracks/<name>.json or bubble switch <name>; .bubble-tracks/ edits stay allowed. Repro: put a stray char in a track json, make it current (switch refuses corrupt tracks, so write .bubble-tracks/current), run fog-gate.js -> exits 0 today. Gate is a guardrail, not security: Bash isn't gated (plugin.json matcher Edit|Write|MultiEdit|NotebookEdit). Bubble 3: tracks are committed now, only .bubble-tracks/current is git-ignored (already in .gitignore + AGENTS.md; README still needs it). Sandbox note: node_modules is the macOS install, so npm run build/test fail on linux; use a scratch typescript@7.0.2 install for tsc.",
+    "at": "2026-10-17 22:31 UTC"
+  }
 }

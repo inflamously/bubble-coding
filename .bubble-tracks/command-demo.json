@@ -20,7 +20,7 @@
     },
     {
       "title": "Browser CLI build",
-      "state": "done",k
+      "state": "done",
       "id": 5,
       "hint": "done: site/bubble-web.js runs the committed CLI JS unchanged (fake fs/path/process); site/build.js packs it verbatim into _site/cli-sources.js (npm run site); test/web.test.js replays every bubble line of demo/story.md on both and diffs output + disk"
     },
@@ -40,18 +40,16 @@
       "hint": "site/ to TS (.mts -> ESM .mjs) in standalone folders: site/bubble-web (CLI in a browser, no DOM types), site/terminal (the page), site/build (assemble _site); one tsconfig each; data as JSON; tests compile with tsc"
     },
     {
-      "title": "Demo script",
-      "state": "todo",
-      "id": 2,
-      "hint": "a shell script that plays the story with the real CLI in a throwaway temp repo; the same script feeds the recording and the playground",
-      "sides": [
-        "dist-layout.json"
-      ]
+      "title": "Site style fixes",
+      "state": "done",
+      "id": 10,
+      "hint": "header: the 'prev' step isn't in line with the rest; terminal overflows the window: cap at viewport height, page still scrolls to the footer; right sidebar matches terminal height"
     },
     {
       "title": "???",
       "state": "fog",
-      "id": 3
+      "id": 3,
+      "type": "unknown-unknown"
     },
     {
       "title": "README embed",
@@ -61,8 +59,13 @@
     {
       "title": "???",
       "state": "fog",
-      "id": 6
+      "id": 6,
+      "type": "unknown-unknown"
     }
   ],
-  "nextId": 10
+  "nextId": 11,
+  "handoff": {
+    "note": "Fixed a stray 'k' on line 23 of this file (track was unreadable). Next: bubble 6 'Demo script' — not started. Fog 7 and 9 still unclassified: ask the human (N: text or N:kk|ku|uk|uu). Context: project renamed bubble-coding -> bubble-tracks and .bubbles/ -> .bubble-tracks/ (track rename-dir, closed); GitHub repo + Pages URL still say bubble-coding until the human renames the repo. Git: master was reset to no commits (single-commit track's squash), all files untracked — don't commit without asking. v1-release bubble 1 'Framework intro': human wants to skip it, open question move-to-end vs remove.",
+    "at": "2026-10-17 22:31 UTC"
+  }
 }

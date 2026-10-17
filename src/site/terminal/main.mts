@@ -42,6 +42,7 @@ const disk = new Disk(() => shell.machine, PROJECT);
 const header = new Header(story, {
   toggle: () => player.toggle(),
   step: () => player.step(),
+  back: () => player.back(),
   skip: () => player.skip(),
   restart: () => player.jump(0),
   toggleSpeed: () => player.toggleSpeed(),

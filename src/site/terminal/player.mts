@@ -28,7 +28,7 @@ const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 /**
  * Plays the story into the terminal. Every pause or jump starts a new run; a beat that was being
  * played as part of an older run stops where it is, and plays again from the start on resume.
- * Step, skip and jump show beats at once, without the typing and the pauses.
+ * Step, back, skip and jump show beats at once, without the typing and the pauses.
  */
 export class Player {
   playing = false;
@@ -115,6 +115,18 @@ export class Player {
     while (!this.atEnd && this.beats[this.pos - 1].kind === 'scene');
     if (this.atEnd) this.finish();
     else this.header.update(this.state);
+  }
+
+  /** Undo the last step: start over on a fresh disk and show every beat before it at once. */
+  back(): void {
+    this.pause();
+    let target = Math.max(0, this.pos - 1);
+    while (target > 0 && this.beats[target - 1].kind === 'scene') target--;
+    this.shell.boot();
+    this.pos = 0;
+    while (this.pos < target) this.show(this.beats[this.pos++]);
+    this.header.show(target > 0 ? this.beats[target - 1].si : -1);
+    this.header.update(this.state);
   }
 
   skip(): void {
