@@ -1,0 +1,20 @@
+// Following a link: where a relative link path points, and the parent bubble a fork came from.
+
+import fs = require('node:fs');
+import path = require('node:path');
+import { loadTrack } from '../store';
+import type { Bubble, Track } from '../model';
+
+/** The file a link path points to; link paths are relative to the linking track file. */
+export const linked = (fromFile: string, rel: string) => path.resolve(path.dirname(fromFile), rel);
+
+/** Load the parent track and the bubble a child was forked from, or null if the link is broken or the parent is closed. */
+export function parentOf(childFile: string, child: Track): { file: string; track: Track; bubble: Bubble } | null {
+  if (!child.parent) return null;
+  const file = linked(childFile, child.parent.track);
+  if (!fs.existsSync(file)) return null;
+  const track = loadTrack(file);
+  if (track.closed) return null; // a closed parent is read-only: the child runs on, nothing flows back
+  const bubble = track.bubbles.find((b) => b.id === child.parent!.bubble);
+  return bubble ? { file, track, bubble } : null;
+}

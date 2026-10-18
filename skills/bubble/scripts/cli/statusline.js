@@ -3,10 +3,10 @@
 // settings.json: { "statusLine": { "type": "command", "command": "node \"<abs>/statusline.js\"" } }
 Object.defineProperty(exports, "__esModule", { value: true });
 const lib = require("../lib");
-const io_1 = require("../lib/io");
+const hooks_1 = require("../lib/hooks");
 async function main() {
-    const input = await (0, io_1.readStdinJson)();
-    const found = lib.findTrack((0, io_1.resolveRoot)(input));
+    const input = await (0, hooks_1.readStdinJson)();
+    const found = lib.findTrack((0, hooks_1.resolveRoot)(input));
     if (!found)
         return '';
     if (!found.track)

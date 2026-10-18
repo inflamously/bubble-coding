@@ -12,10 +12,10 @@ src/
 │   ├── index.ts     ← one import that re-exports store/model/render/ops
 │   ├── model.ts     ← types: Track, Bubble, states, addressing (N, N:M)
 │   ├── store.ts     ← find / load / save .bubble-tracks/*.json
-│   ├── render.ts    ← draws the track line and the numbered list
+│   ├── render/      ← draws the track line (line.ts) and the numbered list (list.ts)
 │   ├── ops/         ← the changes, one file each: add, move, fog, fill, done…
-│   ├── links.ts     ← fork/diverge links between tracks
-│   ├── io.ts        ← hook helpers: read stdin JSON, find target paths
+│   ├── links/       ← fork/diverge links: finish, sync, tree
+│   ├── hooks/       ← hook helpers: read stdin JSON (input.ts), find target paths (paths.ts)
 │   └── cli/         ← args.ts (parsing + HELP), tracks.ts, bubbles.ts, print.ts
 ├── skill-install/   ← the installer (node install.js), one file per agent
 └── site/            ← the GitHub Pages demo (.mts, browser + build scripts)
@@ -33,6 +33,6 @@ src/
 
 - **The compiled JS is checked into the repo.** `test/build.test.js` fails if it falls out of sync with `src/`, so after changing `src/` you run `npm run build`.
 - **There are three entry points and one core.** `bubble.ts`, `fog-gate.ts` and `statusline.ts` are each about 25 lines and contain no logic of their own. They all import `lib` (`lib/index.ts`).
-- **Data flows in one direction:** `model` (types) ← `store` / `render` / `ops` ← `cli/*` ← `bubble.ts`. Only `links.ts` and `cli/` work across several tracks; everything else deals with one track at a time.
+- **Data flows in one direction:** `model` (types) ← `store` / `render` / `ops` ← `cli/*` ← `bubble.ts`. Only `links/` and `cli/` work across several tracks; everything else deals with one track at a time.
 - **The installer is kept out of `skills/bubble/scripts/` on purpose**, because that folder gets copied into every repo the tool is installed into.
 - **The demo site runs the real CLI in the browser.** `site/bubble-web/` fakes `node:fs`, `path` and `process`, so the checked-in `bubble.js` runs unchanged.

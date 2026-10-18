@@ -23,11 +23,29 @@
       "state": "done",
       "id": 8,
       "hint": "src/lib/ops.ts -> src/lib/ops/ folder, one operation per file; tightly coupled ops share a file. Suggested grouping (confirm when reached): add.ts (add + insert), fog.ts (fog, setType, fill — the fog lifecycle), rename.ts (rename + setTitle?), hint.ts, remove.ts, move.ts, handoff.ts, links.ts (markFork + markDiverge), done.ts. Barrel ops/index.ts re-exports so lib/index.ts 'export * from ./ops' and callers (cli/bubbles.ts, site machine) stay unchanged. Shared Addr type in ops/types.ts or model.ts. Update tests/build, npm run build"
+    },
+    {
+      "title": "Links folder",
+      "state": "done",
+      "id": 25,
+      "hint": "src/lib/links.ts -> src/lib/links/: finish.ts (isFinished, checkForkFinished, popFinishedParents), sync.ts (syncTitle, syncForkTitle), tree.ts (linkLabel, forkTree), shared parentOf in its own module, index.ts barrel. Callers keep require('../links')."
+    },
+    {
+      "title": "Render folder",
+      "state": "done",
+      "id": 26,
+      "hint": "src/lib/render.ts -> src/lib/render/: symbols.ts (SYMBOLS, colors, symbolFor, shorten), line.ts (render), list.ts (list), index.ts barrel."
+    },
+    {
+      "title": "Hooks folder",
+      "state": "done",
+      "id": 27,
+      "hint": "src/lib/io.ts (hooks-only) -> src/lib/hooks/: input.ts (readStdinJson, resolveRoot, HookInput), paths.ts (extractTargetPaths, isInsideBubblesDir), index.ts. Update cli/fog-gate.ts, cli/statusline.ts, test/hooks.test.js."
     }
   ],
-  "nextId": 25,
+  "nextId": 28,
   "handoff": {
-    "note": "All done: entry points in src/cli/ (-> scripts/cli/*.js; installs must re-run install.js), lib/index.ts barrel, ops split into src/lib/ops/ (mark.ts = markFork/markDiverge; Addr lives in model.ts; bubble-web loader resolves dir/index.js). Nothing committed yet. Can be closed once the human confirms.",
-    "at": "2026-10-18 21:03 UTC"
+    "note": "All done: entry points in src/cli/ (-> scripts/cli/*.js; installs must re-run install.js); lib/ is store.ts + model.ts + index.ts plus folders ops/, links/ (follow.ts shared, not re-exported), render/ (symbols/line/list), hooks/ (was io.ts). bubble-web loader resolves dir/index.js. Nothing committed yet. Can be closed once the human confirms.",
+    "at": "2026-10-18 21:10 UTC"
   }
 }

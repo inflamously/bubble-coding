@@ -2,7 +2,7 @@
 // settings.json: { "statusLine": { "type": "command", "command": "node \"<abs>/statusline.js\"" } }
 
 import lib = require('../lib');
-import { readStdinJson, resolveRoot } from '../lib/io';
+import { readStdinJson, resolveRoot } from '../lib/hooks';
 
 async function main(): Promise<string> {
   const input = await readStdinJson();

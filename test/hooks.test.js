@@ -5,7 +5,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
-const { extractTargetPaths } = require('../skills/bubble/scripts/lib/io');
+const { extractTargetPaths } = require('../skills/bubble/scripts/lib/hooks');
 
 const SCRIPTS = path.join(__dirname, '..', 'skills', 'bubble', 'scripts', 'cli');
 const run = (script, input, env = {}) =>

@@ -3,7 +3,7 @@
 // Exit 2 + stderr = block (all three agents). Fails open on any internal error. Never writes stdout.
 
 import lib = require('../lib');
-import { readStdinJson, resolveRoot, extractTargetPaths, isInsideBubblesDir } from '../lib/io';
+import { readStdinJson, resolveRoot, extractTargetPaths, isInsideBubblesDir } from '../lib/hooks';
 
 async function main(): Promise<number> {
   const input = await readStdinJson();

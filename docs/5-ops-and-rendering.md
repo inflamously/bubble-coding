@@ -5,7 +5,7 @@ Two files in `lib/` hold most of what the bubble commands actually do:
 | File | What it is | Touches disk? |
 |---|---|---|
 | `src/lib/ops/` | one function per bubble command (a file per operation, `index.ts` re-exports them); changes a `Track` in memory | no |
-| `src/lib/render.ts` | turns a `Track` into text: the one-line track and the `show` listing | no |
+| `src/lib/render/` | turns a `Track` into text: `line.ts` (the one-line track), `list.ts` (the `show` listing), `symbols.ts` (symbols, colors, shortening) | no |
 
 Both are pure in the sense that matters: they never read or write files and never look at other tracks. Loading, saving, the closed-track check and fork syncing all happen around them, in `lib/cli/bubbles.ts` (stop 6).
 
@@ -63,7 +63,7 @@ The ops know nothing about other tracks. The CLI wraps them:
 - **`move` positions count after the block is lifted out.** `move 2 to 3` on `A B C D` gives `A C B D`.
 - **`markFork`/`markDiverge` return the same bubble object** with `id` typed as present (`Object.assign(b, { id })`), so the caller can write the link without a non-null check.
 
-## render.ts
+## render/
 
 ### The one-line track: `render(track, opts)`
 

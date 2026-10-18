@@ -5,8 +5,8 @@ Three modules handle everything that touches the disk or another track:
 | File | Job | Used by |
 |---|---|---|
 | `src/lib/store.ts` | find, name, load and save one track | everything |
-| `src/lib/io.ts` | read a hook's stdin payload, work out the workspace, pull out target paths | `fog-gate.ts`, `statusline.ts` |
-| `src/lib/links.ts` | follow fork links between tracks and push changes along them | `cli/*` |
+| `src/lib/hooks/` | read a hook's stdin payload, work out the workspace, pull out target paths | `fog-gate.ts`, `statusline.ts` |
+| `src/lib/links/` | follow fork links between tracks and push changes along them (`finish.ts`, `sync.ts`, `tree.ts`; `follow.ts` is shared) | `cli/*` |
 
 ## store.ts: where tracks live
 
@@ -25,9 +25,9 @@ Three modules handle everything that touches the disk or another track:
 - **`saveTrack`** writes a temp file and then renames it. Readers see either the old file or the new one, never half of each. It doesn't call fsync and doesn't take a lock.
 - **`setCurrent`** is a plain `writeFileSync`, not a temp-file write followed by a rename.
 
-## io.ts: talking to agent hooks
+## hooks/: talking to agent hooks
 
-Claude Code, Codex CLI and Gemini CLI each send the hook a JSON payload on stdin. `io.ts` reads only the parts of it that the hooks need:
+Claude Code, Codex CLI and Gemini CLI each send the hook a JSON payload on stdin. `hooks/input.ts` reads only the parts of it that the hooks need:
 
 - **`readStdinJson`** returns `{}` for empty, invalid or TTY input. It never throws, so the hooks can fail open.
 - **`resolveRoot`** looks for the workspace in this order: `workspace.project_dir` → `workspace.current_dir` → `cwd` → `$GEMINI_PROJECT_DIR` → `$CLAUDE_PROJECT_DIR` → `process.cwd()`. The process's own working directory comes last on purpose.
@@ -38,7 +38,7 @@ Claude Code, Codex CLI and Gemini CLI each send the hook a JSON payload on stdin
 
 The gate only sees **file-editing tools**. A shell command that writes a file (for example `sed -i`) has no `file_path`, so the fog gate never checks it.
 
-## links.ts: tracks pointing at tracks
+## links/: tracks pointing at tracks
 
 A link is a path relative to the linking file, plus the stable `id` of the bubble it points to. `linked(fromFile, rel)` turns it back into an absolute path.
 
