@@ -21,7 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/bubble/scripts/fog-gate.js\"",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/bubble/scripts/cli/fog-gate.js\"",
             "timeout": 10
           }
         ]

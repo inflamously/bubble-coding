@@ -4,6 +4,9 @@ export const TYPES = ['known-known', 'known-unknown', 'unknown-known', 'unknown-
 export type FogType = (typeof TYPES)[number];
 const TYPE_ALIASES: Record<string, FogType> = { kk: 'known-known', ku: 'known-unknown', uk: 'unknown-known', uu: 'unknown-unknown' };
 
+/** A bubble address as the CLI passes it: "3", "2:4", or undefined for the active bubble. */
+export type Addr = string | number | undefined;
+
 export type BubbleState = 'todo' | 'active' | 'fog' | 'done';
 
 export interface Bubble {

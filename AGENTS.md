@@ -39,7 +39,7 @@ bubble-tracks section the installer writes into *users'* AGENTS.md.)
   `@types/node` are dev-only.
 - **LF line endings** (`.gitattributes`), so built output matches on every OS.
 - **Planning lives in `.bubble-tracks/`** (committed; only `current` is git-ignored). Change it only through the CLI:
-  `node skills/bubble/scripts/bubble.js <command>`, never by editing the JSON.
+  `node skills/bubble/scripts/cli/bubble.js <command>`, never by editing the JSON.
 
 ## Commands
 

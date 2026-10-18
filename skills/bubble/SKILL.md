@@ -17,7 +17,7 @@ So **titles are short names (2–4 words)**, like `Remove nesting` or `Fog-only 
 Every change goes through the CLI. **Don't hand-edit anything in `.bubble-tracks/`.** The CLI lives next to this file:
 
 ```
-node "<dir containing this SKILL.md>/scripts/bubble.js" <command> [args]
+node "<dir containing this SKILL.md>/scripts/cli/bubble.js" <command> [args]
 ```
 
 Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble language**, the same words the human uses:

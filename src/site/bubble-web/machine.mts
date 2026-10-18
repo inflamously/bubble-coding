@@ -4,7 +4,7 @@
 import { makeFs, type MemoryFs } from './fs.mjs';
 import { makePath, type PosixPath } from './path.mjs';
 
-/** The CLI's CommonJS files, keyed by path under skills/bubble/scripts ("bubble.js", "lib/store.js"). */
+/** The CLI's CommonJS files, keyed by path under skills/bubble/scripts ("cli/bubble.js", "lib/store.js"). */
 export type Sources = Record<string, string>;
 
 export interface Output {
@@ -71,7 +71,7 @@ export function createMachine(sources: Sources, opts: { cwd?: string } = {}): Ma
       const { out, fakeConsole } = captureConsole();
       const proc = fakeProcess(argv, () => cwd, color);
       try {
-        runCommonJs(sources, 'bubble.js', builtins, { process: proc, console: fakeConsole }, path);
+        runCommonJs(sources, 'cli/bubble.js', builtins, { process: proc, console: fakeConsole }, path);
       } catch (err) {
         fakeConsole.error(`bubble-web: ${(err as Error).message}`);
         proc.exitCode = 1;
@@ -93,7 +93,7 @@ function captureConsole(): { out: Output[]; fakeConsole: FakeConsole } {
 /** What `node bubble.js <argv…>` would see in `process`. Colors follow `color`, as on a terminal. */
 function fakeProcess(argv: string[], cwd: () => string, color: boolean): FakeProcess {
   return {
-    argv: ['node', '/bubble/bubble.js', ...argv],
+    argv: ['node', '/bubble/cli/bubble.js', ...argv],
     env: { BUBBLES_COLOR: color ? '1' : '0' },
     cwd,
     pid: 1,
@@ -116,7 +116,7 @@ function runCommonJs(sources: Sources, entry: string, builtins: Record<string, u
     if (!(file in sources)) throw new Error(`no module ${file}`);
     const module = { exports: {} as unknown };
     cache.set(file, module);
-    const require = (id: string): unknown => (id in builtins ? builtins[id] : load(resolveRelative(path, file, id)));
+    const require = (id: string): unknown => (id in builtins ? builtins[id] : load(resolveRelative(path, sources, file, id)));
     new Function('exports', 'require', 'module', 'process', 'console', sources[file])(module.exports, require, module, globals.process, globals.console);
     return module.exports;
   };
@@ -124,10 +124,14 @@ function runCommonJs(sources: Sources, entry: string, builtins: Record<string, u
   load(entry);
 }
 
-/** The source key `require(id)` means from `file`: "lib/cli/args.js" + "../track" → "lib/track.js". */
-function resolveRelative(path: PosixPath, file: string, id: string): string {
+/**
+ * The source key `require(id)` means from `file`, as Node resolves it: "lib/cli/args.js" + "../index" → "lib/index.js",
+ * and a folder to its index: "lib/index.js" + "./ops" → "lib/ops/index.js".
+ */
+function resolveRelative(path: PosixPath, sources: Sources, file: string, id: string): string {
   if (!id.startsWith('.')) throw new Error(`no module ${id}`);
   const dir = path.dirname(file);
   const rel = path.normalize(dir === '.' ? id : `${dir}/${id}`);
-  return rel.endsWith('.js') ? rel : `${rel}.js`;
+  if (rel.endsWith('.js')) return rel;
+  return `${rel}.js` in sources ? `${rel}.js` : `${rel}/index.js`;
 }

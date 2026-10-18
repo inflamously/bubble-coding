@@ -69,7 +69,7 @@ The story becomes one flat list of **beats**: a `scene` beat, then that scene's 
 
 1. Wipes `dist/pages/`, copies `style.css` and the compiled `terminal/` + `bubble-web/` modules.
 2. `story.json` ← `parseStory(demo/story.md)` (`build/story.mts`): `## N. Title` starts a scene, `> who: text` is a caption, each line in a code block is a command, and any other paragraph is a note. Backticks are removed.
-3. `cli-sources.json` ← `cliSources()` (`build/sources.mts`): `bubble.js` + `lib/**/*.js`, keyed by forward-slash path. `fog-gate.js` and `statusline.js` are left out because the page never runs them.
+3. `cli-sources.json` ← `cliSources()` (`build/sources.mts`): `cli/bubble.js` + `lib/**/*.js`, keyed by forward-slash path. `cli/fog-gate.js` and `cli/statusline.js` are left out because the page never runs them.
 4. `.nojekyll`, so Pages serves the files as they are.
 5. **Cache busting:** it hashes every output file (plus the source `index.html`) into `?v=<10 hex>`. It rewrites `index.html` to load `style.css?v=…` and `main.mjs?v=…`, and adds an **import map** that maps every `./x.mjs` to `./x.mjs?v=…`, so the relative imports pick up the version too. `main.mjs` reads its own `?v=` from `import.meta.url` and appends it to the JSON fetches. If the `href`/`<script>` it searches for has moved, the build throws instead of shipping an unversioned page.
 

@@ -7,7 +7,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 const { extractTargetPaths } = require('../skills/bubble/scripts/lib/io');
 
-const SCRIPTS = path.join(__dirname, '..', 'skills', 'bubble', 'scripts');
+const SCRIPTS = path.join(__dirname, '..', 'skills', 'bubble', 'scripts', 'cli');
 const run = (script, input, env = {}) =>
   spawnSync(process.execPath, [path.join(SCRIPTS, script)], {
     input: JSON.stringify(input),

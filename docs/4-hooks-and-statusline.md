@@ -4,8 +4,8 @@ Two small entry points sit beside the CLI. Each is about 25 lines, and the logic
 
 | File | Agent calls it… | Output |
 |---|---|---|
-| `src/fog-gate.ts` | before every file-editing tool call | exit `0` = allow, exit `2` + stderr = block |
-| `src/statusline.ts` | whenever Claude Code redraws its status line | one line on stdout: the rendered track |
+| `src/cli/fog-gate.ts` | before every file-editing tool call | exit `0` = allow, exit `2` + stderr = block |
+| `src/cli/statusline.ts` | whenever Claude Code redraws its status line | one line on stdout: the rendered track |
 
 ## The fog gate
 

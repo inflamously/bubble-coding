@@ -4,15 +4,16 @@
 
 ```
 src/
-├── bubble.ts        ← the CLI  (node bubble.js move 2 to 5)
-├── fog-gate.ts      ← hook: blocks edits while the active bubble is fog
-├── statusline.ts    ← Claude Code status line: prints the S ●──◐──○ F line
+├── cli/             ← the three entry points
+│   ├── bubble.ts    ← the CLI  (node cli/bubble.js move 2 to 5)
+│   ├── fog-gate.ts  ← hook: blocks edits while the active bubble is fog
+│   └── statusline.ts ← Claude Code status line: prints the S ●──◐──○ F line
 ├── lib/             ← the core, shared by all three entry points above
 │   ├── index.ts     ← one import that re-exports store/model/render/ops
 │   ├── model.ts     ← types: Track, Bubble, states, addressing (N, N:M)
 │   ├── store.ts     ← find / load / save .bubble-tracks/*.json
 │   ├── render.ts    ← draws the track line and the numbered list
-│   ├── ops.ts       ← the changes: add, move, fog, fill, done…
+│   ├── ops/         ← the changes, one file each: add, move, fog, fill, done…
 │   ├── links.ts     ← fork/diverge links between tracks
 │   ├── io.ts        ← hook helpers: read stdin JSON, find target paths
 │   └── cli/         ← args.ts (parsing + HELP), tracks.ts, bubbles.ts, print.ts
@@ -24,7 +25,7 @@ src/
 
 | Source | Config | Output | Who runs it |
 |---|---|---|---|
-| `src/*.ts` + `lib/` | `tsconfig.json` | `skills/bubble/scripts/` (JS checked into the repo) | agents and hooks, in every repo it's installed into |
+| `src/cli/` + `src/lib/` | `tsconfig.json` | `skills/bubble/scripts/` (JS checked into the repo) | agents and hooks, in every repo it's installed into |
 | `src/skill-install/` | `tsconfig.skill-install.json` | `skill-install/` | `node install.js` |
 | `src/site/` | `src/site/*/tsconfig.json` | `dist/site/` → `dist/pages/` | GitHub Pages (`npm run site`) |
 

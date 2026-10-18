@@ -22,7 +22,7 @@ function main(): void {
 
   const ctx = createCtx(opts, base);
   for (const agent of opts.agents) ADAPTERS[agent](ctx);
-  log('\nDone. Start a track with:  node "<skill>/scripts/bubble.js" init "<title>"  (or ask the agent: /bubble)');
+  log('\nDone. Start a track with:  node "<skill>/scripts/cli/bubble.js" init "<title>"  (or ask the agent: /bubble)');
 }
 
 try {

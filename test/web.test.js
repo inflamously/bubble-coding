@@ -41,7 +41,7 @@ test('the browser CLI prints what the real CLI prints, for every line of the dem
   // Paths and the handoff minute differ between the two machines; everything else must match.
   const norm = (s) => s.split(dir).join(web.cwd()).replace(/\\/g, '/').replace(/\d{4}-\d\d-\d\d \d\d:\d\d UTC/g, '<at> UTC');
   for (const argv of commands) {
-    const real = spawnSync(process.execPath, [path.join(CLI_DIR, 'bubble.js'), ...argv], {
+    const real = spawnSync(process.execPath, [path.join(CLI_DIR, 'cli', 'bubble.js'), ...argv], {
       cwd: dir,
       encoding: 'utf8',
       env: { ...process.env, BUBBLES_COLOR: '0', BUBBLES_ASCII: '', NO_COLOR: '' },

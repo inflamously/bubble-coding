@@ -4,12 +4,12 @@ Two files in `lib/` hold most of what the bubble commands actually do:
 
 | File | What it is | Touches disk? |
 |---|---|---|
-| `src/lib/ops.ts` | one function per bubble command; changes a `Track` in memory | no |
+| `src/lib/ops/` | one function per bubble command (a file per operation, `index.ts` re-exports them); changes a `Track` in memory | no |
 | `src/lib/render.ts` | turns a `Track` into text: the one-line track and the `show` listing | no |
 
 Both are pure in the sense that matters: they never read or write files and never look at other tracks. Loading, saving, the closed-track check and fork syncing all happen around them, in `lib/cli/bubbles.ts` (stop 6).
 
-## ops.ts
+## ops/
 
 ### The contract
 

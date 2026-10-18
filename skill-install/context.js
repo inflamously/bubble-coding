@@ -7,9 +7,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 const io_1 = require("./io");
 const scriptsOf = (skillDir) => ({
-    cli: path.join(skillDir, 'scripts', 'bubble.js'),
-    gate: path.join(skillDir, 'scripts', 'fog-gate.js'),
-    statusline: path.join(skillDir, 'scripts', 'statusline.js'),
+    cli: path.join(skillDir, 'scripts', 'cli', 'bubble.js'),
+    gate: path.join(skillDir, 'scripts', 'cli', 'fog-gate.js'),
+    statusline: path.join(skillDir, 'scripts', 'cli', 'statusline.js'),
     skillMd: path.join(skillDir, 'SKILL.md'),
 });
 exports.scriptsOf = scriptsOf;

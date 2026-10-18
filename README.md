@@ -40,7 +40,7 @@ Everything portable lives in **`skills/bubble/`**: `SKILL.md` plus zero-dependen
    From a local checkout, use `/plugin marketplace add /path/to/bubble-tracks`. For development, run `claude --plugin-dir /path/to/bubble-tracks` instead.
 2. Add the status line. Plugins can't set it, so either run `node install.js claude --apply-statusline`, or add this to `~/.claude/settings.json`:
    ```json
-   "statusLine": { "type": "command", "command": "node \"/path/to/bubble-tracks/skills/bubble/scripts/statusline.js\"" }
+   "statusLine": { "type": "command", "command": "node \"/path/to/bubble-tracks/skills/bubble/scripts/cli/statusline.js\"" }
    ```
 
 If the symbols render badly, set `"env": { "BUBBLES_ASCII": "1" }` in settings. The line then looks like `S *--@--?--o F`.
@@ -66,7 +66,7 @@ Hook paths are absolute. If you commit `.codex/` or `.gemini/` to a shared repo,
 ## The CLI
 
 ```
-node skills/bubble/scripts/bubble.js <command> [--dir <repo>] [--ascii]
+node skills/bubble/scripts/cli/bubble.js <command> [--dir <repo>] [--ascii]
 
 show                           render + list the bubbles (exit 3 = active bubble is fog)
 switch [name] [title]          resume a track, or create it (no name: the current one)
@@ -102,7 +102,7 @@ The CLI speaks a small domain language, so the same line works three ways:
 
 - **In chat:** `bubble move 2 to 3`. The agent runs it verbatim and shows the track.
 - **As a command:** `/bubble insert at 3 ?` (Claude Code), `/bubble …` (Gemini CLI), `$bubble …` (Codex).
-- **Directly, no agent:** `! node skills/bubble/scripts/bubble.js fog 4:8` in Claude Code. A leading `bubble` word is optional, and a whole phrase can be one quoted argument.
+- **Directly, no agent:** `! node skills/bubble/scripts/cli/bubble.js fog 4:8` in Claude Code. A leading `bubble` word is optional, and a whole phrase can be one quoted argument.
 
 After every `done` the agent stops (⏸) and waits, so you can reshape the path before the next bubble starts.
 

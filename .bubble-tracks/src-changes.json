@@ -8,26 +8,26 @@
   "bubbles": [
     {
       "title": "Move entry points",
-      "state": "todo",
+      "state": "done",
       "id": 1,
       "hint": "Move src/bubble.ts, fog-gate.ts, statusline.ts into a cli folder (src/cli/ vs src/lib/cli/ to confirm). Update build output paths: SKILL.md, skill-install/agents/*, site loader, tests, then npm run build"
     },
     {
       "title": "Track.ts to index.ts",
-      "state": "todo",
+      "state": "done",
       "id": 2,
       "hint": "Rename src/lib/track.ts -> src/lib/index.ts (the barrel). Update importers: fog-gate.ts, statusline.ts, lib/cli/{tracks,print,bubbles}.ts, site/bubble-web/machine.mts, test/track.test.js; delete stale scripts/lib/track.js on rebuild"
     },
     {
       "title": "Split ops folder",
-      "state": "todo",
+      "state": "done",
       "id": 8,
       "hint": "src/lib/ops.ts -> src/lib/ops/ folder, one operation per file; tightly coupled ops share a file. Suggested grouping (confirm when reached): add.ts (add + insert), fog.ts (fog, setType, fill — the fog lifecycle), rename.ts (rename + setTitle?), hint.ts, remove.ts, move.ts, handoff.ts, links.ts (markFork + markDiverge), done.ts. Barrel ops/index.ts re-exports so lib/index.ts 'export * from ./ops' and callers (cli/bubbles.ts, site machine) stay unchanged. Shared Addr type in ops/types.ts or model.ts. Update tests/build, npm run build"
     }
   ],
   "nextId": 25,
   "handoff": {
-    "note": "Folder layout and renames only. The other src-tour findings were split out to model-types, store-safety, cli-behavior, installer-fixes, site-fixes. #2: lib/index.ts, the rebuild and test/track.test.js are done (record-to); left: the '../track' example comment in src/site/bubble-web/machine.mts.",
-    "at": "2026-10-18 20:54 UTC"
+    "note": "All done: entry points in src/cli/ (-> scripts/cli/*.js; installs must re-run install.js), lib/index.ts barrel, ops split into src/lib/ops/ (mark.ts = markFork/markDiverge; Addr lives in model.ts; bubble-web loader resolves dir/index.js). Nothing committed yet. Can be closed once the human confirms.",
+    "at": "2026-10-18 21:03 UTC"
   }
 }

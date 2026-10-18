@@ -1,5 +1,5 @@
 {
-  // src/*.ts (except the installer, see tsconfig.skill-install.json, and the demo site, see src/site/tsconfig.base.json) compiles into skills/bubble/scripts, the committed JS that hooks and agents run.
+  // src/cli and src/lib (everything but the installer, see tsconfig.skill-install.json, and the demo site, see src/site/tsconfig.base.json) compiles into skills/bubble/scripts, the committed JS that hooks and agents run.
   // test/build.test.js fails when the committed JS drifts from what this config builds.
   "compilerOptions": {
     "target": "es2024",

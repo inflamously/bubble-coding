@@ -3,8 +3,8 @@
 // and Gemini CLI (BeforeTool). Blocks file edits while the active bubble is fog.
 // Exit 2 + stderr = block (all three agents). Fails open on any internal error. Never writes stdout.
 Object.defineProperty(exports, "__esModule", { value: true });
-const lib = require("./lib");
-const io_1 = require("./lib/io");
+const lib = require("../lib");
+const io_1 = require("../lib/io");
 async function main() {
     const input = await (0, io_1.readStdinJson)();
     const root = (0, io_1.resolveRoot)(input);

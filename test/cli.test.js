@@ -6,7 +6,7 @@ const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const CLI = path.join(__dirname, '..', 'skills', 'bubble', 'scripts', 'bubble.js');
+const CLI = path.join(__dirname, '..', 'skills', 'bubble', 'scripts', 'cli', 'bubble.js');
 
 function repo() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-cli-'));

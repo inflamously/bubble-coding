@@ -3,9 +3,9 @@
 // Parsing lives in lib/cli/args, track commands in lib/cli/tracks, bubble commands in lib/cli/bubbles.
 
 import path = require('node:path');
-import { HELP, parseArgs, type Ctx } from './lib/cli/args';
-import { runTrackCommand } from './lib/cli/tracks';
-import { runBubbleCommand } from './lib/cli/bubbles';
+import { HELP, parseArgs, type Ctx } from '../lib/cli/args';
+import { runTrackCommand } from '../lib/cli/tracks';
+import { runBubbleCommand } from '../lib/cli/bubbles';
 
 function main(): number {
   const { cmd, args, opts } = parseArgs(process.argv.slice(2));

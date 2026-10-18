@@ -4,9 +4,9 @@
 // Parsing lives in lib/cli/args, track commands in lib/cli/tracks, bubble commands in lib/cli/bubbles.
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("node:path");
-const args_1 = require("./lib/cli/args");
-const tracks_1 = require("./lib/cli/tracks");
-const bubbles_1 = require("./lib/cli/bubbles");
+const args_1 = require("../lib/cli/args");
+const tracks_1 = require("../lib/cli/tracks");
+const bubbles_1 = require("../lib/cli/bubbles");
 function main() {
     const { cmd, args, opts } = (0, args_1.parseArgs)(process.argv.slice(2));
     if (!cmd || opts.help || cmd === 'help') {

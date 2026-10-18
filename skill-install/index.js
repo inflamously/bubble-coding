@@ -23,7 +23,7 @@ function main() {
     const ctx = (0, context_1.createCtx)(opts, base);
     for (const agent of opts.agents)
         ADAPTERS[agent](ctx);
-    (0, io_1.log)('\nDone. Start a track with:  node "<skill>/scripts/bubble.js" init "<title>"  (or ask the agent: /bubble)');
+    (0, io_1.log)('\nDone. Start a track with:  node "<skill>/scripts/cli/bubble.js" init "<title>"  (or ask the agent: /bubble)');
 }
 try {
     main();

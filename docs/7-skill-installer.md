@@ -78,7 +78,7 @@ settings.hooks[event] = [...(settings.hooks[event] || []).filter((g) => !isFogGa
 
 ## Things worth knowing
 
-- **Hook commands use absolute paths.** Codex and Gemini get `node "/abs/path/.agents/skills/bubble/scripts/fog-gate.js"`. If you commit `.codex/hooks.json` or `.gemini/settings.json`, it only works on machines with the same path. `AGENTS.md` uses relative paths.
+- **Hook commands use absolute paths.** Codex and Gemini get `node "/abs/path/.agents/skills/bubble/scripts/cli/fog-gate.js"`. If you commit `.codex/hooks.json` or `.gemini/settings.json`, it only works on machines with the same path. `AGENTS.md` uses relative paths.
 - **The Claude status line points at this repo, not at an installed copy.** It uses `SKILL_SRC` (the bubble-tracks checkout), so moving or deleting the checkout breaks the status line.
 - **Settings files must be plain JSON.** A file with comments (JSONC) fails with `… is not plain JSON — add the entry by hand`.
 - **`upsertHook` drops a whole group.** If you put our gate in the same hook group as your own hooks, reinstalling removes your hooks from that event too.

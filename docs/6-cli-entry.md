@@ -1,10 +1,10 @@
 # 6. CLI entry
 
-The CLI is what agents and humans actually run: `node skills/bubble/scripts/bubble.js <command>`. That JS is compiled from `src/bubble.ts` (tsconfig `outDir: skills/bubble/scripts`) and committed, so the skill works without a build step. `test/build.test.js` fails if the committed JS drifts from `src/`.
+The CLI is what agents and humans actually run: `node skills/bubble/scripts/cli/bubble.js <command>`. That JS is compiled from `src/cli/bubble.ts` (tsconfig `outDir: skills/bubble/scripts`) and committed, so the skill works without a build step. `test/build.test.js` fails if the committed JS drifts from `src/`.
 
 | File | Job |
 |---|---|
-| `src/bubble.ts` | entry: parse, build the context, dispatch, turn errors into exit 1 |
+| `src/cli/bubble.ts` | entry: parse, build the context, dispatch, turn errors into exit 1 |
 | `src/lib/cli/args.ts` | `HELP` text, `parseArgs`, address helpers (`isAddr`, `isRange`, `needAddr`), the `Ctx` type |
 | `src/lib/cli/tracks.ts` | **track-level** commands: `init` `create` `switch` `tracks` `fork` `diverge` `close` `delete` |
 | `src/lib/cli/bubbles.ts` | **bubble-level** commands on the current track: `show` `add` `insert` `remove` `move` `rename` `title` `handoff` `hint` `fog` `type` `fill` `done` |
