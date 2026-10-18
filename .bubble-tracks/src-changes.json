@@ -153,7 +153,7 @@
   ],
   "nextId": 25,
   "handoff": {
-    "note": "Collects every code change the human plans during the src-tour walkthrough. Add new ideas from the tour here, not on src-tour.",
-    "at": "2026-10-18 18:26 UTC"
+    "note": "Planned split, waits for 'move N:M --to <track>' (record-to #3). Groups (current numbers): keep here, retitle 'Src layout': 1,2,8 | model-types: 4,5,15 | store-safety: 3,16,17,6 | cli-behavior: 18,19,7 | installer-fixes: 9-14 | site-fixes: 20-24. No links back needed.",
+    "at": "2026-10-18 20:27 UTC"
   }
 }

@@ -14,28 +14,34 @@
     },
     {
       "title": "Implement --to",
-      "state": "todo",
+      "state": "done",
       "id": 2,
       "hint": "Parse --to <track> in lib/cli/args.ts; the chosen bubble commands load/save that track instead of the current one, current stays unchanged. Target must exist and not be closed. Add to HELP"
     },
     {
+      "title": "Move --to",
+      "state": "done",
+      "id": 6,
+      "hint": "move N | N:M --to <track>: move bubbles (with hint, type, state) out of the current track into <track>, appended at the end. Revises the decision in #1: move now takes --to too. Target must exist, not be closed, not be the current track. Moved bubbles get new ids from the target's nextId. Bubbles with fork/sides links: refuse for now (no re-linking). Decide when reached: allow done bubbles?, optional 'at M' position in target. Tests in #4. First real use: the src-changes split (see its handoff)."
+    },
+    {
       "title": "Tests",
-      "state": "todo",
+      "state": "done",
       "id": 3,
       "hint": "test/cli.test.js: --to writes into target, current track untouched, refuses closed/missing target and commands that don't take --to"
     },
     {
       "title": "Skill docs",
-      "state": "todo",
+      "state": "done",
       "id": 4,
       "hint": "SKILL.md command table + workflow: while walking one track, record future work into another with --to (replaces switch/add/switch)"
     },
     {
       "title": "Rebuild scripts",
-      "state": "todo",
+      "state": "done",
       "id": 5,
       "hint": "npm run build; build.test.js checks committed JS matches"
     }
   ],
-  "nextId": 6
+  "nextId": 7
 }
