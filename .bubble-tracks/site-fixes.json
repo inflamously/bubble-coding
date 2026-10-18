@@ -1,0 +1,36 @@
+{
+  "title": "Site fixes",
+  "bubbles": [
+    {
+      "title": "Guard site Node usage",
+      "state": "todo",
+      "id": 1,
+      "hint": "From tour stop 8: bubble-web fakes only fs/path + a few process fields. A new builtin, new fs call or process.exit() in the CLI breaks the site silently unless a story line hits it. Add a test that fails on unknown require/fs calls (e.g. static scan of committed CLI JS, or a Proxy fs that records misses)."
+    },
+    {
+      "title": "Wider web parity test",
+      "state": "todo",
+      "id": 2,
+      "hint": "From tour stop 8: test/web.test.js only replays demo/story.md lines, color off. Add an extra command list (close, delete, diverge, fork, errors) and one colored run, compared against the real CLI."
+    },
+    {
+      "title": "Stricter memory fs",
+      "state": "todo",
+      "id": 3,
+      "hint": "From tour stop 8: src/site/bubble-web/fs.mts: writeFileSync onto a dir and mkdirSync({recursive}) through a file succeed; Node fails (EISDIR/ENOTDIR/EEXIST). Match Node."
+    },
+    {
+      "title": "Disk panel last-changed",
+      "state": "todo",
+      "id": 4,
+      "hint": "From tour stop 8: src/site/terminal/disk.mts refresh(): 'latest' is the alphabetically last changed file, not the last written. Decide: track write order in MemoryFs, or reword the panel text."
+    },
+    {
+      "title": "Story intro wording",
+      "state": "todo",
+      "id": 5,
+      "hint": "From tour stop 8: demo/story.md intro mentions 'the demo script (bubble 2)' and 'the recording' from an older plan; rewrite for the current Pages demo."
+    }
+  ],
+  "nextId": 6
+}

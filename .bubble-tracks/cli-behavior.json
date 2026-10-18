@@ -1,0 +1,24 @@
+{
+  "title": "CLI behavior",
+  "bubbles": [
+    {
+      "title": "Guard linked remove",
+      "state": "todo",
+      "id": 1,
+      "hint": "ops.ts remove splices bubbles with fork/sides links, leaving the child's parent/origin pointing at a gone id. Refuse (or require --force after the human confirms) when a removed bubble has fork or sides, listing the linked tracks. Same thought for fog --force on a forked bubble? decide"
+    },
+    {
+      "title": "CLI oddities",
+      "state": "todo",
+      "id": 2,
+      "hint": "From tour stop 6 (docs/6-cli-entry.md): (1) args.ts HELP says exit 3 is 'show only' but switch-resume also returns printTrack's 3: fix wording or make switch return 0 (SKILL.md says show exits 3); (2) 'add ? foo' adds todo '? foo': error or treat as fog titled foo; (3) 'switch <existing> <title>' silently ignores title: warn; (4) unknown command with no track says 'no bubble track found': check the command name before findTrack in runBubbleCommand. Tests for each"
+    },
+    {
+      "title": "Gate shell writes",
+      "state": "todo",
+      "id": 3,
+      "hint": "Fog gate also checks shell tools (Claude Bash, Codex shell/exec_command, Gemini run_shell_command): add to matchers in plugin.json + skill-install/agents/*. Decided (b) for now: heuristic write detection on tool_input.command (>, >>, tee, sed -i, mv, cp, rm, git commit/checkout); everything else passes, so a bugged gate never fully blocks people. Writes only into .bubble-tracks/ still pass. Still fail open; current track only; switching tracks stays legal. (a) allowlist = possible later hardening"
+    }
+  ],
+  "nextId": 4
+}

@@ -1,0 +1,42 @@
+{
+  "title": "Installer fixes",
+  "bubbles": [
+    {
+      "title": "Relative hook paths",
+      "state": "todo",
+      "id": 1,
+      "hint": "skill-install codex.ts/gemini.ts: hook commands use absolute node \"/abs/.agents/skills/bubble/scripts/fog-gate.js\", so committed .codex/hooks.json / .gemini/settings.json break on other machines. For --project: use a repo-relative path (check what cwd each agent runs hooks from; Codex/Gemini may offer a project-root var like Claude's ${CLAUDE_PLUGIN_ROOT}). --user keeps absolute (or ~-based). Also gemini bubble.toml {{CLI}} is absolute. Update tests"
+    },
+    {
+      "title": "Statusline install path",
+      "state": "todo",
+      "id": 2,
+      "hint": "agents/claude.ts: statusLine command points at SKILL_SRC (the bubble-tracks checkout), so moving/deleting the checkout breaks it. Options to decide: point at an installed copy (installSkill into ~/.agents?), or the plugin's install dir. Warn instead of silently replacing a foreign statusLine? (currently logs '! replacing')"
+    },
+    {
+      "title": "JSONC settings",
+      "state": "todo",
+      "id": 3,
+      "hint": "settings.ts readSettings throws 'not plain JSON' on files with comments/trailing commas (Gemini/Claude settings can have them). Decide: tolerant parse (strip comments) while warning that writing back loses comments, or targeted text insert that keeps them. Never silently drop user comments"
+    },
+    {
+      "title": "Safe hook upsert",
+      "state": "todo",
+      "id": 4,
+      "hint": "settings.ts upsertHook drops a whole hook group if any hook in it runs fog-gate.js, taking the user's own hooks in that group with it. Instead remove only our hook entry from each group, drop the group only if it ends up empty, then append ours. Tests for mixed groups"
+    },
+    {
+      "title": "Installer text drift",
+      "state": "todo",
+      "id": 5,
+      "hint": "index.ts final 'Done.' line suggests init \"<title>\" (switch <name> is the main entry; init may go with 'No default track'). adapters/agents-md.md CLI list misses create, close, delete, handoff; check gemini/bubble.toml too. Ideally one source for the command list (args.ts HELP?) so they can't drift again"
+    },
+    {
+      "title": "Uninstall",
+      "state": "todo",
+      "id": 6,
+      "hint": "install.js --uninstall <agent...> [--project|--user] [--dry-run]: remove .agents/skills/bubble, our hook entries (same matching as safe upsert, keep user hooks), .gemini/commands/bubble.toml, the AGENTS.md marked block, claude statusLine only if it's ours. Leave .bak files alone; .bubble-tracks/ never touched"
+    }
+  ],
+  "nextId": 7
+}
