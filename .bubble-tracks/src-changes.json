@@ -23,9 +23,135 @@
       "state": "todo",
       "id": 3,
       "hint": "src/lib/store.ts saveTrack: open tmp, write, fsyncSync, close, then rename; then fsync the dir (skip/ignore errors on Windows, dirs can't be fsynced there). Keep the tmp+rename"
+    },
+    {
+      "title": "Required ids",
+      "state": "todo",
+      "id": 4,
+      "hint": "model.ts: Track.nextId and Bubble.id required. Every track already has them and legacy compat is dropped (review-fixes). New tracks start nextId: 1 (create/init/fork/diverge in cli/tracks.ts); ensureId becomes a plain 'take next id' at add/insert; drop the 'b.id === undefined' paths; update tests"
+    },
+    {
+      "title": "Named track types",
+      "state": "todo",
+      "id": 5,
+      "hint": "model.ts: extract Handoff {note, at} and Closed {at} interfaces. parent/origin can't both be set: make Track a union (forked: parent, no origin | diverged: origin, no parent | neither) via ?: never — JSON format unchanged"
+    },
+    {
+      "title": "No default track",
+      "state": "todo",
+      "id": 6,
+      "hint": "Every track has a name; 'current' always exists once any track does. store.ts: drop DEFAULT_NAME and the track.json fallback in currentName (missing/bad current = no current track, error). cli/tracks.ts: switch with no name errors instead of falling back; init either goes away (create covers it) or takes a name — decide. Update args.ts HELP, SKILL.md, README, tests that assume track.json"
+    },
+    {
+      "title": "Gate shell writes",
+      "state": "todo",
+      "id": 7,
+      "hint": "Fog gate also checks shell tools (Claude Bash, Codex shell/exec_command, Gemini run_shell_command): add to matchers in plugin.json + skill-install/agents/*. Decided (b) for now: heuristic write detection on tool_input.command (>, >>, tee, sed -i, mv, cp, rm, git commit/checkout); everything else passes, so a bugged gate never fully blocks people. Writes only into .bubble-tracks/ still pass. Still fail open; current track only; switching tracks stays legal. (a) allowlist = possible later hardening"
+    },
+    {
+      "title": "Split ops folder",
+      "state": "todo",
+      "id": 8,
+      "hint": "src/lib/ops.ts -> src/lib/ops/ folder, one operation per file; tightly coupled ops share a file. Suggested grouping (confirm when reached): add.ts (add + insert), fog.ts (fog, setType, fill — the fog lifecycle), rename.ts (rename + setTitle?), hint.ts, remove.ts, move.ts, handoff.ts, links.ts (markFork + markDiverge), done.ts. Barrel ops/index.ts re-exports so lib/index.ts 'export * from ./ops' and callers (cli/bubbles.ts, site machine) stay unchanged. Shared Addr type in ops/types.ts or model.ts. Update tests/build, npm run build"
+    },
+    {
+      "title": "Relative hook paths",
+      "state": "todo",
+      "id": 9,
+      "hint": "skill-install codex.ts/gemini.ts: hook commands use absolute node \"/abs/.agents/skills/bubble/scripts/fog-gate.js\", so committed .codex/hooks.json / .gemini/settings.json break on other machines. For --project: use a repo-relative path (check what cwd each agent runs hooks from; Codex/Gemini may offer a project-root var like Claude's ${CLAUDE_PLUGIN_ROOT}). --user keeps absolute (or ~-based). Also gemini bubble.toml {{CLI}} is absolute. Update tests"
+    },
+    {
+      "title": "Statusline install path",
+      "state": "todo",
+      "id": 10,
+      "hint": "agents/claude.ts: statusLine command points at SKILL_SRC (the bubble-tracks checkout), so moving/deleting the checkout breaks it. Options to decide: point at an installed copy (installSkill into ~/.agents?), or the plugin's install dir. Warn instead of silently replacing a foreign statusLine? (currently logs '! replacing')"
+    },
+    {
+      "title": "JSONC settings",
+      "state": "todo",
+      "id": 11,
+      "hint": "settings.ts readSettings throws 'not plain JSON' on files with comments/trailing commas (Gemini/Claude settings can have them). Decide: tolerant parse (strip comments) while warning that writing back loses comments, or targeted text insert that keeps them. Never silently drop user comments"
+    },
+    {
+      "title": "Safe hook upsert",
+      "state": "todo",
+      "id": 12,
+      "hint": "settings.ts upsertHook drops a whole hook group if any hook in it runs fog-gate.js, taking the user's own hooks in that group with it. Instead remove only our hook entry from each group, drop the group only if it ends up empty, then append ours. Tests for mixed groups"
+    },
+    {
+      "title": "Installer text drift",
+      "state": "todo",
+      "id": 13,
+      "hint": "index.ts final 'Done.' line suggests init \"<title>\" (switch <name> is the main entry; init may go with 'No default track'). adapters/agents-md.md CLI list misses create, close, delete, handoff; check gemini/bubble.toml too. Ideally one source for the command list (args.ts HELP?) so they can't drift again"
+    },
+    {
+      "title": "Uninstall",
+      "state": "todo",
+      "id": 14,
+      "hint": "install.js --uninstall <agent...> [--project|--user] [--dry-run]: remove .agents/skills/bubble, our hook entries (same matching as safe upsert, keep user hooks), .gemini/commands/bubble.toml, the AGENTS.md marked block, claude statusLine only if it's ours. Leave .bak files alone; .bubble-tracks/ never touched"
+    },
+    {
+      "title": "Drop active state",
+      "state": "todo",
+      "id": 15,
+      "hint": "Leftover: BubbleState in model.ts still has 'active' and render.ts symbolFor checks bubble.state === 'active'; the active bubble is computed (activeIndex = first not done), never stored. Remove 'active' from BubbleState and render (keep the 'active' symbol key, it's the computed ◐). Check site machine + tests; old files with state 'active' would then be invalid: decide migrate to todo on load or reject (ties into Strict loadTrack)"
+    },
+    {
+      "title": "Safe setCurrent",
+      "state": "todo",
+      "id": 16,
+      "hint": "store.ts setCurrent writes .bubble-tracks/current with plain writeFileSync; saveTrack uses tmp+rename. Extract one safe-write helper (tmp + fsync + rename, shared with 'Fsync on save' #3) and use it for both"
+    },
+    {
+      "title": "Strict loadTrack",
+      "state": "todo",
+      "id": 17,
+      "hint": "store.ts loadTrack only checks bubbles is an array. Validate the shape: title string, each bubble has title string + state in todo|fog|done (+ type in TYPES if set, id number), nextId, parent/origin Link shape, closed/handoff shape. Error names the file and the bad bubble (#N). Fits with 'Required ids' #4 and 'Named track types' #5"
+    },
+    {
+      "title": "Guard linked remove",
+      "state": "todo",
+      "id": 18,
+      "hint": "ops.ts remove splices bubbles with fork/sides links, leaving the child's parent/origin pointing at a gone id. Refuse (or require --force after the human confirms) when a removed bubble has fork or sides, listing the linked tracks. Same thought for fog --force on a forked bubble? decide"
+    },
+    {
+      "title": "CLI oddities",
+      "state": "todo",
+      "id": 19,
+      "hint": "From tour stop 6 (docs/6-cli-entry.md): (1) args.ts HELP says exit 3 is 'show only' but switch-resume also returns printTrack's 3: fix wording or make switch return 0 (SKILL.md says show exits 3); (2) 'add ? foo' adds todo '? foo': error or treat as fog titled foo; (3) 'switch <existing> <title>' silently ignores title: warn; (4) unknown command with no track says 'no bubble track found': check the command name before findTrack in runBubbleCommand. Tests for each"
+    },
+    {
+      "title": "Guard site Node usage",
+      "state": "todo",
+      "id": 20,
+      "hint": "From tour stop 8: bubble-web fakes only fs/path + a few process fields. A new builtin, new fs call or process.exit() in the CLI breaks the site silently unless a story line hits it. Add a test that fails on unknown require/fs calls (e.g. static scan of committed CLI JS, or a Proxy fs that records misses)."
+    },
+    {
+      "title": "Wider web parity test",
+      "state": "todo",
+      "id": 21,
+      "hint": "From tour stop 8: test/web.test.js only replays demo/story.md lines, color off. Add an extra command list (close, delete, diverge, fork, errors) and one colored run, compared against the real CLI."
+    },
+    {
+      "title": "Stricter memory fs",
+      "state": "todo",
+      "id": 22,
+      "hint": "From tour stop 8: src/site/bubble-web/fs.mts: writeFileSync onto a dir and mkdirSync({recursive}) through a file succeed; Node fails (EISDIR/ENOTDIR/EEXIST). Match Node."
+    },
+    {
+      "title": "Disk panel last-changed",
+      "state": "todo",
+      "id": 23,
+      "hint": "From tour stop 8: src/site/terminal/disk.mts refresh(): 'latest' is the alphabetically last changed file, not the last written. Decide: track write order in MemoryFs, or reword the panel text."
+    },
+    {
+      "title": "Story intro wording",
+      "state": "todo",
+      "id": 24,
+      "hint": "From tour stop 8: demo/story.md intro mentions 'the demo script (bubble 2)' and 'the recording' from an older plan; rewrite for the current Pages demo."
     }
   ],
-  "nextId": 4,
+  "nextId": 25,
   "handoff": {
     "note": "Collects every code change the human plans during the src-tour walkthrough. Add new ideas from the tour here, not on src-tour.",
     "at": "2026-10-18 18:26 UTC"
