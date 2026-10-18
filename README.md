@@ -1,163 +1,202 @@
 # bubble-tracks
 
-Gamified planning for coding agents, with fog of war. A plan is a linear track of task bubbles:
+**Gamified planning for coding agents, with fog of war.**
+
+A plan is a single track of task bubbles. The agent works the bubbles it can see, and stops at the fog so you can plan what comes next.
 
 ```
 Fix generation   S ●──●──❓──○ F   Read logs ‹ ❓ needs you › Write failing test
 ```
 
-`●` done · `◐` active · `○` todo · `❓` fog (unplanned) · `prev ‹ active › next` tells you where you are
+`●` done · `◐` active · `○` todo · `❓` fog (unplanned) · `prev ‹ active › next` shows where you are
 
-**Live demo:** [inflamously.github.io/bubble-tracks](https://inflamously.github.io/bubble-tracks/) runs the real CLI in an emulated terminal and plays a full session. To preview it locally: `npm run site && python3 -m http.server -d dist/pages`.
+▶ **[Live demo](https://inflamously.github.io/bubble-tracks/)**: the real CLI playing a full session in an emulated terminal.
 
-In the status line and in a terminal, the track title is green, the track is blue, and `prev ‹ active › next` is yellow. Set `NO_COLOR=1` (or pass `--no-color` to `statusline.js`) to turn colors off, or `BUBBLES_COLOR=1` to force them on.
+## How it works
 
 - **Plan only as far as you can see.** Unclear steps stay fog until you reach them.
-- **Known bubbles:** the agent implements them.
-- **Fog bubbles:** the agent stops, and the human plans the bubble. The agent never plans fog on its own.
-- **One line, as long as it needs.** If a fog bubble turns out to be several tasks, it becomes consecutive bubbles on the same line.
+- **Known bubbles** are implemented by the agent.
+- **Fog bubbles** stop the agent. You plan them, and the agent never plans fog on its own.
+- **You steer between bubbles.** After every bubble the agent pauses (⏸), so you can reorder, insert, remove or fog bubbles before it goes on.
+- **One line, as long as it needs.** If a fog bubble turns out to be several tasks, it becomes several bubbles on the same line.
 
-## What you get per agent
+## Supported agents
 
-| Agent | `/bubble` | Hard fog gate (blocks edits) | Live status line |
+| Agent | Command | Fog gate (blocks edits) | Live status line |
 |---|---|---|---|
-| Claude Code | plugin skill `/bubble` | ✅ `PreToolUse` hook | ✅ |
-| Codex CLI | skill `$bubble` | ✅ `PreToolUse` hook on `apply_patch` | ❌ use `bubble show` |
-| Gemini CLI | `/bubble` command + skill | ✅ `BeforeTool` hook | ❌ use `bubble show` |
-| Anything that reads AGENTS.md | instructions | soft (the model is told to stop) | ❌ use `bubble show` |
+| Claude Code | `/bubble` (plugin skill) | ✅ `PreToolUse` hook | ✅ |
+| Codex CLI | `$bubble` (skill) | ✅ `PreToolUse` hook on `apply_patch` | — use `bubble show` |
+| Gemini CLI | `/bubble` (command + skill) | ✅ `BeforeTool` hook | — use `bubble show` |
+| Anything that reads `AGENTS.md` | instructions | soft (the model is told to stop) | — use `bubble show` |
 
-Everything portable lives in **`skills/bubble/`**: `SKILL.md` plus zero-dependency Node scripts (built from `src/`, committed). Requirements: Node ≥ 24 (the current LTS). It works on Windows, macOS, Linux and WSL, and scripts always run as `node "<path>"`.
+**Requirements:** Node ≥ 24. It works on Windows, macOS, Linux and WSL, and has no dependencies.
 
 ## Install
 
 ### Claude Code
 
 1. Install the plugin. Inside Claude Code, run:
+
    ```
    /plugin marketplace add inflamously/bubble-coding
    /plugin install bubble-tracks@bubble-tracks
    ```
-   From a local checkout, use `/plugin marketplace add /path/to/bubble-tracks`. For development, run `claude --plugin-dir /path/to/bubble-tracks` instead.
-2. Add the status line. Plugins can't set it, so either run `node install.js claude --apply-statusline`, or add this to `~/.claude/settings.json`:
-   ```json
-   "statusLine": { "type": "command", "command": "node \"/path/to/bubble-tracks/skills/bubble/scripts/cli/statusline.js\"" }
-   ```
 
-If the symbols render badly, set `"env": { "BUBBLES_ASCII": "1" }` in settings. The line then looks like `S *--@--?--o F`.
+   From a local checkout, use `/plugin marketplace add /path/to/bubble-tracks`. For development, run `claude --plugin-dir /path/to/bubble-tracks`.
+
+2. Add the status line. Plugins can't set it themselves, so either run `node install.js claude --apply-statusline` or add this to `~/.claude/settings.json`:
+
+   ```json
+   "statusLine": {
+     "type": "command",
+     "command": "node \"/path/to/bubble-tracks/skills/bubble/scripts/cli/statusline.js\""
+   }
+   ```
 
 ### Codex CLI, Gemini CLI and AGENTS.md
 
-```
+From a checkout of this repo:
+
+```sh
 node install.js codex gemini agents-md --project /path/to/your/repo   # one repo
 node install.js codex gemini --user                                   # all repos (~/.agents, ~/.codex, ~/.gemini)
 node install.js all --project . --dry-run                             # preview only
 ```
 
-What the installer does:
-- Copies the skill to `.agents/skills/bubble/`, a folder both Codex and Gemini read.
-- Merges the gate into `.codex/hooks.json` and `.gemini/settings.json`.
-- Writes `.gemini/commands/bubble.toml`.
-- Inserts a marked block into `AGENTS.md`.
+The installer:
 
-It is idempotent and backs up any file it changes to `*.bak`. Codex and Gemini will ask you to trust the new hook the first time.
+- copies the skill to `.agents/skills/bubble/`, which both Codex and Gemini read
+- merges the fog gate into `.codex/hooks.json` and `.gemini/settings.json`
+- writes `.gemini/commands/bubble.toml`
+- inserts a marked block into `AGENTS.md`
 
-Hook paths are absolute. If you commit `.codex/` or `.gemini/` to a shared repo, teammates need to re-run the installer.
+Re-running it is safe, and it backs up every file it changes to `*.bak`. Codex and Gemini ask you to trust the new hook the first time.
 
-## The CLI
+> [!NOTE]
+> Hook paths are absolute. If you commit `.codex/` or `.gemini/` to a shared repo, teammates need to re-run the installer.
 
-```
-node skills/bubble/scripts/cli/bubble.js <command> [--dir <repo>] [--ascii]
+## Usage
 
-show                           render + list the bubbles (exit 3 = active bubble is fog)
-switch [name] [title]          resume a track, or create it (no name: the current one)
-create <name> [title]          create a new track (refuses if it exists)
-tracks                         list tracks
-close <name> --force           finish a track: read-only for good; closes its forks, pops its parent bubble
-delete <name> --force          delete a track (not the current one)
-fork [N] <name>                build on bubble N in a child track; the bubble waits for it
-diverge [N] <name> [title]     go a different direction from bubble N in a side track; nothing waits
-init <title>                   create the default track (.bubble-tracks/track.json)
-add <title> | add ?            append a todo (or fog) bubble
-insert at N <title> | insert at N ?
-remove N | remove N:M
-move N to M | move N:M to M    block lands starting at position M
-move N | N:M --to <track>      move a bubble or block to the end of another track
-rename N <title>               retitle a planned bubble
-title <text>                   rename the track itself
-handoff <note> | handoff -     save (or clear) the note a fresh chat resumes from
-hint N <text> | hint N -       attach (or clear) a note for that bubble
-fog [N | N:M] [TYPE]           turn into fog (done bubbles need --force)
-type [N] <TYPE>                known-known | known-unknown | unknown-known | unknown-unknown (kk/ku/uk/uu)
-fill [N] <title>               fog -> todo, with the human's content (fog only)
-done                           pop the active bubble, then ⏸ stop
-```
-
-`--to <track>` on `add`, `insert` and `hint` writes into another existing track; the current track stays current.
-
-`N` is the Nth bubble on the track (omitted = the active bubble). `N:M` is N through M, inclusive.
-
-### Steering the track
-
-The CLI speaks a small domain language, so the same line works three ways:
-
-- **In chat:** `bubble move 2 to 3`. The agent runs it verbatim and shows the track.
-- **As a command:** `/bubble insert at 3 ?` (Claude Code), `/bubble …` (Gemini CLI), `$bubble …` (Codex).
-- **Directly, no agent:** `! node skills/bubble/scripts/cli/bubble.js fog 4:8` in Claude Code. A leading `bubble` word is optional, and a whole phrase can be one quoted argument.
-
-After every `done` the agent stops (⏸) and waits, so you can reshape the path before the next bubble starts.
-
-## State
-
-Tracks live in `.bubble-tracks/`, one `.json` file per track, and `.bubble-tracks/current` names the active one. Agents find `.bubble-tracks/` by walking up from the directory they report.
+Start or resume a track in chat:
 
 ```
-bubble switch idea-a       resume idea-a, or create it if it doesn't exist
-bubble tracks              list tracks, current marked →
-bubble close idea-a --force   finish idea-a for good (read-only, no reopen)
-bubble delete idea-b --force
+/bubble switch fix-generation
 ```
 
-In a fresh chat, `/bubble switch idea-a` is enough to pick a track back up. Hints and the handoff note carry the context between chats. When a chat gets heavy, the agent offers to save a `bubble handoff <note>` (what's half done, the decisions made, the next step) and tells you to `/clear` and switch back. Every bubble command, the status line and the fog gate act on the current track.
+The agent sketches the track, asks you about each fog bubble, then walks it one bubble at a time. You steer with the same short commands, three ways:
 
-`close` finishes a track without deleting it. A closed track is read-only (every bubble command refuses), shows 🔒 closed instead of `prev ‹ active › next`, and the fog gate ignores it. You can still `fork` or `diverge` from it. A closed fork counts as finished, so closing a fork pops its parent bubble. Closing a track also closes all its forks, top down; side tracks from `diverge` stay open. Without `--force`, `close` refuses and lists every track it would close.
+| Where | Example |
+|---|---|
+| In chat | `bubble move 2 to 3` (the agent runs it word for word and shows the track) |
+| As a command | `/bubble insert at 3 ?` (Claude Code, Gemini CLI) · `$bubble insert at 3 ?` (Codex) |
+| Directly, no agent | `! node skills/bubble/scripts/cli/bubble.js fog 4:8` (in Claude Code) |
 
-A track file:
+In a fresh chat, `/bubble switch <name>` picks a track back up. Hints and the handoff note carry the context between chats. When a chat gets long, the agent offers to save a handoff note and tells you to `/clear` and switch back.
 
-```json
-{ "title": "Fix generation",
-  "bubbles": [ { "title": "Repro", "state": "done" },
-               { "title": "???", "state": "fog", "type": "unknown-unknown" },
-               { "title": "Patch", "state": "todo" } ] }
-```
+### Fog types
 
-The active bubble is the first one that isn't done.
-
-## Fog types
-
-When the agent reaches a fog bubble, the human classifies it:
+When the agent reaches a fog bubble, you classify it:
 
 | Type | Who does what |
 |---|---|
-| `known-known` | The human writes the bubble. |
-| `known-unknown` | The agent researches or spikes options; the human picks. |
-| `unknown-known` | The agent surfaces existing knowledge (codebase, docs); the human confirms. |
-| `unknown-unknown` | The agent interviews the human, one question at a time. |
+| `known-known` | You write the bubble. |
+| `known-unknown` | The agent researches or spikes options, and you pick one. |
+| `unknown-known` | The agent surfaces what the codebase and docs already say, and you confirm. |
+| `unknown-unknown` | The agent interviews you, one question at a time. |
 
-The MVP stores the type. The skill tells the agent how to behave for each type, but no code enforces it.
+The type is stored on the bubble. The skill tells the agent how to act on each type, but no code enforces it.
 
-## Develop
+### Tracks
 
-The source is TypeScript in `src/`. It builds into `skills/bubble/scripts/`, and that JS is committed, because it's what the hooks, the status line and installed copies run. The installer (`src/skill-install/`) builds separately into `skill-install/`, so it isn't copied along with the skill. Users never need a build step or any dependency.
+Each track is its own idea, stored as one `.json` file in `.bubble-tracks/`. `.bubble-tracks/current` names the active track, and every command, the status line and the fog gate act on it.
+
+- **`fork`** builds on a bubble in a child track. The bubble waits until the fork is finished.
+- **`diverge`** goes in a different direction from a bubble, in a side track. Nothing waits for it.
+- **`close`** finishes a track for good. It becomes read-only, shows 🔒 closed, and the fog gate ignores it. Closing a track also closes its forks (side tracks stay open), and closing a fork pops its parent bubble.
+
+<details>
+<summary><b>CLI reference</b></summary>
 
 ```
+node skills/bubble/scripts/cli/bubble.js <command> [--dir <repo>] [--ascii]
+```
+
+A leading `bubble` word is optional, and a whole phrase can be passed as one quoted argument.
+
+| Command | Effect |
+|---|---|
+| `show` | Render the track and list its bubbles (exit 3 = active bubble is fog) |
+| `switch [name] [title]` | Resume a track, or create it (no name: the current one) |
+| `create <name> [title]` | Create a new track (refuses if it exists) |
+| `tracks` | List tracks, current marked `→` |
+| `close <name> --force` | Finish a track for good: read-only, closes its forks, pops its parent bubble |
+| `delete <name> --force` | Delete a track (not the current one) |
+| `fork [N] <name>` | Build on bubble N in a child track; the bubble waits for it |
+| `diverge [N] <name> [title]` | Go a different direction from bubble N in a side track; nothing waits |
+| `init <title>` | Create the default track (`.bubble-tracks/track.json`) |
+| `add <title>` · `add ?` | Append a todo (or fog) bubble |
+| `insert at N <title>` · `insert at N ?` | Insert a todo (or fog) bubble at position N |
+| `remove N` · `remove N:M` | Delete a bubble or a range |
+| `move N to M` · `move N:M to M` | Move a bubble or block so it starts at position M |
+| `move N --to <track>` · `move N:M --to <track>` | Move a bubble or block to the end of another track |
+| `rename N <title>` | Retitle a planned bubble |
+| `title <text>` | Rename the track itself |
+| `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat resumes from |
+| `hint N <text>` · `hint N -` | Attach (or clear) a note for that bubble |
+| `fog [N \| N:M] [TYPE]` | Turn bubbles into fog (done bubbles need `--force`) |
+| `type [N] <TYPE>` | Set the fog type: `kk` · `ku` · `uk` · `uu` (or the full names) |
+| `fill [N] <title>` | Plan a fog bubble with your content: fog → todo |
+| `done` | Pop the active bubble, then ⏸ stop |
+
+- `N` is the Nth bubble on the track. Omitted, it means the active bubble. `N:M` is N through M, inclusive.
+- `--to <track>` on `add`, `insert` and `hint` writes into another existing track, and the current track stays current.
+
+</details>
+
+<details>
+<summary><b>Track file format</b></summary>
+
+```json
+{
+  "title": "Fix generation",
+  "bubbles": [
+    { "title": "Repro", "state": "done" },
+    { "title": "???", "state": "fog", "type": "unknown-unknown" },
+    { "title": "Patch", "state": "todo" }
+  ]
+}
+```
+
+The active bubble is the first one that isn't done. Edit tracks through the CLI, not by hand.
+
+</details>
+
+<details>
+<summary><b>Colors and symbols</b></summary>
+
+In the status line and the terminal, the track title is green, the track is blue, and `prev ‹ active › next` is yellow.
+
+- `NO_COLOR=1` (or `--no-color` on `statusline.js`) turns colors off.
+- `BUBBLES_COLOR=1` forces them on.
+- `BUBBLES_ASCII=1` swaps the symbols for plain ASCII: `S *--@--?--o F`. In Claude Code, set it with `"env": { "BUBBLES_ASCII": "1" }` in settings.
+
+</details>
+
+## Development
+
+The source is TypeScript in `src/`. It builds into `skills/bubble/scripts/`, and that JS is committed, because it's what the hooks, the status line and installed copies run. The installer (`src/skill-install/`) builds separately into `skill-install/`, so it isn't copied along with the skill. Users never need a build step.
+
+```sh
 npm install     # dev only: typescript + @types/node
-npm run build   # src/*.ts -> skills/bubble/scripts/*.js, src/skill-install/*.ts -> skill-install/*.js
+npm run build   # src/ -> skills/bubble/scripts/ and skill-install/
 npm test        # node --test; fails if the committed JS drifts from src/
+npm run site    # build the demo site; preview with: python3 -m http.server -d dist/pages
 ```
 
-Edit `src/`, never the generated JS, and commit both together.
+Edit `src/`, never the generated JS, and commit both together. For a walkthrough of the code, see [`docs/`](docs/1-big-picture-map.md).
 
-Known limitation: the gate covers file-edit tools only. Writes made through shell commands (Bash, `run_shell_command`) aren't blocked.
+> [!WARNING]
+> The fog gate covers file-edit tools only. Writes made through shell commands (Bash, `run_shell_command`) aren't blocked.
 
 ## License
 
