@@ -1,6 +1,6 @@
 // Bubble-level commands: act on the current track (show, add, insert, remove, move, fog, fill, done, ...).
 
-import T = require('../index');
+import lib = require('../index');
 import links = require('../links');
 import { isAddr, isRange, needAddr, type Ctx } from './args';
 import { printTrack } from './print';
@@ -11,12 +11,12 @@ const STOP =
 
 /** Run a bubble-level command on the current track; returns an exit code. */
 export function runBubbleCommand(cmd: string, args: string[], { dir, opts, renderOpts }: Ctx): number {
-  const found = T.findTrack(dir);
+  const found = lib.findTrack(dir);
   if (!found) {
-    const bubblesDir = T.findBubblesDir(dir);
-    const names = bubblesDir ? T.listTracks(bubblesDir) : [];
+    const bubblesDir = lib.findBubblesDir(dir);
+    const names = bubblesDir ? lib.listTracks(bubblesDir) : [];
     if (!bubblesDir || !names.length) throw new Error(`no bubble track found from ${dir} — start one with: switch <name>`);
-    throw new Error(`current track "${T.currentName(bubblesDir)}" not found — use: switch <name> (tracks: ${names.join(', ')})`);
+    throw new Error(`current track "${lib.currentName(bubblesDir)}" not found — use: switch <name> (tracks: ${names.join(', ')})`);
   }
   if (!found.track) throw new Error(`invalid ${found.file}: ${found.error}`);
   const { file, track } = found;
@@ -30,20 +30,20 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
       return printTrack(file, track, renderOpts);
     case 'add': {
       const fog = opts.fog || (args.length === 1 && args[0] === '?');
-      msg = T.add(track, fog && args[0] === '?' ? undefined : args.join(' '), { fog, at: opts.at });
+      msg = lib.add(track, fog && args[0] === '?' ? undefined : args.join(' '), { fog, at: opts.at });
       break;
     }
     case 'insert': {
       if (args[0] === 'at') args.shift();
       const at = needAddr(args, 'insert at N <title> | insert at N ?');
       const fog = opts.fog || (args.length === 1 && args[0] === '?');
-      msg = T.add(track, fog && args[0] === '?' ? undefined : args.join(' '), { fog, at });
+      msg = lib.add(track, fog && args[0] === '?' ? undefined : args.join(' '), { fog, at });
       break;
     }
     case 'remove':
     case 'rm':
       if (!isRange(args[0])) throw new Error('usage: remove N | remove N:M');
-      msg = T.remove(track, args[0]);
+      msg = lib.remove(track, args[0]);
       break;
     case 'move':
     case 'mv': {
@@ -51,47 +51,47 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
       const spec = args.shift();
       if (args[0] === 'to') args.shift();
       if (!isAddr(args[0])) throw new Error('usage: move N to M | move N:M to M');
-      msg = T.move(track, spec, args[0]);
+      msg = lib.move(track, spec, args[0]);
       break;
     }
     case 'rename': {
       const addr = needAddr(args, 'rename N <title>');
-      msg = T.rename(track, addr, args.join(' '));
-      after = () => links.syncForkTitle(file, track.bubbles[T.resolve(track, addr)]);
+      msg = lib.rename(track, addr, args.join(' '));
+      after = () => links.syncForkTitle(file, track.bubbles[lib.resolve(track, addr)]);
       break;
     }
     case 'handoff':
-      msg = T.setHandoff(track, args.join(' '));
+      msg = lib.setHandoff(track, args.join(' '));
       if (track.handoff) msg += ` — in a fresh chat run: /bubble switch ${found.name}`;
       break;
     case 'title':
-      msg = T.setTitle(track, args.join(' '));
+      msg = lib.setTitle(track, args.join(' '));
       after = () => links.syncTitle(file, track);
       break;
     case 'hint': {
       const addr = needAddr(args, 'hint N <text> | hint N -');
-      msg = T.hint(track, addr, args.join(' '));
+      msg = lib.hint(track, addr, args.join(' '));
       break;
     }
     case 'fog': {
       const spec = isRange(args[0]) ? args.shift() : undefined;
-      msg = T.fog(track, spec, args[0], { force: opts.force });
+      msg = lib.fog(track, spec, args[0], { force: opts.force });
       break;
     }
     case 'type': {
       const addr = isAddr(args[0]) ? args.shift() : undefined;
-      msg = T.setType(track, addr, args[0]);
+      msg = lib.setType(track, addr, args[0]);
       break;
     }
     case 'fill': {
       const addr = isAddr(args[0]) ? args.shift() : undefined;
-      msg = T.fill(track, addr, args.join(' '));
+      msg = lib.fill(track, addr, args.join(' '));
       break;
     }
     case 'done': {
-      const active = T.activeBubble(track);
+      const active = lib.activeBubble(track);
       if (active) links.checkForkFinished(file, active, { force: opts.force });
-      msg = T.done(track);
+      msg = lib.done(track);
       after = () => links.popFinishedParents(file, track).join('\n');
       stop = true;
       break;
@@ -101,12 +101,12 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
   }
   // A closed track is archived: every change above is refused before anything is written.
   if (track.closed) throw new Error(`track "${found.name}" is closed (read-only) — fork, diverge or switch to keep working`);
-  T.saveTrack(file, track);
+  lib.saveTrack(file, track);
   const linked = after ? after() : '';
   console.log(linked ? `${msg}\n${linked}` : msg);
   console.log('');
   printTrack(file, track, renderOpts);
-  if (stop && T.activeBubble(track)) {
+  if (stop && lib.activeBubble(track)) {
     console.log('');
     console.log(STOP);
   }
