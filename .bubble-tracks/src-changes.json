@@ -41,9 +41,15 @@
       "state": "done",
       "id": 27,
       "hint": "src/lib/io.ts (hooks-only) -> src/lib/hooks/: input.ts (readStdinJson, resolveRoot, HookInput), paths.ts (extractTargetPaths, isInsideBubblesDir), index.ts. Update cli/fog-gate.ts, cli/statusline.ts, test/hooks.test.js."
+    },
+    {
+      "title": "Reorder store",
+      "state": "done",
+      "id": 28,
+      "hint": "src/lib/store.ts in place: constants, names/paths (checkName, trackPath), finding (findBubblesDir, listTracks), current pointer (currentName, setCurrent), load/save (loadTrack, saveTrack), then Found + findTrack. No code changes."
     }
   ],
-  "nextId": 28,
+  "nextId": 29,
   "handoff": {
     "note": "All done: entry points in src/cli/ (-> scripts/cli/*.js; installs must re-run install.js); lib/ is store.ts + model.ts + index.ts plus folders ops/, links/ (follow.ts shared, not re-exported), render/ (symbols/line/list), hooks/ (was io.ts). bubble-web loader resolves dir/index.js. Nothing committed yet. Can be closed once the human confirms.",
     "at": "2026-10-18 21:10 UTC"

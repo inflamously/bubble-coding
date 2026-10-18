@@ -7,7 +7,7 @@ bubble-tracks section the installer writes into *users'* AGENTS.md.)
 
 | Path | What | Built from | Committed |
 |---|---|---|---|
-| `src/*.ts`, `src/lib/` | CLI, fog gate, status line | — | yes |
+| `src/cli/`, `src/lib/` | CLI, fog gate, status line | — | yes |
 | `src/skill-install/` | the installer | — | yes |
 | `src/site/` | the GitHub Pages demo (see `src/site/README.md`) | — | yes |
 | `skills/bubble/` | the skill: `SKILL.md` + `scripts/` | `scripts/` from `src/` | yes |
@@ -40,6 +40,19 @@ bubble-tracks section the installer writes into *users'* AGENTS.md.)
 - **LF line endings** (`.gitattributes`), so built output matches on every OS.
 - **Planning lives in `.bubble-tracks/`** (committed; only `current` is git-ignored). Change it only through the CLI:
   `node skills/bubble/scripts/cli/bubble.js <command>`, never by editing the JSON.
+
+## File shape
+
+Every source file keeps the same order, top to bottom:
+
+1. the header comment: what the file is for
+2. imports
+3. types and interfaces
+4. constants (`const`, exported or not)
+5. module-level variables (`let`)
+6. functions, grouped by job (a short `// …` line may name a group); a helper goes before the functions that use it
+7. classes
+8. the default export, if there is one
 
 ## Commands
 
