@@ -1,6 +1,6 @@
 // Bubble-level commands: act on the current track (show, add, insert, remove, move, fog, fill, done, ...).
 
-import T = require('../track');
+import T = require('../index');
 import links = require('../links');
 import { isAddr, isRange, needAddr, type Ctx } from './args';
 import { printTrack } from './print';

@@ -1,6 +1,6 @@
 // What `show` and every mutation print: the track line, the listing, the handoff note or closed line, the fog warning.
 
-import T = require('../track');
+import T = require('../index');
 import links = require('../links');
 
 /** Print the track saved at `file`; returns 3 when the active bubble is fog (the human has to plan it), else 0. */

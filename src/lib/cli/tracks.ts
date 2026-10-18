@@ -2,7 +2,7 @@
 
 import fs = require('node:fs');
 import path = require('node:path');
-import T = require('../track');
+import T = require('../index');
 import links = require('../links');
 import { isAddr, type Ctx } from './args';
 import { printTrack } from './print';
