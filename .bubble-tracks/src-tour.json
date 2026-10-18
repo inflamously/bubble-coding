@@ -1,0 +1,62 @@
+{
+  "title": "Src tour",
+  "bubbles": [
+    {
+      "title": "Big picture map",
+      "state": "done",
+      "id": 1,
+      "hint": "Folder map of src/: what lives where (lib, cli, skill-install, site, entry points) and how it builds into dist/",
+      "sides": [
+        "src-changes.json",
+        "record-to.json"
+      ]
+    },
+    {
+      "title": "Data model",
+      "state": "todo",
+      "id": 2,
+      "hint": "src/lib/model.ts + track.ts: what a track/bubble is, states, ids, fork/side links"
+    },
+    {
+      "title": "Store and IO",
+      "state": "todo",
+      "id": 3,
+      "hint": "src/lib/store.ts, io.ts, links.ts: how .bubble-tracks/*.json is read/written and linked"
+    },
+    {
+      "title": "Ops and rendering",
+      "state": "todo",
+      "id": 4,
+      "hint": "src/lib/ops.ts + render.ts: the bubble commands' logic and the S ●──◐──○ F line"
+    },
+    {
+      "title": "CLI entry",
+      "state": "todo",
+      "id": 5,
+      "hint": "src/bubble.ts + lib/cli/*: arg parsing, dispatch, printing; trace one command end to end"
+    },
+    {
+      "title": "Hooks and statusline",
+      "state": "todo",
+      "id": 6,
+      "hint": "src/fog-gate.ts + statusline.ts: the edit-blocking hook and the agent status line"
+    },
+    {
+      "title": "Skill installer",
+      "state": "todo",
+      "id": 7,
+      "hint": "src/skill-install/*: how the skill gets installed per agent (claude, codex, gemini, AGENTS.md)"
+    },
+    {
+      "title": "Demo site",
+      "state": "todo",
+      "id": 8,
+      "hint": "src/site/*: the terminal demo, in-browser bubble machine, build scripts"
+    }
+  ],
+  "nextId": 10,
+  "handoff": {
+    "note": "Read-only tour of src/. Each stop: explain it in chat AND write docs/<N>-<slug>.md (e.g. docs/1-big-picture-map.md), code as it is now. Planned code changes go to the src-changes track (switch, add, switch back), not here.",
+    "at": "2026-10-18 18:57 UTC"
+  }
+}

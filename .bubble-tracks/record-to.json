@@ -1,0 +1,41 @@
+{
+  "title": "Record to track",
+  "origin": {
+    "track": "src-tour.json",
+    "bubble": 1,
+    "title": "Big picture map"
+  },
+  "bubbles": [
+    {
+      "title": "Pick --to commands",
+      "state": "done",
+      "id": 1,
+      "hint": "Decided: --to <track> on add, insert, hint only. State-changing commands (done, fill, fog, move, remove, rename, type) stay on the current track"
+    },
+    {
+      "title": "Implement --to",
+      "state": "todo",
+      "id": 2,
+      "hint": "Parse --to <track> in lib/cli/args.ts; the chosen bubble commands load/save that track instead of the current one, current stays unchanged. Target must exist and not be closed. Add to HELP"
+    },
+    {
+      "title": "Tests",
+      "state": "todo",
+      "id": 3,
+      "hint": "test/cli.test.js: --to writes into target, current track untouched, refuses closed/missing target and commands that don't take --to"
+    },
+    {
+      "title": "Skill docs",
+      "state": "todo",
+      "id": 4,
+      "hint": "SKILL.md command table + workflow: while walking one track, record future work into another with --to (replaces switch/add/switch)"
+    },
+    {
+      "title": "Rebuild scripts",
+      "state": "todo",
+      "id": 5,
+      "hint": "npm run build; build.test.js checks committed JS matches"
+    }
+  ],
+  "nextId": 6
+}
