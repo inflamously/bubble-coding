@@ -1,7 +1,7 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert');
-const T = require('../skills/bubble/scripts/lib/track');
+const T = require('../skills/bubble/scripts/lib');
 
 const sample = () => ({
   title: 'Fix generation',
@@ -87,6 +87,24 @@ test('move: single bubble and block, position in the resulting track', () => {
   assert.throws(() => T.move(t, '1', '9'), /bad position/);
   assert.strictEqual(titles(t), 'DEACB', 'failed move leaves the track untouched');
   assert.throws(() => T.move(t, '9', '1'), /no bubble/);
+});
+
+test('moveTo: block goes to the end of the target with new ids; linked bubbles stay', () => {
+  const t = five();
+  t.bubbles[1].hint = 'b note';
+  t.bubbles[2].state = 'done';
+  const target = { title: 'O', bubbles: [{ title: 'X', state: 'todo', id: 1 }], nextId: 2 };
+  assert.strictEqual(T.moveTo(t, '2:3', target, 'other'), 'moved "B", "C" to track "other"');
+  assert.strictEqual(titles(t), 'ADE');
+  assert.deepStrictEqual(target.bubbles.slice(1), [
+    { title: 'B', state: 'todo', id: 2, hint: 'b note' },
+    { title: 'C', state: 'done', id: 3 },
+  ]);
+  assert.strictEqual(target.nextId, 4);
+  t.bubbles[1].sides = ['side.json'];
+  assert.throws(() => T.moveTo(t, '1:2', target, 'other'), /"D" has a fork or side track/);
+  assert.strictEqual(titles(t), 'ADE', 'refused move leaves both tracks untouched');
+  assert.strictEqual(target.bubbles.length, 3);
 });
 
 test('remove: single and range', () => {

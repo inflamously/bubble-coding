@@ -16,8 +16,7 @@ function main() {
     // Color only for a human at a terminal (or BUBBLES_COLOR=1); agents reading the output get plain text.
     const color = process.env.BUBBLES_COLOR === '1' || (process.env.BUBBLES_COLOR !== '0' && !!process.stdout.isTTY);
     const ctx = { dir: path.resolve(opts.dir || process.cwd()), opts, renderOpts: { ascii: opts.ascii ? true : undefined, color } };
-    const code = (0, tracks_1.runTrackCommand)(cmd, args, ctx);
-    return code !== undefined ? code : (0, bubbles_1.runBubbleCommand)(cmd, args, ctx);
+    return (0, tracks_1.runTrackCommand)(cmd, args, ctx) ?? (0, bubbles_1.runBubbleCommand)(cmd, args, ctx);
 }
 try {
     process.exitCode = main();

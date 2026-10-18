@@ -1,5 +1,7 @@
-// Bubble-level commands: act on the current track (show, add, insert, remove, move, fog, fill, done, ...).
+// Bubble-level commands: act on the current track (show, add, insert, remove, move, fog, fill, done, ...),
+// or with --to on another one (add, insert, hint write into it; move sends bubbles to it).
 
+import fs = require('node:fs');
 import lib = require('../index');
 import links = require('../links');
 import { isAddr, isRange, needAddr, type Ctx } from './args';
@@ -9,8 +11,11 @@ const STOP =
   '⏸ stop — show this track to the human and wait. They may move, insert, remove, rename, hint or fog ' +
   'bubbles before the next one starts.';
 
-/** Run a bubble-level command on the current track; returns an exit code. */
-export function runBubbleCommand(cmd: string, args: string[], { dir, opts, renderOpts }: Ctx): number {
+/** Commands that take --to <track>: add, insert and hint write into it; move sends bubbles to it. */
+const TO_COMMANDS = ['add', 'insert', 'hint', 'move', 'mv'];
+
+/** The current track, loaded; throws when there is none or it can't be read. */
+function currentTrack(dir: string): lib.Found & { track: lib.Track } {
   const found = lib.findTrack(dir);
   if (!found) {
     const bubblesDir = lib.findBubblesDir(dir);
@@ -19,9 +24,34 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
     throw new Error(`current track "${lib.currentName(bubblesDir)}" not found — use: switch <name> (tracks: ${names.join(', ')})`);
   }
   if (!found.track) throw new Error(`invalid ${found.file}: ${found.error}`);
+  return found as lib.Found & { track: lib.Track };
+}
+
+/** The --to track, loaded; it must already exist. Whether it is current doesn't change. */
+function namedTrack(dir: string, name: string): lib.Found & { track: lib.Track } {
+  lib.checkName(name);
+  const bubblesDir = lib.findBubblesDir(dir);
+  const file = bubblesDir && lib.trackPath(bubblesDir, name);
+  if (!bubblesDir || !file || !fs.existsSync(file)) throw new Error(`no track "${name}" — create it first: create ${name}`);
+  try {
+    return { file, name, bubblesDir, track: lib.loadTrack(file) };
+  } catch (err) {
+    throw new Error(`invalid ${file}: ${(err as Error).message}`);
+  }
+}
+
+const closedError = (name: string) => new Error(`track "${name}" is closed (read-only) — fork, diverge or switch to keep working`);
+
+/** Run a bubble-level command on the current track (or the --to track); returns an exit code. */
+export function runBubbleCommand(cmd: string, args: string[], { dir, opts, renderOpts }: Ctx): number {
+  if (opts.to !== undefined && !TO_COMMANDS.includes(cmd)) throw new Error(`--to works only with add, insert, hint and move`);
+  // add, insert and hint --to change the --to track; move --to takes from the current one.
+  const into = opts.to !== undefined && cmd !== 'move' && cmd !== 'mv';
+  const found = into ? namedTrack(dir, opts.to!) : currentTrack(dir);
   const { file, track } = found;
 
   let msg: string;
+  let before: (() => void) | undefined; // another track's save, run once nothing can be refused any more
   let after: (() => string) | undefined; // cross-track follow-up (fork links), run once this track is saved
   let stop = false;
   switch (cmd) {
@@ -47,10 +77,21 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
       break;
     case 'move':
     case 'mv': {
-      if (!isRange(args[0])) throw new Error('usage: move N to M | move N:M to M');
+      const usage = 'usage: move N to M | move N:M to M | move N:M --to <track>';
+      if (!isRange(args[0])) throw new Error(usage);
       const spec = args.shift();
+      if (opts.to !== undefined) {
+        if (args.length) throw new Error(usage);
+        const target = namedTrack(dir, opts.to);
+        if (target.file === file) throw new Error(`"${target.name}" is the current track — use: move N to M`);
+        if (target.track.closed) throw closedError(target.name);
+        msg = lib.moveTo(track, spec, target.track, target.name);
+        msg += `\n${lib.render(target.track, renderOpts)}`;
+        before = () => lib.saveTrack(target.file, target.track); // first: a crash in between duplicates, never loses
+        break;
+      }
       if (args[0] === 'to') args.shift();
-      if (!isAddr(args[0])) throw new Error('usage: move N to M | move N:M to M');
+      if (!isAddr(args[0])) throw new Error(usage);
       msg = lib.move(track, spec, args[0]);
       break;
     }
@@ -100,7 +141,9 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
       throw new Error(`unknown command "${cmd}" — try: help`);
   }
   // A closed track is archived: every change above is refused before anything is written.
-  if (track.closed) throw new Error(`track "${found.name}" is closed (read-only) — fork, diverge or switch to keep working`);
+  if (track.closed) throw closedError(found.name);
+  if (into) msg += ` — on track "${found.name}"; the current track stays "${lib.currentName(found.bubblesDir)}"`;
+  if (before) before();
   lib.saveTrack(file, track);
   const linked = after ? after() : '';
   console.log(linked ? `${msg}\n${linked}` : msg);

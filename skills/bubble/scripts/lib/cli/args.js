@@ -25,6 +25,7 @@ exports.HELP = `bubble-tracks — the bubble language
                                 insert a todo (or fog) bubble at position N
   remove N | N:M                delete a bubble or a range
   move N to M | move N:M to M   move a bubble or block so it starts at M
+  move N | N:M --to <track>     move a bubble or block to the end of another track
   rename N <title>              retitle a planned bubble
   title <text>                  rename the track itself
   handoff <note> | handoff -    save (or clear) the note a fresh chat reads to resume
@@ -37,6 +38,7 @@ exports.HELP = `bubble-tracks — the bubble language
   N: position on the track (omitted = the active bubble). N:M: N through M, inclusive.
   TYPE: ${model_1.TYPES.join(' | ')}  (or kk | ku | uk | uu)
   Options: --dir <repo> (default: cwd)   --ascii (or BUBBLES_ASCII=1)   --force
+           --to <track>: add, insert and hint write into that track; the current track stays current
            color on a terminal; BUBBLES_COLOR=1/0 forces it, NO_COLOR disables it
            add <title> --at N  and  add --fog [title]  still work.
   Exit codes: 0 ok, 1 error, 3 (show only) active bubble is fog — needs the human`;
@@ -55,6 +57,11 @@ function parseArgs(argv) {
             opts.dir = argv[++i];
         else if (a === '--at')
             opts.at = argv[++i];
+        else if (a === '--to') {
+            opts.to = argv[++i];
+            if (!opts.to || opts.to.startsWith('--'))
+                throw new Error('--to needs a track name');
+        }
         else if (a === '-h' || a === '--help')
             opts.help = true;
         else if (a.startsWith('--'))

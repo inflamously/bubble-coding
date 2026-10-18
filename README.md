@@ -81,6 +81,7 @@ add <title> | add ?            append a todo (or fog) bubble
 insert at N <title> | insert at N ?
 remove N | remove N:M
 move N to M | move N:M to M    block lands starting at position M
+move N | N:M --to <track>      move a bubble or block to the end of another track
 rename N <title>               retitle a planned bubble
 title <text>                   rename the track itself
 handoff <note> | handoff -     save (or clear) the note a fresh chat resumes from
@@ -90,6 +91,8 @@ type [N] <TYPE>                known-known | known-unknown | unknown-known | unk
 fill [N] <title>               fog -> todo, with the human's content (fog only)
 done                           pop the active bubble, then ⏸ stop
 ```
+
+`--to <track>` on `add`, `insert` and `hint` writes into another existing track; the current track stays current.
 
 `N` is the Nth bubble on the track (omitted = the active bubble). `N:M` is N through M, inclusive.
 

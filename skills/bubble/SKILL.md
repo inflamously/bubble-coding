@@ -37,6 +37,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `insert at N <title>` · `insert at N ?` | Insert a todo (or fog) bubble at position N |
 | `remove N` · `remove N:M` | Delete a bubble or a range |
 | `move N to M` · `move N:M to M` | Move a bubble or block so it starts at position M |
+| `move N --to <track>` · `move N:M --to <track>` | Move a bubble or block to the end of another existing track (state, type and hint kept; new ids). Refuses bubbles with a fork or side track. |
 | `rename N <title>` | Retitle a planned bubble (not fog) |
 | `title <text>` | Rename the track itself (keep it short too) |
 | `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat reads to resume this track |
@@ -47,6 +48,8 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `done` | Pop the active bubble, then ⏸ stop |
 
 Every bubble command acts on the **current track**. Each track is its own idea or implementation, with its own fog gate.
+
+`--to <track>` on `add`, `insert` and `hint` writes into another existing track instead, and the current track stays current. Use it to record future work for another track while you walk this one, rather than `switch`, `add`, `switch` back.
 
 N: position on the track; omitted = the active bubble. `N:M` = N through M, inclusive.
 TYPE: `known-known` · `known-unknown` · `unknown-known` · `unknown-unknown` (or `kk` · `ku` · `uk` · `uu`).
@@ -96,6 +99,8 @@ A track stays clean when every bubble on it serves one goal. If the human asks f
 - **`diverge`**: the request goes **a different direction**. The side track remembers where it came from, but nothing waits for it.
 
 **Ask before splitting.** Suggest the one you think fits, with a one-line reason, and let the human pick: `fork`, `diverge`, or keep it on this track. For example: *"This goes a different direction from 'Login'. Diverge into `auth-sso`? (fork / diverge / keep here)"*. Run the command only after they answer. Then the new track is current and starts **fresh**: ask the human what to do around the new goal, sketch it (step 1), and classify all fog. Small, related follow-ups (a missing step of the same goal) still go on the current track with `insert`.
+
+Work that belongs to a track that **already exists** doesn't need a split: record it there with `add <title> --to <track>` (plus `hint N <text> --to <track>`) and keep walking. To regroup bubbles that ended up on the wrong track, `move N:M --to <track>`.
 
 Links use the bubble's stable `id` (from the track's `nextId` counter), so `move`, `insert` and `remove` never break them.
 

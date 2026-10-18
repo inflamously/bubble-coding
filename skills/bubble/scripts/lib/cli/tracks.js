@@ -4,19 +4,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.runTrackCommand = runTrackCommand;
 const fs = require("node:fs");
 const path = require("node:path");
-const T = require("../track");
+const lib = require("../index");
 const links = require("../links");
 const args_1 = require("./args");
 const print_1 = require("./print");
 /** Run a track-level command; returns an exit code, or undefined if `cmd` isn't one. */
 function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
-    const bubblesDir = T.findBubblesDir(dir) || path.join(dir, T.TRACK_DIR);
+    const bubblesDir = lib.findBubblesDir(dir) || path.join(dir, lib.TRACK_DIR);
     const create = (name, title) => {
-        T.checkName(name);
-        const file = T.trackPath(bubblesDir, name);
+        lib.checkName(name);
+        const file = lib.trackPath(bubblesDir, name);
         const track = { title: title || name, bubbles: [] };
-        T.saveTrack(file, track);
-        T.setCurrent(bubblesDir, name);
+        lib.saveTrack(file, track);
+        lib.setCurrent(bubblesDir, name);
         console.log(`created track "${name}" (${file})`);
         console.log('');
         (0, print_1.printTrack)(file, track, renderOpts);
@@ -24,14 +24,14 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
     };
     switch (cmd) {
         case 'init': {
-            const file = T.trackPath(bubblesDir, T.DEFAULT_NAME);
+            const file = lib.trackPath(bubblesDir, lib.DEFAULT_NAME);
             if (fs.existsSync(file))
                 throw new Error(`track already exists: ${file} — use: switch <name> for another track`);
-            return create(T.DEFAULT_NAME, args.join(' ') || path.basename(dir));
+            return create(lib.DEFAULT_NAME, args.join(' ') || path.basename(dir));
         }
         case 'create': {
-            const name = T.checkName(args.shift());
-            if (fs.existsSync(T.trackPath(bubblesDir, name)))
+            const name = lib.checkName(args.shift());
+            if (fs.existsSync(lib.trackPath(bubblesDir, name)))
                 throw new Error(`track "${name}" already exists — use: switch ${name}`);
             return create(name, args.join(' '));
         }
@@ -39,31 +39,31 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
             let name = args.shift();
             if (!name) {
                 // bare switch: resume the current (last switched-to) track, else the default one
-                name = [T.currentName(bubblesDir), T.DEFAULT_NAME].find((n) => fs.existsSync(T.trackPath(bubblesDir, n)));
+                name = [lib.currentName(bubblesDir), lib.DEFAULT_NAME].find((n) => fs.existsSync(lib.trackPath(bubblesDir, n)));
                 if (!name)
                     throw new Error('no tracks yet — start one with: switch <name>');
             }
-            T.checkName(name);
-            const file = T.trackPath(bubblesDir, name);
+            lib.checkName(name);
+            const file = lib.trackPath(bubblesDir, name);
             if (!fs.existsSync(file))
                 return create(name, args.join(' '));
-            const track = T.loadTrack(file);
-            T.setCurrent(bubblesDir, name);
+            const track = lib.loadTrack(file);
+            lib.setCurrent(bubblesDir, name);
             console.log(`resumed track "${name}"`);
             console.log('');
             return (0, print_1.printTrack)(file, track, renderOpts);
         }
         case 'tracks': {
-            const names = T.listTracks(bubblesDir);
+            const names = lib.listTracks(bubblesDir);
             if (!names.length) {
                 console.log('no tracks yet — start one with: switch <name>');
                 return 0;
             }
-            const current = T.currentName(bubblesDir);
+            const current = lib.currentName(bubblesDir);
             for (const name of names) {
                 let line;
                 try {
-                    line = T.render(T.loadTrack(T.trackPath(bubblesDir, name)), renderOpts);
+                    line = lib.render(lib.loadTrack(lib.trackPath(bubblesDir, name)), renderOpts);
                 }
                 catch (err) {
                     line = `invalid: ${err.message}`;
@@ -75,30 +75,30 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
         case 'fork':
         case 'diverge': {
             // fork: build on the bubble (child.parent, the bubble waits). diverge: a different direction (child.origin, nothing waits).
-            const found = T.findTrack(dir);
+            const found = lib.findTrack(dir);
             if (!found)
                 throw new Error(`no current track to ${cmd} from — start one with: switch <name>`);
             if (!found.track)
                 throw new Error(`invalid ${found.file}: ${found.error}`);
             const addr = (0, args_1.isAddr)(args[0]) ? args.shift() : undefined;
-            const name = T.checkName(args.shift());
+            const name = lib.checkName(args.shift());
             // A side track can have its own title; a fork's title follows its bubble.
             const title = args.join(' ').trim();
             if (title && cmd === 'fork')
                 throw new Error(`fork takes no title — the fork is titled after its bubble and stays in sync (diverge takes one)`);
-            const childFile = T.trackPath(bubblesDir, name);
+            const childFile = lib.trackPath(bubblesDir, name);
             if (fs.existsSync(childFile))
                 throw new Error(`track "${name}" already exists — pick another name`);
             // References are relative paths with forward slashes, so tracks survive a moved checkout and other OSes.
             const rel = (from, to) => path.relative(path.dirname(from), to).split(path.sep).join('/');
-            const bubble = (cmd === 'fork' ? T.markFork : T.markDiverge)(found.track, addr, rel(found.file, childFile));
+            const bubble = (cmd === 'fork' ? lib.markFork : lib.markDiverge)(found.track, addr, rel(found.file, childFile));
             const link = { track: rel(childFile, found.file), bubble: bubble.id, title: bubble.title };
             const child = { title: title || bubble.title, [cmd === 'fork' ? 'parent' : 'origin']: link, bubbles: [] };
-            T.saveTrack(childFile, child);
+            lib.saveTrack(childFile, child);
             // A closed track stays untouched: the child links back to it, but it never learns about the child.
             if (!found.track.closed)
-                T.saveTrack(found.file, found.track);
-            T.setCurrent(bubblesDir, name);
+                lib.saveTrack(found.file, found.track);
+            lib.setCurrent(bubblesDir, name);
             const verb = cmd === 'fork' ? 'forked' : 'diverged from';
             const from = found.track.closed ? ` of closed track "${found.name}"` : '';
             console.log(`${verb} "${bubble.title}"${from} into track "${name}" — a fresh track: ask the human what to do, sketch it, classify all fog`);
@@ -107,11 +107,11 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
         }
         case 'close': {
             // Closing cascades top down to every fork under the track, whatever its state; side tracks stay open.
-            const name = T.checkName(args.shift());
-            const file = T.trackPath(bubblesDir, name);
+            const name = lib.checkName(args.shift());
+            const file = lib.trackPath(bubblesDir, name);
             if (!fs.existsSync(file))
                 throw new Error(`no track "${name}"`);
-            const track = T.loadTrack(file);
+            const track = lib.loadTrack(file);
             const forks = links.forkTree(file, track);
             const open = forks.filter((f) => f.track && !f.track.closed);
             const label = (f) => `"${path.basename(f.file, '.json')}"`;
@@ -127,7 +127,7 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
             }
             else {
                 track.closed = { at };
-                T.saveTrack(file, track);
+                lib.saveTrack(file, track);
                 console.log(`closed track "${name}" — read-only from now on; fork, diverge or switch to keep working`);
                 // A closed fork counts as finished, so its parent bubble pops (and on up the chain).
                 for (const msg of links.popFinishedParents(file, track))
@@ -143,7 +143,7 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
                 else {
                     try {
                         f.track.closed = { at };
-                        T.saveTrack(f.file, f.track);
+                        lib.saveTrack(f.file, f.track);
                         console.log(`  closed fork ${label(f)}`);
                     }
                     catch (err) {
@@ -157,11 +157,11 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
             return failed ? 1 : 0;
         }
         case 'delete': {
-            const name = T.checkName(args.shift());
-            const file = T.trackPath(bubblesDir, name);
+            const name = lib.checkName(args.shift());
+            const file = lib.trackPath(bubblesDir, name);
             if (!fs.existsSync(file))
                 throw new Error(`no track "${name}"`);
-            if (name === T.currentName(bubblesDir))
+            if (name === lib.currentName(bubblesDir))
                 throw new Error(`"${name}" is the current track — switch to another one first`);
             if (!opts.force)
                 throw new Error(`deleting "${name}" can't be undone — confirm with the human, then re-run with --force`);

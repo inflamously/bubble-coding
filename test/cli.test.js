@@ -291,6 +291,90 @@ test('close cascades top down to every fork, whatever its state; side tracks sta
   assert.match(run('close', 'top', '--force').stderr, /track "top" is already closed/);
 });
 
+/** A repo with track "main" (A B C, current) and track "other" (X). */
+function twoTracks() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-to-'));
+  const run = (...args) =>
+    spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
+  const file = (name) => path.join(dir, '.bubble-tracks', name);
+  const read = (name) => JSON.parse(fs.readFileSync(file(`${name}.json`), 'utf8'));
+  const current = () => fs.readFileSync(file('current'), 'utf8').trim();
+  run('create', 'other', 'O');
+  run('add', 'X');
+  run('create', 'main', 'M');
+  for (const t of ['A', 'B', 'C']) run('add', t);
+  return { run, read, current };
+}
+
+test('--to: add, insert and hint write into that track; the current track stays as it is', () => {
+  const { run, read, current } = twoTracks();
+  const main = JSON.stringify(read('main'));
+  const r = run('add', 'Later', '--to', 'other');
+  assert.strictEqual(r.status, 0);
+  assert.match(r.stdout, /added bubble "Later" — on track "other"; the current track stays "main"/);
+  assert.match(r.stdout, /^O   S ◐──○ F/m); // shows the track it wrote into
+  run('add', '?', '--to', 'other');
+  run('insert', 'at', '1', 'First', '--to', 'other');
+  run('hint', '2', 'x note', '--to', 'other');
+  assert.deepStrictEqual(read('other').bubbles, [
+    { title: 'First', state: 'todo', id: 4 },
+    { title: 'X', state: 'todo', id: 1, hint: 'x note' },
+    { title: 'Later', state: 'todo', id: 2 },
+    { title: '???', state: 'fog', id: 3 },
+  ]);
+  assert.strictEqual(JSON.stringify(read('main')), main);
+  assert.strictEqual(current(), 'main');
+});
+
+test('--to refuses: missing or closed target, commands that do not take it; nothing is written', () => {
+  const { run, read } = twoTracks();
+  const before = () => JSON.stringify([read('main'), read('other')]);
+  const saved = before();
+  assert.match(run('add', 'Z', '--to', 'nope').stderr, /no track "nope" — create it first/);
+  assert.match(run('add', 'Z', '--to', '../evil').stderr, /bad track name/);
+  assert.match(run('add', 'Z', '--to').stderr, /--to needs a track name/);
+  assert.match(run('add', 'Z', '--to', '--force').stderr, /--to needs a track name/);
+  for (const args of [['done'], ['fog', '1'], ['remove', '1'], ['rename', '1', 'Y'], ['show']]) {
+    assert.match(run(...args, '--to', 'other').stderr, /--to works only with add, insert, hint and move/, args.join(' '));
+  }
+  assert.strictEqual(before(), saved);
+  run('switch', 'other');
+  run('close', 'other', '--force');
+  run('switch', 'main');
+  const closed = before();
+  assert.match(run('add', 'Z', '--to', 'other').stderr, /track "other" is closed \(read-only\)/);
+  assert.match(run('move', '1', '--to', 'other').stderr, /track "other" is closed \(read-only\)/);
+  assert.strictEqual(before(), closed);
+});
+
+test('move --to: bubbles go to the end of the other track with new ids; linked ones and bad input are refused', () => {
+  const { run, read, current } = twoTracks();
+  run('hint', '2', 'b note');
+  run('done');
+  const r = run('move', '1:2', '--to', 'other');
+  assert.strictEqual(r.status, 0);
+  assert.match(r.stdout, /moved "A", "B" to track "other"\nO   S ◐──●──○ F/);
+  assert.match(r.stdout, /^M   S ◐ F   ◐ C$/m); // then the current track, now without them
+  assert.deepStrictEqual(read('main').bubbles, [{ title: 'C', state: 'todo', id: 3 }]);
+  assert.deepStrictEqual(read('other').bubbles, [
+    { title: 'X', state: 'todo', id: 1 },
+    { title: 'A', state: 'done', id: 2 },
+    { title: 'B', state: 'todo', id: 3, hint: 'b note' },
+  ]);
+  assert.strictEqual(current(), 'main');
+
+  const saved = JSON.stringify([read('main'), read('other')]);
+  assert.match(run('move', '1', '--to', 'main').stderr, /"main" is the current track — use: move N to M/);
+  assert.match(run('move', '1', 'to', '2', '--to', 'other').stderr, /usage: move .*--to <track>/);
+  assert.match(run('move', '5', '--to', 'other').stderr, /no bubble at "5"/);
+  run('diverge', '1', 'side');
+  run('switch', 'main');
+  const linked = JSON.stringify([read('main'), read('other')]);
+  assert.match(run('move', '1', '--to', 'other').stderr, /"C" has a fork or side track linked to this track/);
+  assert.strictEqual(JSON.stringify([read('main'), read('other')]), linked);
+  assert.notStrictEqual(linked, saved); // the diverge itself did write main
+});
+
 test('handoff note survives switching away and is shown on resume', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-handoff-'));
   const run = (...args) => spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8' });
