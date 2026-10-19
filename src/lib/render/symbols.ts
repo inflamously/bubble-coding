@@ -1,6 +1,6 @@
 // What rendering is made of: the symbol sets (unicode / ascii), colors, and title shortening.
 
-import type { Bubble } from '../model';
+import type { Bubble } from '../model.js';
 
 export interface RenderOpts {
   ascii?: boolean; // undefined = BUBBLES_ASCII decides

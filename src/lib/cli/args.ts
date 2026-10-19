@@ -1,8 +1,8 @@
 // CLI language: help text and argument parsing. A leading "bubble" word is optional,
 // and a whole phrase can be passed as one quoted argument: node bubble.js "move 2 to 5".
 
-import { TYPES } from '../model';
-import type { RenderOpts } from '../render';
+import { TYPES } from '../model.js';
+import type { RenderOpts } from '../render/index.js';
 
 export interface CliOpts {
   ascii?: boolean;

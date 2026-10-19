@@ -1,12 +1,13 @@
-'use strict';
-const test = require('node:test');
-const assert = require('node:assert');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const { spawnSync } = require('child_process');
-const { extractTargetPaths } = require('../skills/bubble/scripts/lib/hooks');
+import test from 'node:test';
+import assert from 'node:assert';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import { spawnSync } from 'child_process';
+import { fileURLToPath } from 'node:url';
+import { extractTargetPaths } from '../skills/bubble/scripts/lib/hooks/index.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SCRIPTS = path.join(__dirname, '..', 'skills', 'bubble', 'scripts', 'cli');
 const run = (script, input, env = {}) =>
   spawnSync(process.execPath, [path.join(SCRIPTS, script)], {

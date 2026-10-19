@@ -1,15 +1,12 @@
-"use strict";
 // Track-level commands: which track is current (init, create, switch, tracks, close, delete, fork, diverge).
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.runTrackCommand = runTrackCommand;
-const fs = require("node:fs");
-const path = require("node:path");
-const lib = require("../index");
-const links = require("../links");
-const args_1 = require("./args");
-const print_1 = require("./print");
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as lib from '../index.js';
+import * as links from '../links/index.js';
+import { isAddr } from './args.js';
+import { printTrack } from './print.js';
 /** Run a track-level command; returns an exit code, or undefined if `cmd` isn't one. */
-function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
+export function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
     const bubblesDir = lib.findBubblesDir(dir) || path.join(dir, lib.TRACK_DIR);
     const create = (name, title) => {
         lib.checkName(name);
@@ -19,7 +16,7 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
         lib.setCurrent(bubblesDir, name);
         console.log(`created track "${name}" (${file})`);
         console.log('');
-        (0, print_1.printTrack)(file, track, renderOpts);
+        printTrack(file, track, renderOpts);
         return 0;
     };
     switch (cmd) {
@@ -51,7 +48,7 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
             lib.setCurrent(bubblesDir, name);
             console.log(`resumed track "${name}"`);
             console.log('');
-            return (0, print_1.printTrack)(file, track, renderOpts);
+            return printTrack(file, track, renderOpts);
         }
         case 'tracks': {
             const names = lib.listTracks(bubblesDir);
@@ -80,7 +77,7 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
                 throw new Error(`no current track to ${cmd} from — start one with: switch <name>`);
             if (!found.track)
                 throw new Error(`invalid ${found.file}: ${found.error}`);
-            const addr = (0, args_1.isAddr)(args[0]) ? args.shift() : undefined;
+            const addr = isAddr(args[0]) ? args.shift() : undefined;
             const name = lib.checkName(args.shift());
             // A side track can have its own title; a fork's title follows its bubble.
             const title = args.join(' ').trim();
@@ -103,7 +100,7 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
             const from = found.track.closed ? ` of closed track "${found.name}"` : '';
             console.log(`${verb} "${bubble.title}"${from} into track "${name}" — a fresh track: ask the human what to do, sketch it, classify all fog`);
             console.log('');
-            return (0, print_1.printTrack)(childFile, child, renderOpts);
+            return printTrack(childFile, child, renderOpts);
         }
         case 'close': {
             // Closing cascades top down to every fork under the track, whatever its state; side tracks stay open.
@@ -153,7 +150,7 @@ function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
                 }
             }
             console.log('');
-            (0, print_1.printTrack)(file, track, renderOpts);
+            printTrack(file, track, renderOpts);
             return failed ? 1 : 0;
         }
         case 'delete': {

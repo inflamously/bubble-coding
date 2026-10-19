@@ -1,6 +1,6 @@
 // Mark a bubble as the source of a fork or a side track (the links themselves are in ../links).
 
-import { resolve, ensureId, type Addr, type Bubble, type Track } from '../model';
+import { resolve, ensureId, type Addr, type Bubble, type Track } from '../model.js';
 
 /** Link a bubble to the child track forked from it; its state stays as is. Returns the bubble (with its id). */
 export function markFork(track: Track, addr: Addr, childRef: string): Bubble & { id: number } {

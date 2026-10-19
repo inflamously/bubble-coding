@@ -1,6 +1,6 @@
 // Retitle a bubble or the track itself.
 
-import { resolve, type Addr, type Track } from '../model';
+import { resolve, type Addr, type Track } from '../model.js';
 
 export function rename(track: Track, addr: Addr, title: string): string {
   const b = track.bubbles[resolve(track, addr)];

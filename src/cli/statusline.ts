@@ -1,8 +1,8 @@
 // Claude Code status line: renders the bubble track for the current workspace.
 // settings.json: { "statusLine": { "type": "command", "command": "node \"<abs>/statusline.js\"" } }
 
-import lib = require('../lib');
-import { readStdinJson, resolveRoot } from '../lib/hooks';
+import * as lib from '../lib/index.js';
+import { readStdinJson, resolveRoot } from '../lib/hooks/index.js';
 
 async function main(): Promise<string> {
   const input = await readStdinJson();

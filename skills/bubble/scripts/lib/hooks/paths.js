@@ -1,11 +1,7 @@
-"use strict";
 // Which files a pre-tool call is about to edit, and whether one is part of the plan itself.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractTargetPaths = extractTargetPaths;
-exports.isInsideBubblesDir = isInsideBubblesDir;
-const path = require("node:path");
+import * as path from 'node:path';
 /** Pull target file paths from a pre-tool payload (absolute, resolved against `root`). */
-function extractTargetPaths(input, root) {
+export function extractTargetPaths(input, root) {
     const ti = (input && input.tool_input) || {};
     const found = [];
     for (const key of ['file_path', 'path', 'notebook_path']) {
@@ -27,7 +23,7 @@ function extractTargetPaths(input, root) {
     return found.map((p) => path.resolve(root, p));
 }
 /** True if `file` is inside `<trackRoot>/.bubble-tracks`. */
-function isInsideBubblesDir(file, trackFile) {
+export function isInsideBubblesDir(file, trackFile) {
     const bubblesDir = path.dirname(trackFile);
     const rel = path.relative(bubblesDir, file);
     return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));

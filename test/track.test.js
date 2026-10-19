@@ -1,7 +1,6 @@
-'use strict';
-const test = require('node:test');
-const assert = require('node:assert');
-const T = require('../skills/bubble/scripts/lib');
+import test from 'node:test';
+import assert from 'node:assert';
+import * as T from '../skills/bubble/scripts/lib/index.js';
 
 const sample = () => ({
   title: 'Fix generation',

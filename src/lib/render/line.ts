@@ -1,7 +1,7 @@
 // The one-line track: the status line and `tracks`.
 
-import { activeIndex, type Track } from '../model';
-import { paint, shorten, symbolFor, symbolsFor, useColor, type RenderOpts } from './symbols';
+import { activeIndex, type Track } from '../model.js';
+import { paint, shorten, symbolFor, symbolsFor, useColor, type RenderOpts } from './symbols.js';
 
 /** One-line render: `Title   S ●──●──◐──❓ F   prev ‹ ◐ active › next`, or `… F   🔒 closed` (nothing active). */
 export function render(track: Track, opts?: RenderOpts): string {

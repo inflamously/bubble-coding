@@ -1,12 +1,10 @@
-"use strict";
 // Claude Code status line: renders the bubble track for the current workspace.
 // settings.json: { "statusLine": { "type": "command", "command": "node \"<abs>/statusline.js\"" } }
-Object.defineProperty(exports, "__esModule", { value: true });
-const lib = require("../lib");
-const hooks_1 = require("../lib/hooks");
+import * as lib from '../lib/index.js';
+import { readStdinJson, resolveRoot } from '../lib/hooks/index.js';
 async function main() {
-    const input = await (0, hooks_1.readStdinJson)();
-    const found = lib.findTrack((0, hooks_1.resolveRoot)(input));
+    const input = await readStdinJson();
+    const found = lib.findTrack(resolveRoot(input));
     if (!found)
         return '';
     if (!found.track)

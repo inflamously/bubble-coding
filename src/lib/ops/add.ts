@@ -1,6 +1,6 @@
 // Add a todo or fog bubble, at the end or at a position (insert).
 
-import { ensureId, type Addr, type Bubble, type Track } from '../model';
+import { ensureId, type Addr, type Bubble, type Track } from '../model.js';
 
 export function add(track: Track, title: string | undefined, { fog = false, at }: { fog?: boolean; at?: Addr } = {}): string {
   const bubbles = track.bubbles;

@@ -1,6 +1,6 @@
 // Pop the active bubble.
 
-import { activeIndex, type Track } from '../model';
+import { activeIndex, type Track } from '../model.js';
 
 /** Mark the active bubble done. */
 export function done(track: Track): string {

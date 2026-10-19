@@ -1,29 +1,27 @@
-"use strict";
 // bubble-tracks installer — wires the portable skill into each agent.
 // Arguments live in args, shared I/O in io, and one adapter per agent in agents/.
-Object.defineProperty(exports, "__esModule", { value: true });
-const os = require("node:os");
-const path = require("node:path");
-const args_1 = require("./args");
-const context_1 = require("./context");
-const io_1 = require("./io");
-const claude_1 = require("./agents/claude");
-const codex_1 = require("./agents/codex");
-const gemini_1 = require("./agents/gemini");
-const agents_md_1 = require("./agents/agents-md");
-const ADAPTERS = { claude: claude_1.claude, codex: codex_1.codex, gemini: gemini_1.gemini, 'agents-md': agents_md_1.agentsMd };
+import * as os from 'node:os';
+import * as path from 'node:path';
+import { HELP, parseArgs } from './args.js';
+import { createCtx } from './context.js';
+import { log } from './io.js';
+import { claude } from './agents/claude.js';
+import { codex } from './agents/codex.js';
+import { gemini } from './agents/gemini.js';
+import { agentsMd } from './agents/agents-md.js';
+const ADAPTERS = { claude, codex, gemini, 'agents-md': agentsMd };
 function main() {
-    const opts = (0, args_1.parseArgs)(process.argv.slice(2));
+    const opts = parseArgs(process.argv.slice(2));
     if (opts.help || !opts.agents.length)
-        return (0, io_1.log)(args_1.HELP);
+        return log(HELP);
     if (opts.user && opts.project)
         throw new Error('use either --user or --project, not both');
     const base = opts.user ? os.homedir() : path.resolve(opts.project || process.cwd());
-    (0, io_1.log)(`bubble-tracks -> ${opts.user ? 'user' : 'project'}: ${base}${opts.dryRun ? '  (dry run)' : ''}`);
-    const ctx = (0, context_1.createCtx)(opts, base);
+    log(`bubble-tracks -> ${opts.user ? 'user' : 'project'}: ${base}${opts.dryRun ? '  (dry run)' : ''}`);
+    const ctx = createCtx(opts, base);
     for (const agent of opts.agents)
         ADAPTERS[agent](ctx);
-    (0, io_1.log)('\nDone. Start a track with:  node "<skill>/scripts/cli/bubble.js" init "<title>"  (or ask the agent: /bubble)');
+    log('\nDone. Start a track with:  node "<skill>/scripts/cli/bubble.js" init "<title>"  (or ask the agent: /bubble)');
 }
 try {
     main();

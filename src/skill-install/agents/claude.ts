@@ -1,10 +1,10 @@
 // Claude Code installs as a plugin; the installer only prints how, and optionally sets the status line.
 
-import os = require('node:os');
-import path = require('node:path');
-import { type Ctx, scriptsOf } from '../context';
-import { REPO, SKILL_SRC, log, nodeCmd, slash } from '../io';
-import { readSettings } from '../settings';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import { type Ctx, scriptsOf } from '../context.js';
+import { REPO, SKILL_SRC, log, nodeCmd, slash } from '../io.js';
+import { readSettings } from '../settings.js';
 
 export function claude(ctx: Ctx): void {
   log('\n[claude] Claude Code plugin');

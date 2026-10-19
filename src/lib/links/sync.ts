@@ -1,9 +1,9 @@
 // Title sync: a fork and the bubble it came from keep the same title, whichever side is renamed.
 
-import fs = require('node:fs');
-import { loadTrack, saveTrack } from '../store';
-import type { Bubble, Track } from '../model';
-import { linked, parentOf } from './follow';
+import * as fs from 'node:fs';
+import { loadTrack, saveTrack } from '../store.js';
+import type { Bubble, Track } from '../model.js';
+import { linked, parentOf } from './follow.js';
 
 /** Child retitled -> the parent bubble takes the new title. Returns a message, or ''. */
 export function syncTitle(childFile: string, child: Track): string {

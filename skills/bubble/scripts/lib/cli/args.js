@@ -1,12 +1,7 @@
-"use strict";
 // CLI language: help text and argument parsing. A leading "bubble" word is optional,
 // and a whole phrase can be passed as one quoted argument: node bubble.js "move 2 to 5".
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isRange = exports.isAddr = exports.HELP = void 0;
-exports.parseArgs = parseArgs;
-exports.needAddr = needAddr;
-const model_1 = require("../model");
-exports.HELP = `bubble-tracks — the bubble language
+import { TYPES } from '../model.js';
+export const HELP = `bubble-tracks — the bubble language
 
   switch [name] [title]         resume track <name>, or create it; no name = the current (else default) track
   create <name> [title]         create a new track (refuses if it exists) and make it current
@@ -36,13 +31,13 @@ exports.HELP = `bubble-tracks — the bubble language
   done                          pop the active bubble, then ⏸ stop
 
   N: position on the track (omitted = the active bubble). N:M: N through M, inclusive.
-  TYPE: ${model_1.TYPES.join(' | ')}  (or kk | ku | uk | uu)
+  TYPE: ${TYPES.join(' | ')}  (or kk | ku | uk | uu)
   Options: --dir <repo> (default: cwd)   --ascii (or BUBBLES_ASCII=1)   --force
            --to <track>: add, insert and hint write into that track; the current track stays current
            color on a terminal; BUBBLES_COLOR=1/0 forces it, NO_COLOR disables it
            add <title> --at N  and  add --fog [title]  still work.
   Exit codes: 0 ok, 1 error, 3 (show only) active bubble is fog — needs the human`;
-function parseArgs(argv) {
+export function parseArgs(argv) {
     const pos = [];
     const opts = {};
     for (let i = 0; i < argv.length; i++) {
@@ -76,12 +71,10 @@ function parseArgs(argv) {
         pos.shift();
     return { cmd: pos[0], args: pos.slice(1), opts };
 }
-const isAddr = (s) => typeof s === 'string' && /^\d+$/.test(s);
-exports.isAddr = isAddr;
-const isRange = (s) => typeof s === 'string' && /^\d+(:\d+)?$/.test(s);
-exports.isRange = isRange;
-function needAddr(args, usage) {
-    if (!(0, exports.isAddr)(args[0]))
+export const isAddr = (s) => typeof s === 'string' && /^\d+$/.test(s);
+export const isRange = (s) => typeof s === 'string' && /^\d+(:\d+)?$/.test(s);
+export function needAddr(args, usage) {
+    if (!isAddr(args[0]))
         throw new Error(`usage: ${usage}`);
     return args.shift();
 }

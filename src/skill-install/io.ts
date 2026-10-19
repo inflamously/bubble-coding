@@ -1,9 +1,11 @@
 // Installer I/O: repo paths, adapter templates, and writes that honour --dry-run.
 
-import fs = require('node:fs');
-import path = require('node:path');
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /** This compiles to skill-install/io.js, one level below the repo root. */
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const REPO = path.join(__dirname, '..');
 export const SKILL_SRC = path.join(REPO, 'skills', 'bubble');
 const ADAPTERS = path.join(REPO, 'adapters');

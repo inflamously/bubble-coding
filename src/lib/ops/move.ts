@@ -1,6 +1,6 @@
 // Move bubbles within the track, or to another one.
 
-import { resolveRange, ensureId, type Addr, type Bubble, type Track } from '../model';
+import { resolveRange, ensureId, type Addr, type Bubble, type Track } from '../model.js';
 
 /** Move a bubble (or N:M block) so it starts at position `to` in the resulting track. */
 export function move(track: Track, spec: Addr, to: string | number): string {

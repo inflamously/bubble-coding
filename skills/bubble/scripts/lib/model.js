@@ -1,27 +1,17 @@
-"use strict";
 // The bubble model: fog types, which bubble is active, and how addresses resolve to bubbles.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TYPES = void 0;
-exports.normalizeType = normalizeType;
-exports.checkType = checkType;
-exports.ensureId = ensureId;
-exports.activeIndex = activeIndex;
-exports.activeBubble = activeBubble;
-exports.resolve = resolve;
-exports.resolveRange = resolveRange;
-exports.TYPES = ['known-known', 'known-unknown', 'unknown-known', 'unknown-unknown'];
+export const TYPES = ['known-known', 'known-unknown', 'unknown-known', 'unknown-unknown'];
 const TYPE_ALIASES = { kk: 'known-known', ku: 'known-unknown', uk: 'unknown-known', uu: 'unknown-unknown' };
 /** Expand kk/ku/uk/uu shorthands; undefined stays undefined. */
-function normalizeType(type) {
+export function normalizeType(type) {
     return type === undefined ? undefined : TYPE_ALIASES[type] || type;
 }
-function checkType(type) {
-    if (type !== undefined && !exports.TYPES.includes(type)) {
-        throw new Error(`unknown fog type "${type}" (use: ${exports.TYPES.join(', ')} — or kk, ku, uk, uu)`);
+export function checkType(type) {
+    if (type !== undefined && !TYPES.includes(type)) {
+        throw new Error(`unknown fog type "${type}" (use: ${TYPES.join(', ')} — or kk, ku, uk, uu)`);
     }
 }
 /** A bubble's stable id from the track's counter. Positions shift on move/insert/remove; ids don't. */
-function ensureId(track, b) {
+export function ensureId(track, b) {
     if (b.id === undefined) {
         b.id = track.nextId || 1;
         track.nextId = b.id + 1;
@@ -29,16 +19,16 @@ function ensureId(track, b) {
     return b.id;
 }
 /** Index of the active bubble: the first one that isn't done. -1 = everything done. */
-function activeIndex(track) {
+export function activeIndex(track) {
     return (track.bubbles || []).findIndex((b) => b.state !== 'done');
 }
 /** The active bubble, or null when all done. */
-function activeBubble(track) {
+export function activeBubble(track) {
     const i = activeIndex(track);
     return i === -1 ? null : track.bubbles[i];
 }
 /** Resolve an address to a bubble index: "3" -> 3rd bubble; undefined -> the active bubble. */
-function resolve(track, addr) {
+export function resolve(track, addr) {
     if (addr === undefined || addr === null || addr === '') {
         const i = activeIndex(track);
         if (i === -1)
@@ -53,7 +43,7 @@ function resolve(track, addr) {
     return n - 1;
 }
 /** Resolve "N" or "N:M" (inclusive, 1-based) to zero-based [from, to]. */
-function resolveRange(track, spec) {
+export function resolveRange(track, spec) {
     const m = /^(\d+)(?::(\d+))?$/.exec(String(spec || ''));
     if (!m)
         throw new Error(`bad bubble range "${spec}" (use N or N:M)`);

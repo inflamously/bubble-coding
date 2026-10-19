@@ -1,6 +1,6 @@
 // The note a fresh chat reads to resume the track.
 
-import type { Track } from '../model';
+import type { Track } from '../model.js';
 
 /** Save (or clear with "-") the note a fresh chat reads to pick this track back up. */
 export function setHandoff(track: Track, note: string, now = new Date()): string {

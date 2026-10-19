@@ -2,9 +2,9 @@
 // Layout: .bubble-tracks/<name>.json per track, .bubble-tracks/current names the active one.
 // No `current` file = the default track, .bubble-tracks/track.json (name "track").
 
-import fs = require('node:fs');
-import path = require('node:path');
-import type { Track } from './model';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import type { Track } from './model.js';
 
 /** What findTrack returns: where the current track is, and the track (or why it could not be read). */
 export interface Found {

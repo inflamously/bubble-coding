@@ -1,11 +1,8 @@
-"use strict";
 // Pop the active bubble.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.done = done;
-const model_1 = require("../model");
+import { activeIndex } from '../model.js';
 /** Mark the active bubble done. */
-function done(track) {
-    const i = (0, model_1.activeIndex)(track);
+export function done(track) {
+    const i = activeIndex(track);
     if (i === -1)
         throw new Error('all bubbles are already done');
     const b = track.bubbles[i];

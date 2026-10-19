@@ -1,38 +1,31 @@
-"use strict";
 // Installer I/O: repo paths, adapter templates, and writes that honour --dry-run.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SKILL_SRC = exports.REPO = void 0;
-exports.log = log;
-exports.slash = slash;
-exports.nodeCmd = nodeCmd;
-exports.readText = readText;
-exports.template = template;
-exports.createWriter = createWriter;
-const fs = require("node:fs");
-const path = require("node:path");
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 /** This compiles to skill-install/io.js, one level below the repo root. */
-exports.REPO = path.join(__dirname, '..');
-exports.SKILL_SRC = path.join(exports.REPO, 'skills', 'bubble');
-const ADAPTERS = path.join(exports.REPO, 'adapters');
-function log(msg) {
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+export const REPO = path.join(__dirname, '..');
+export const SKILL_SRC = path.join(REPO, 'skills', 'bubble');
+const ADAPTERS = path.join(REPO, 'adapters');
+export function log(msg) {
     console.log(msg);
 }
 /** Forward slashes work for node on Windows too, and avoid escaping trouble in JSON/TOML/shell. */
-function slash(p) {
+export function slash(p) {
     return p.split(path.sep).join('/');
 }
-function nodeCmd(script) {
+export function nodeCmd(script) {
     return `node "${slash(script)}"`;
 }
 /** The file's text, or null if it doesn't exist. */
-function readText(file) {
+export function readText(file) {
     return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
 }
 /** An adapters/ file with every {{KEY}} replaced. */
-function template(name, vars) {
+export function template(name, vars) {
     return fs.readFileSync(path.join(ADAPTERS, name), 'utf8').replace(/\{\{(\w+)\}\}/g, (m, key) => vars[key] ?? m);
 }
-function createWriter(dryRun) {
+export function createWriter(dryRun) {
     function file(target, content) {
         const old = readText(target);
         if (old === content)

@@ -1,9 +1,9 @@
 // Following a link: where a relative link path points, and the parent bubble a fork came from.
 
-import fs = require('node:fs');
-import path = require('node:path');
-import { loadTrack } from '../store';
-import type { Bubble, Track } from '../model';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { loadTrack } from '../store.js';
+import type { Bubble, Track } from '../model.js';
 
 /** The file a link path points to; link paths are relative to the linking track file. */
 export const linked = (fromFile: string, rel: string) => path.resolve(path.dirname(fromFile), rel);

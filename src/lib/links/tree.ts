@@ -1,10 +1,10 @@
 // Reading links for display and for close: a link's label, and every fork under a track.
 
-import fs = require('node:fs');
-import path = require('node:path');
-import { loadTrack } from '../store';
-import type { Link, Track } from '../model';
-import { linked } from './follow';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { loadTrack } from '../store.js';
+import type { Link, Track } from '../model.js';
+import { linked } from './follow.js';
 
 /** `#<position> "<title>"` of the bubble a link points to, as it is now; just the stored title once the track or bubble is gone. */
 export function linkLabel(fromFile: string, link: Link): string {

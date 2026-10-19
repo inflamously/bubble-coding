@@ -1,12 +1,15 @@
-'use strict';
 // The hooks and the installer run committed JS, so it must be exactly what src/*.ts builds to.
-const test = require('node:test');
-const assert = require('node:assert');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const { spawnSync } = require('child_process');
+import test from 'node:test';
+import assert from 'node:assert';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import { spawnSync } from 'child_process';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 
+const require = createRequire(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 // Each tsconfig and the committed folder its build must match.
 const BUILDS = [

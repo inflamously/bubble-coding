@@ -1,11 +1,11 @@
 // Track-level commands: which track is current (init, create, switch, tracks, close, delete, fork, diverge).
 
-import fs = require('node:fs');
-import path = require('node:path');
-import lib = require('../index');
-import links = require('../links');
-import { isAddr, type Ctx } from './args';
-import { printTrack } from './print';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as lib from '../index.js';
+import * as links from '../links/index.js';
+import { isAddr, type Ctx } from './args.js';
+import { printTrack } from './print.js';
 
 /** Run a track-level command; returns an exit code, or undefined if `cmd` isn't one. */
 export function runTrackCommand(cmd: string, args: string[], { dir, opts, renderOpts }: Ctx): number | undefined {

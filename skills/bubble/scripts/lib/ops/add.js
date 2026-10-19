@@ -1,9 +1,6 @@
-"use strict";
 // Add a todo or fog bubble, at the end or at a position (insert).
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.add = add;
-const model_1 = require("../model");
-function add(track, title, { fog = false, at } = {}) {
+import { ensureId } from '../model.js';
+export function add(track, title, { fog = false, at } = {}) {
     const bubbles = track.bubbles;
     const bubble = fog ? { title: title || '???', state: 'fog' } : { title: title || '', state: 'todo' };
     if (!bubble.title)
@@ -17,6 +14,6 @@ function add(track, title, { fog = false, at } = {}) {
     else {
         bubbles.push(bubble);
     }
-    (0, model_1.ensureId)(track, bubble);
+    ensureId(track, bubble);
     return `added ${fog ? 'fog' : 'bubble'} "${bubble.title}"`;
 }

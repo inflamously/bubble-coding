@@ -1,20 +1,17 @@
-"use strict";
 // Gemini CLI: the skill, a BeforeTool fog-gate hook in .gemini/settings.json, and a /bubble command.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.gemini = gemini;
-const path = require("node:path");
-const context_1 = require("../context");
-const io_1 = require("../io");
-const settings_1 = require("../settings");
-function gemini(ctx) {
-    (0, io_1.log)('\n[gemini] Gemini CLI');
-    const { gate, cli } = (0, context_1.scriptsOf)(ctx.installSkill());
+import * as path from 'node:path';
+import { scriptsOf } from '../context.js';
+import { log, nodeCmd, slash, template } from '../io.js';
+import { readSettings, upsertHook } from '../settings.js';
+export function gemini(ctx) {
+    log('\n[gemini] Gemini CLI');
+    const { gate, cli } = scriptsOf(ctx.installSkill());
     const file = path.join(ctx.base, '.gemini', 'settings.json');
-    const settings = (0, settings_1.upsertHook)((0, settings_1.readSettings)(file), 'BeforeTool', {
+    const settings = upsertHook(readSettings(file), 'BeforeTool', {
         matcher: 'write_file|replace',
-        hooks: [{ name: 'bubble-fog-gate', type: 'command', command: (0, io_1.nodeCmd)(gate), timeout: 10000 }],
+        hooks: [{ name: 'bubble-fog-gate', type: 'command', command: nodeCmd(gate), timeout: 10000 }],
     });
     ctx.write.json(file, settings);
-    ctx.write.file(path.join(ctx.base, '.gemini', 'commands', 'bubble.toml'), (0, io_1.template)('gemini/bubble.toml', { CLI: (0, io_1.slash)(cli) }));
-    (0, io_1.log)(`  Use it with: /bubble   (Gemini warns once before running a new hook)`);
+    ctx.write.file(path.join(ctx.base, '.gemini', 'commands', 'bubble.toml'), template('gemini/bubble.toml', { CLI: slash(cli) }));
+    log(`  Use it with: /bubble   (Gemini warns once before running a new hook)`);
 }

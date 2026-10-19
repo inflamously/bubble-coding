@@ -1,15 +1,15 @@
 // bubble-tracks installer — wires the portable skill into each agent.
 // Arguments live in args, shared I/O in io, and one adapter per agent in agents/.
 
-import os = require('node:os');
-import path = require('node:path');
-import { HELP, parseArgs, type Agent } from './args';
-import { createCtx, type Ctx } from './context';
-import { log } from './io';
-import { claude } from './agents/claude';
-import { codex } from './agents/codex';
-import { gemini } from './agents/gemini';
-import { agentsMd } from './agents/agents-md';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import { HELP, parseArgs, type Agent } from './args.js';
+import { createCtx, type Ctx } from './context.js';
+import { log } from './io.js';
+import { claude } from './agents/claude.js';
+import { codex } from './agents/codex.js';
+import { gemini } from './agents/gemini.js';
+import { agentsMd } from './agents/agents-md.js';
 
 const ADAPTERS: Record<Agent, (ctx: Ctx) => void> = { claude, codex, gemini, 'agents-md': agentsMd };
 

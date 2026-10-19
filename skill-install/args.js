@@ -1,10 +1,6 @@
-"use strict";
 // Installer arguments: which agents to wire up, where, and whether to write anything.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.HELP = exports.AGENTS = void 0;
-exports.parseArgs = parseArgs;
-exports.AGENTS = ['claude', 'codex', 'gemini', 'agents-md'];
-exports.HELP = `bubble-tracks installer
+export const AGENTS = ['claude', 'codex', 'gemini', 'agents-md'];
+export const HELP = `bubble-tracks installer
 
   node install.js <agent...> [--project <dir> | --user] [--apply-statusline] [--dry-run]
 
@@ -13,8 +9,8 @@ exports.HELP = `bubble-tracks installer
   --user              install user-wide (~/.agents, ~/.codex, ~/.gemini)
   --apply-statusline  (claude) write the statusLine into ~/.claude/settings.json
   --dry-run           print what would change, write nothing`;
-const isAgent = (a) => exports.AGENTS.includes(a);
-function parseArgs(argv) {
+const isAgent = (a) => AGENTS.includes(a);
+export function parseArgs(argv) {
     const opts = { agents: [] };
     for (let i = 0; i < argv.length; i++) {
         const a = argv[i];
@@ -29,7 +25,7 @@ function parseArgs(argv) {
         else if (a === '-h' || a === '--help')
             opts.help = true;
         else if (a === 'all')
-            opts.agents.push(...exports.AGENTS);
+            opts.agents.push(...AGENTS);
         else if (isAgent(a))
             opts.agents.push(a);
         else

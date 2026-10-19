@@ -1,11 +1,8 @@
-"use strict";
 // The human's note on a bubble.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.hint = hint;
-const model_1 = require("../model");
+import { resolve } from '../model.js';
 /** Attach a note to a bubble; "-" or empty clears it. */
-function hint(track, addr, text) {
-    const b = track.bubbles[(0, model_1.resolve)(track, addr)];
+export function hint(track, addr, text) {
+    const b = track.bubbles[resolve(track, addr)];
     if (!text || text === '-') {
         delete b.hint;
         return `cleared hint on "${b.title}"`;

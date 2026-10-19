@@ -1,9 +1,9 @@
 // Gemini CLI: the skill, a BeforeTool fog-gate hook in .gemini/settings.json, and a /bubble command.
 
-import path = require('node:path');
-import { type Ctx, scriptsOf } from '../context';
-import { log, nodeCmd, slash, template } from '../io';
-import { readSettings, upsertHook } from '../settings';
+import * as path from 'node:path';
+import { type Ctx, scriptsOf } from '../context.js';
+import { log, nodeCmd, slash, template } from '../io.js';
+import { readSettings, upsertHook } from '../settings.js';
 
 export function gemini(ctx: Ctx): void {
   log('\n[gemini] Gemini CLI');

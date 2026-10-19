@@ -1,7 +1,7 @@
 // The numbered listing that `show` prints.
 
-import { activeIndex, type Track } from '../model';
-import { symbolFor, symbolsFor, type RenderOpts } from './symbols';
+import { activeIndex, type Track } from '../model.js';
+import { symbolFor, symbolsFor, type RenderOpts } from './symbols.js';
 
 /** Multi-line listing of the track, with addressable indexes. */
 export function list(track: Track, opts?: RenderOpts): string {

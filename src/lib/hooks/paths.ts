@@ -1,7 +1,7 @@
 // Which files a pre-tool call is about to edit, and whether one is part of the plan itself.
 
-import path = require('node:path');
-import type { HookInput } from './input';
+import * as path from 'node:path';
+import type { HookInput } from './input.js';
 
 /** Pull target file paths from a pre-tool payload (absolute, resolved against `root`). */
 export function extractTargetPaths(input: HookInput, root: string): string[] {

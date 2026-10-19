@@ -1,25 +1,22 @@
-"use strict";
 // The one-line track: the status line and `tracks`.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.render = render;
-const model_1 = require("../model");
-const symbols_1 = require("./symbols");
+import { activeIndex } from '../model.js';
+import { paint, shorten, symbolFor, symbolsFor, useColor } from './symbols.js';
 /** One-line render: `Title   S ●──●──◐──❓ F   prev ‹ ◐ active › next`, or `… F   🔒 closed` (nothing active). */
-function render(track, opts) {
-    const sym = (0, symbols_1.symbolsFor)(opts);
+export function render(track, opts) {
+    const sym = symbolsFor(opts);
     const bubbles = track.bubbles || [];
-    const index = track.closed ? -1 : (0, model_1.activeIndex)(track);
-    const color = (0, symbols_1.useColor)(opts);
-    const line = bubbles.map((b, i) => (0, symbols_1.symbolFor)(b, i === index, sym)).join(sym.sep);
-    const head = `${(0, symbols_1.paint)(color, 'title', track.title || 'Plan')}   ${(0, symbols_1.paint)(color, 'track', `S ${line}${line ? ' ' : ''}F`)}   `;
+    const index = track.closed ? -1 : activeIndex(track);
+    const color = useColor(opts);
+    const line = bubbles.map((b, i) => symbolFor(b, i === index, sym)).join(sym.sep);
+    const head = `${paint(color, 'title', track.title || 'Plan')}   ${paint(color, 'track', `S ${line}${line ? ' ' : ''}F`)}   `;
     if (track.closed)
-        return head + (0, symbols_1.paint)(color, 'context', `${sym.lock} closed`);
+        return head + paint(color, 'context', `${sym.lock} closed`);
     const active = bubbles[index];
     if (!active)
-        return head + (0, symbols_1.paint)(color, 'context', 'all done');
+        return head + paint(color, 'context', 'all done');
     const prev = bubbles[index - 1];
     const next = bubbles[index + 1];
-    const here = active.state === 'fog' ? `${sym.fog} needs you` : `${sym.active} ${(0, symbols_1.shorten)(active.title, sym)}`;
-    const context = (prev ? (0, symbols_1.shorten)(prev.title, sym) + sym.prev : '') + here + (next ? sym.next + (0, symbols_1.shorten)(next.title, sym) : '');
-    return head + (0, symbols_1.paint)(color, 'context', context);
+    const here = active.state === 'fog' ? `${sym.fog} needs you` : `${sym.active} ${shorten(active.title, sym)}`;
+    const context = (prev ? shorten(prev.title, sym) + sym.prev : '') + here + (next ? sym.next + shorten(next.title, sym) : '');
+    return head + paint(color, 'context', context);
 }

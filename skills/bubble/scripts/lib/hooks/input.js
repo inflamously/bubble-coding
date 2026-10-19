@@ -1,10 +1,6 @@
-"use strict";
 // The agent's JSON payload on stdin, and the workspace dir it names.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.readStdinJson = readStdinJson;
-exports.resolveRoot = resolveRoot;
 /** Read all of stdin and parse JSON; {} on empty/invalid input. */
-function readStdinJson() {
+export function readStdinJson() {
     return new Promise((resolve) => {
         if (process.stdin.isTTY)
             return resolve({});
@@ -23,7 +19,7 @@ function readStdinJson() {
     });
 }
 /** Workspace dir from the agent's JSON payload (Claude / Codex / Gemini), never the process cwd first. */
-function resolveRoot(input) {
+export function resolveRoot(input) {
     const ws = (input && input.workspace) || {};
     return (ws.project_dir ||
         ws.current_dir ||

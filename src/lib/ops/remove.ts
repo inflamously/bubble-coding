@@ -1,6 +1,6 @@
 // Delete bubbles.
 
-import { resolveRange, type Addr, type Track } from '../model';
+import { resolveRange, type Addr, type Track } from '../model.js';
 
 export function remove(track: Track, spec: Addr): string {
   const [from, to] = resolveRange(track, spec);

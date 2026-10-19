@@ -1,15 +1,18 @@
-'use strict';
 // The demo site (src/site/) is TypeScript. This compiles it like `npm run site` does, then checks that
 // bubble-web, the CLI in a browser, prints exactly what the real CLI prints: every `bubble …` line
 // of demo/story.md runs on both and the output and the disk are compared.
-const test = require('node:test');
-const assert = require('node:assert');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const { spawnSync } = require('child_process');
-const { pathToFileURL } = require('url');
+import test from 'node:test';
+import assert from 'node:assert';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import { spawnSync } from 'child_process';
+import { pathToFileURL } from 'url';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 
+const require = createRequire(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 const CLI_DIR = path.join(ROOT, 'skills', 'bubble', 'scripts');
 

@@ -1,9 +1,9 @@
 // Codex CLI: the skill in .agents/skills plus a PreToolUse fog-gate hook in .codex/hooks.json.
 
-import path = require('node:path');
-import { type Ctx, scriptsOf } from '../context';
-import { log, nodeCmd } from '../io';
-import { readSettings, upsertHook } from '../settings';
+import * as path from 'node:path';
+import { type Ctx, scriptsOf } from '../context.js';
+import { log, nodeCmd } from '../io.js';
+import { readSettings, upsertHook } from '../settings.js';
 
 export function codex(ctx: Ctx): void {
   log('\n[codex] Codex CLI');

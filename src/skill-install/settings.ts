@@ -1,6 +1,6 @@
 // Agent settings files (Claude / Codex / Gemini JSON): read them, and swap in our fog-gate hook.
 
-import { readText } from './io';
+import { readText } from './io.js';
 
 export interface HookGroup {
   matcher?: string;

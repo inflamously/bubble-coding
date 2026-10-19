@@ -1,6 +1,6 @@
 // The fog lifecycle: turn bubbles into fog, classify them, fill them with the human's content.
 
-import { normalizeType, checkType, resolve, resolveRange, type Addr, type Track } from '../model';
+import { normalizeType, checkType, resolve, resolveRange, type Addr, type Track } from '../model.js';
 
 /** Turn a bubble (or N:M range) into fog. Done bubbles need `force`. */
 export function fog(track: Track, spec: Addr, type?: string, { force = false }: { force?: boolean } = {}): string {

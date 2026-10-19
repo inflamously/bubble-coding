@@ -1,11 +1,8 @@
-"use strict";
 // What `show` and every mutation print: the track line, the listing, the handoff note or closed line, the fog warning.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.printTrack = printTrack;
-const lib = require("../index");
-const links = require("../links");
+import * as lib from '../index.js';
+import * as links from '../links/index.js';
 /** Print the track saved at `file`; returns 3 when the active bubble is fog (the human has to plan it), else 0. */
-function printTrack(file, track, opts) {
+export function printTrack(file, track, opts) {
     console.log(lib.render(track, opts));
     const { fork, side } = lib.SYMBOLS.unicode;
     if (track.parent)

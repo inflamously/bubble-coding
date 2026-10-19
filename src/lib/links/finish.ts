@@ -1,10 +1,10 @@
 // Fork completion: a forked bubble waits for its child, and a finished child pops it, on up the chain.
 
-import fs = require('node:fs');
-import path = require('node:path');
-import { loadTrack, saveTrack } from '../store';
-import type { Bubble, Track } from '../model';
-import { linked, parentOf } from './follow';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { loadTrack, saveTrack } from '../store.js';
+import type { Bubble, Track } from '../model.js';
+import { linked, parentOf } from './follow.js';
 
 /** A track is finished when it's closed, or has bubbles and all are done (an empty, unsketched track isn't). */
 export const isFinished = (track: Track) =>

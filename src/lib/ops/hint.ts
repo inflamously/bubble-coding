@@ -1,6 +1,6 @@
 // The human's note on a bubble.
 
-import { resolve, type Addr, type Track } from '../model';
+import { resolve, type Addr, type Track } from '../model.js';
 
 /** Attach a note to a bubble; "-" or empty clears it. */
 export function hint(track: Track, addr: Addr, text: string): string {

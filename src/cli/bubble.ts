@@ -2,10 +2,10 @@
 //   node bubble.js move 2 to 5   ·   node bubble.js "fog 4:8"   ·   node bubble.js bubble insert at 3 ?
 // Parsing lives in lib/cli/args, track commands in lib/cli/tracks, bubble commands in lib/cli/bubbles.
 
-import path = require('node:path');
-import { HELP, parseArgs, type Ctx } from '../lib/cli/args';
-import { runTrackCommand } from '../lib/cli/tracks';
-import { runBubbleCommand } from '../lib/cli/bubbles';
+import * as path from 'node:path';
+import { HELP, parseArgs, type Ctx } from '../lib/cli/args.js';
+import { runTrackCommand } from '../lib/cli/tracks.js';
+import { runBubbleCommand } from '../lib/cli/bubbles.js';
 
 function main(): number {
   const { cmd, args, opts } = parseArgs(process.argv.slice(2));

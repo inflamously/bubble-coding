@@ -1,11 +1,11 @@
 // Bubble-level commands: act on the current track (show, add, insert, remove, move, fog, fill, done, ...),
 // or with --to on another one (add, insert, hint write into it; move sends bubbles to it).
 
-import fs = require('node:fs');
-import lib = require('../index');
-import links = require('../links');
-import { isAddr, isRange, needAddr, type Ctx } from './args';
-import { printTrack } from './print';
+import * as fs from 'node:fs';
+import * as lib from '../index.js';
+import * as links from '../links/index.js';
+import { isAddr, isRange, needAddr, type Ctx } from './args.js';
+import { printTrack } from './print.js';
 
 const STOP =
   '⏸ stop — show this track to the human and wait. They may move, insert, remove, rename, hint or fog ' +

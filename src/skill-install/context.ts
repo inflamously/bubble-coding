@@ -1,9 +1,9 @@
 // What every agent adapter gets: the install base, the options, a writer, and the installed skill.
 
-import fs = require('node:fs');
-import path = require('node:path');
-import type { InstallOpts } from './args';
-import { SKILL_SRC, log, createWriter, type Writer } from './io';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import type { InstallOpts } from './args.js';
+import { SKILL_SRC, log, createWriter, type Writer } from './io.js';
 
 export interface Ctx {
   base: string;

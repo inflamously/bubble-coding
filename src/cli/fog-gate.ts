@@ -2,8 +2,8 @@
 // and Gemini CLI (BeforeTool). Blocks file edits while the active bubble is fog.
 // Exit 2 + stderr = block (all three agents). Fails open on any internal error. Never writes stdout.
 
-import lib = require('../lib');
-import { readStdinJson, resolveRoot, extractTargetPaths, isInsideBubblesDir } from '../lib/hooks';
+import * as lib from '../lib/index.js';
+import { readStdinJson, resolveRoot, extractTargetPaths, isInsideBubblesDir } from '../lib/hooks/index.js';
 
 async function main(): Promise<number> {
   const input = await readStdinJson();
