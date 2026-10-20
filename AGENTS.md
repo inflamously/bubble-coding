@@ -10,7 +10,7 @@ bubble-tracks section the installer writes into *users'* AGENTS.md.)
 | `src/cli/`, `src/lib/` | CLI, fog gate, status line | — | yes |
 | `src/skill-install/` | the installer | — | yes |
 | `src/site/` | the GitHub Pages demo (see `src/site/README.md`) | — | yes |
-| `skills/bubble/` | the skill: `SKILL.md` + `scripts/` | `scripts/` from `src/` | yes |
+| `skills/bubble/` | the skill: `SKILL.md`, `fallback.md` (no-Node hand edits, drift-tested) + `scripts/` | `scripts/` from `src/` | yes |
 | `skill-install/` | the installer, built | `src/skill-install/` | yes |
 | `dist/site/` | the demo, compiled | `src/site/` | no |
 | `dist/pages/` | the demo, assembled for Pages (CI builds it on every deploy) | `dist/site/` + `demo/story.md` + the CLI | no |

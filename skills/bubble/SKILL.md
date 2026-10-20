@@ -20,6 +20,8 @@ Every change goes through the CLI. **Don't hand-edit anything in `.bubble-tracks
 node "<dir containing this SKILL.md>/scripts/cli/bubble.js" <command> [args]
 ```
 
+If `node` is missing (exit 127, `command not found`), read `fallback.md` next to this file and work the track by hand.
+
 Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble language**, the same words the human uses:
 
 | Command | Effect |

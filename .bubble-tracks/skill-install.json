@@ -28,7 +28,7 @@
     },
     {
       "title": "Fallback gate file",
-      "state": "todo",
+      "state": "done",
       "id": 5,
       "hint": "skills/bubble/fallback.md: soft gate + track JSON format + manual walking commands (show/done/add/insert/fill/type/hint/switch/create/handoff); fork/diverge/close/delete/move --to need the CLI. SKILL.md: if node missing (exit 127) read fallback.md. Drift test vs store code"
     }
@@ -37,5 +37,8 @@
   "handoff": {
     "note": "Decided: keep Node + fallback.md for no-Node envs. Rejected: Python port, Go/Rust binaries, JS single-exe, Cosmopolitan. Node floor is now 18: the full suite (50 tests, incl. build+site after a clean npm ci in docker node:18/20/22-alpine) passes, and the installer + CLI were smoke-tested on 18/20. engines/.nvmrc/lockfile = 18, README Install notes it; CI uses .nvmrc so it tests the floor. Local node_modules has a macOS tsc binary, so build/web tests fail here; use docker + npm ci. A failing hook (missing node) doesn't block edits in Claude Code, so fallback.md must carry the soft gate. Next: write skills/bubble/fallback.md.",
     "at": "2026-10-20 18:16 UTC"
+  },
+  "closed": {
+    "at": "2026-10-20T18:47:28.584Z"
   }
 }
