@@ -1,9 +1,11 @@
 // Ability commands: abilities lists them; bubble:<name> (or /bubble:<name>) prints that ability's
-// workflow for the agent to run once.
+// workflow for the agent to run once, followed by its context: the active bubble or the whole track.
 import { createRequire as _createRequire } from "module";
 const __require = _createRequire(import.meta.url);
 const path = __require("node:path");
 const lib = __require("../index");
+const bubbles_1 = require("./bubbles");
+const print_1 = require("./print");
 const INVOKE_RE = /^\/?bubble:(.*)$/;
 /** One line per ability: name, type (or broken), project or user, description (or the problem). */
 function printAbilities(dir) {
@@ -24,8 +26,34 @@ function printAbilities(dir) {
     console.log('run one with: bubble:<name> [text]');
     return 0;
 }
+/** The ability's context, checked before anything prints: the current track, and for type: bubble its active bubble. */
+function loadContext(ability, dir) {
+    const found = (0, bubbles_1.currentTrack)(dir);
+    const { name, track } = found;
+    const index = track.closed ? -1 : lib.activeIndex(track);
+    if (ability.type === 'bubble' && index === -1) {
+        throw new Error(`track "${name}" has no active bubble${track.closed ? ' (closed)' : ''} — a bubble ability needs one`);
+    }
+    return { found, index };
+}
+/** Print the context: the active bubble (type: bubble) or the whole track (type: track). */
+function printContext(ability, { found, index }, { renderOpts }) {
+    const { file, name, track } = found;
+    const title = track.title ? ` — ${track.title}` : '';
+    if (ability.type === 'track') {
+        console.log(`── context: track "${name}"${title} ──`);
+        (0, print_1.printTrack)(file, track, renderOpts); // its fog exit code is show's business, not the ability's
+        return;
+    }
+    const b = track.bubbles[index];
+    console.log(`── context: active bubble on track "${name}"${title} ──`);
+    console.log(`#${index + 1} "${b.title}" (${b.state}${b.type ? `, ${b.type}` : ''})`);
+    if (b.hint)
+        console.log(`↳ ${b.hint}`);
+}
 /** Run an ability command; returns an exit code, or undefined if `cmd` isn't one. */
-export function runAbilityCommand(cmd, args, { dir }) {
+export function runAbilityCommand(cmd, args, ctx) {
+    const { dir } = ctx;
     if (cmd === 'abilities')
         return printAbilities(dir);
     const m = INVOKE_RE.exec(cmd);
@@ -34,6 +62,7 @@ export function runAbilityCommand(cmd, args, { dir }) {
     if (!m[1])
         throw new Error('usage: bubble:<ability> [text]');
     const ability = lib.findAbility(dir, m[1]);
+    const context = loadContext(ability, dir);
     console.log(`ability "${ability.name}" (type: ${ability.type}) — run this workflow once, on the active ${ability.type}`);
     if (ability.description)
         console.log(ability.description);
@@ -42,5 +71,7 @@ export function runAbilityCommand(cmd, args, { dir }) {
         console.log(`the human adds: ${args.join(' ')}`);
     console.log('');
     console.log(ability.body);
+    console.log('');
+    printContext(ability, context, ctx);
     return 0;
 }

@@ -21,7 +21,7 @@
     },
     {
       "title": "Context handoff",
-      "state": "todo",
+      "state": "done",
       "id": 4,
       "hint": "On invoke, CLI prints the ability text + the active bubble (type: bubble) or the whole track (type: track) as the agent's context."
     },

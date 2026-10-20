@@ -479,6 +479,9 @@ test('abilities: bubble:<name> prints the workflow; project beats user; broken a
     fs.writeFileSync(path.join(base, '.bubble-tracks', 'abilities', `${name}.md`), text);
   };
   run('init', 'P');
+  run('add', 'Login');
+  run('hint', '1', 'OAuth only');
+  run('add', '?');
   assert.match(run('abilities').stdout, /^no abilities yet — add <name>\.md to /);
   assert.match(run('bubble:research').stderr, /no ability "research" \(none yet/);
   write(home, 'research', '---\ndescription: user one\ntype: track\n---\nUser research.\n');
@@ -491,7 +494,7 @@ test('abilities: bubble:<name> prints the workflow; project beats user; broken a
   assert.match(r.stdout, /^ability "research" \(type: bubble\)/);
   assert.match(r.stdout, /Research the bubble/);
   assert.match(r.stdout, /the human adds: the auth flow/);
-  assert.match(r.stdout, /\n\nLook it up\.\n$/);
+  assert.match(r.stdout, /\n\nLook it up\.\n\n── context: active bubble on track "track" — P ──\n#1 "Login" \(todo\)\n↳ OAuth only\n$/);
   assert.doesNotMatch(r.stdout, /User research/);
 
   const list = run('abilities').stdout.split('\n');
@@ -507,4 +510,20 @@ test('abilities: bubble:<name> prints the workflow; project beats user; broken a
   assert.match(run('bubble:bad').stderr, /ability "bad" is broken .*type must be bubble or track/);
   assert.match(run('bubble:nope').stderr, /abilities: bad, check, research/);
   assert.match(run('bubble:').stderr, /usage: bubble:<ability>/);
+
+  // type: track gets the whole track, and exits 0 even when the active bubble is fog
+  write(dir, 'review', '---\ntype: track\n---\nReview it.\n');
+  run('done');
+  const t = run('bubble:review');
+  assert.strictEqual(t.status, 0);
+  assert.match(t.stdout, /Review it\.\n\n── context: track "track" — P ──\nP {3}S/);
+  assert.match(t.stdout, /→ 2 .* fog/);
+  assert.match(t.stdout, /is fog — the human plans it/);
+
+  // type: bubble needs an active bubble, and prints nothing when there is none
+  run('remove', '2');
+  const none = run('bubble:research');
+  assert.strictEqual(none.status, 1);
+  assert.strictEqual(none.stdout, '');
+  assert.match(none.stderr, /track "track" has no active bubble — a bubble ability needs one/);
 });

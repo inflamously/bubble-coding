@@ -15,7 +15,7 @@ const STOP =
 const TO_COMMANDS = ['add', 'insert', 'hint', 'move', 'mv'];
 
 /** The current track, loaded; throws when there is none or it can't be read. */
-function currentTrack(dir: string): lib.Found & { track: lib.Track } {
+export function currentTrack(dir: string): lib.Found & { track: lib.Track } {
   const found = lib.findTrack(dir);
   if (!found) {
     const bubblesDir = lib.findBubblesDir(dir);
