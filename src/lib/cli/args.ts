@@ -50,6 +50,10 @@ export const HELP = `bubble-tracks — the bubble language
   fill [N] <title>              the human's content for a fog bubble: fog -> todo
   done                          pop the active bubble, then ⏸ stop
 
+  abilities                     list the abilities: name, type, project or user, description
+  bubble:<ability> [text]       print an ability's workflow to run once on the active bubble or track
+                                (<name>.md in .bubble-tracks/abilities/, then ~/.bubble-tracks/abilities/)
+
   N: position on the track (omitted = the active bubble). N:M: N through M, inclusive.
   TYPE: ${TYPES.join(' | ')}  (or kk | ku | uk | uu)
   Options: --dir <repo> (default: cwd)   --ascii (or BUBBLES_ASCII=1)   --force

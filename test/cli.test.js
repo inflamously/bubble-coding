@@ -468,3 +468,43 @@ test('fork links: the parent bubble waits for its fork; titles and completion fl
   assert.match(run('show').stdout, /^B wider {3}S F/m);
   assert.match(run('show').stdout, /fork of #2 "B wider"/);
 });
+
+test('abilities: bubble:<name> prints the workflow; project beats user; broken and missing ones explain', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-abilities-'));
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-home-'));
+  const run = (...args) =>
+    spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, HOME: home, USERPROFILE: home } });
+  const write = (base, name, text) => {
+    fs.mkdirSync(path.join(base, '.bubble-tracks', 'abilities'), { recursive: true });
+    fs.writeFileSync(path.join(base, '.bubble-tracks', 'abilities', `${name}.md`), text);
+  };
+  run('init', 'P');
+  assert.match(run('abilities').stdout, /^no abilities yet — add <name>\.md to /);
+  assert.match(run('bubble:research').stderr, /no ability "research" \(none yet/);
+  write(home, 'research', '---\ndescription: user one\ntype: track\n---\nUser research.\n');
+  write(home, 'verify', '---\nname: check\ntype: bubble\n---\nRun the tests.\n');
+  write(home, 'bad', '---\ntype: nope\n---\nx\n');
+  write(dir, 'research', '---\ndescription: Research the bubble\ntype: bubble\n---\nLook it up.\n');
+
+  const r = run('/bubble:research', 'the', 'auth', 'flow');
+  assert.strictEqual(r.status, 0);
+  assert.match(r.stdout, /^ability "research" \(type: bubble\)/);
+  assert.match(r.stdout, /Research the bubble/);
+  assert.match(r.stdout, /the human adds: the auth flow/);
+  assert.match(r.stdout, /\n\nLook it up\.\n$/);
+  assert.doesNotMatch(r.stdout, /User research/);
+
+  const list = run('abilities').stdout.split('\n');
+  assert.deepStrictEqual(list.slice(0, 3).map((l) => l.trim().split(/\s+/).slice(0, 3)), [
+    ['bad', 'broken', 'user'],
+    ['check', 'bubble', 'user'],
+    ['research', 'bubble', 'project'],
+  ]);
+  assert.match(list[2], /Research the bubble$/);
+  assert.match(list[0], /type must be bubble or track/);
+
+  assert.match(run('bubble:check').stdout, /Run the tests\./); // frontmatter name beats the filename
+  assert.match(run('bubble:bad').stderr, /ability "bad" is broken .*type must be bubble or track/);
+  assert.match(run('bubble:nope').stderr, /abilities: bad, check, research/);
+  assert.match(run('bubble:').stderr, /usage: bubble:<ability>/);
+});
