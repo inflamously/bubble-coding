@@ -1,7 +1,7 @@
 // The demo site (src/site/) is TypeScript. This compiles it like `npm run site` does, then checks that
 // bubble-web, the CLI in a browser, prints exactly what the real CLI prints: every `bubble …` line
 // of demo/story.md runs on both and the output and the disk are compared.
-import test from 'node:test';
+import test, { before } from 'node:test';
 import assert from 'node:assert';
 import fs from 'fs';
 import os from 'os';
@@ -26,7 +26,11 @@ function compileSite(out) {
   return (file) => import(pathToFileURL(path.join(out, file)).href);
 }
 
-const load = compileSite(fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-site-')));
+// In a hook, not at import time: a broken compile then fails each test by name instead of the whole file.
+let load;
+before(() => {
+  load = compileSite(fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-site-')));
+});
 
 test('the browser CLI prints what the real CLI prints, for every line of the demo story', async () => {
   const { createMachine, words } = await load('bubble-web/index.mjs');
@@ -47,7 +51,7 @@ test('the browser CLI prints what the real CLI prints, for every line of the dem
     const real = spawnSync(process.execPath, [path.join(CLI_DIR, 'cli', 'bubble.js'), ...argv], {
       cwd: dir,
       encoding: 'utf8',
-      env: { ...process.env, BUBBLES_COLOR: '0', BUBBLES_ASCII: '', NO_COLOR: '' },
+      env: { ...process.env, BUBBLES_COLOR: '0', BUBBLES_ASCII: '', NO_COLOR: '', FORCE_COLOR: undefined },
     });
     const got = web.bubble(argv, { color: false });
     const text = (stream) => got.out.filter((o) => o.stream === stream).map((o) => o.text).join('');

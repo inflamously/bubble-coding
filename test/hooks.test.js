@@ -13,7 +13,7 @@ const run = (script, input, env = {}) =>
   spawnSync(process.execPath, [path.join(SCRIPTS, script)], {
     input: JSON.stringify(input),
     encoding: 'utf8',
-    env: { ...process.env, BUBBLES_ASCII: '', NO_COLOR: '1', ...env },
+    env: { ...process.env, BUBBLES_ASCII: '', NO_COLOR: '1', FORCE_COLOR: undefined, ...env },
   });
 
 function repo(track) {
@@ -112,7 +112,7 @@ test('statusline colors: title green, track blue, context yellow; --no-color and
   const plain = 'P   S ●──❓ F   A ‹ ❓ needs you\n';
   assert.strictEqual(run('statusline.js', { cwd: dir }, { NO_COLOR: '1' }).stdout, plain);
   const noColor = spawnSync(process.execPath, [path.join(SCRIPTS, 'statusline.js'), '--no-color'], {
-    input: JSON.stringify({ cwd: dir }), encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '', NO_COLOR: '' },
+    input: JSON.stringify({ cwd: dir }), encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '', NO_COLOR: '', FORCE_COLOR: undefined },
   });
   assert.strictEqual(noColor.stdout, plain);
 });
