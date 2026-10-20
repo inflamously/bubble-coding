@@ -42,11 +42,20 @@
       "state": "done",
       "id": 7,
       "hint": "SKILL.md: when to read/use an applied ability while walking a bubble; README section; tests."
+    },
+    {
+      "title": "Example ability",
+      "state": "done",
+      "id": 8,
+      "hint": "Ship .bubble-tracks/abilities/example.md: a working sample ability that shows the file format."
     }
   ],
   "handoff": {
     "note": "Goal: bubble abilities, like agent skills. A folder of short descriptions and/or skill files that the CLI (and the no-node fallback) watches, and that can be applied to the active bubble.",
     "at": "2026-10-20 18:49 UTC"
   },
-  "nextId": 8
+  "nextId": 9,
+  "closed": {
+    "at": "2026-10-20T19:44:01.843Z"
+  }
 }

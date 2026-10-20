@@ -4,8 +4,8 @@ import { createRequire as _createRequire } from "module";
 const __require = _createRequire(import.meta.url);
 const path = __require("node:path");
 const lib = __require("../index");
-const bubbles_1 = require("./bubbles");
-const print_1 = require("./print");
+import { currentTrack } from './bubbles.js';
+import { printTrack } from './print.js';
 const INVOKE_RE = /^\/?bubble:(.*)$/;
 /** The footer: what "run once" means, for whichever agent reads the output. */
 const ONE_OFF = (type) => `↺ one-off — run the workflow above once on this ${type}, then report back to the human. ` +
@@ -32,7 +32,7 @@ function printAbilities(dir) {
 }
 /** The ability's context, checked before anything prints: the current track, and for type: bubble its active bubble. */
 function loadContext(ability, dir) {
-    const found = (0, bubbles_1.currentTrack)(dir);
+    const found = currentTrack(dir);
     const { name, track } = found;
     const index = track.closed ? -1 : lib.activeIndex(track);
     if (ability.type === 'bubble' && index === -1) {
@@ -46,7 +46,7 @@ function printContext(ability, { found, index }, { renderOpts }) {
     const title = track.title ? ` — ${track.title}` : '';
     if (ability.type === 'track') {
         console.log(`── context: track "${name}"${title} ──`);
-        (0, print_1.printTrack)(file, track, renderOpts); // its fog exit code is show's business, not the ability's
+        printTrack(file, track, renderOpts); // its fog exit code is show's business, not the ability's
         return;
     }
     const b = track.bubbles[index];

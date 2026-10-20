@@ -4,8 +4,8 @@
 import path = require('node:path');
 import lib = require('../index');
 import type { Ctx } from './args.js';
-import { currentTrack } from './bubbles';
-import { printTrack } from './print';
+import { currentTrack } from './bubbles.js';
+import { printTrack } from './print.js';
 
 const INVOKE_RE = /^\/?bubble:(.*)$/;
 

@@ -1,18 +1,16 @@
 // Bubble-level commands: act on the current track (show, add, insert, remove, move, fog, fill, done, ...),
 // or with --to on another one (add, insert, hint write into it; move sends bubbles to it).
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.runBubbleCommand = runBubbleCommand;
-const fs = require("node:fs");
-const lib = require("../index");
-const links = require("../links");
-const args_1 = require("./args");
-const print_1 = require("./print");
+import * as fs from 'node:fs';
+import * as lib from '../index.js';
+import * as links from '../links/index.js';
+import { isAddr, isRange, needAddr } from './args.js';
+import { printTrack } from './print.js';
 const STOP = '⏸ stop — show this track to the human and wait. They may move, insert, remove, rename, hint or fog ' +
     'bubbles before the next one starts.';
 /** Commands that take --to <track>: add, insert and hint write into it; move sends bubbles to it. */
 const TO_COMMANDS = ['add', 'insert', 'hint', 'move', 'mv'];
 /** The current track, loaded; throws when there is none or it can't be read. */
-function currentTrack(dir) {
+export function currentTrack(dir) {
     const found = lib.findTrack(dir);
     if (!found) {
         const bubblesDir = lib.findBubblesDir(dir);

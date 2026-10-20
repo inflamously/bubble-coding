@@ -1,11 +1,12 @@
-'use strict';
 // skills/bubble/fallback.md teaches agents without Node to edit tracks by hand; keep it in step with the store code.
-const test = require('node:test');
-const assert = require('node:assert');
-const fs = require('fs');
-const path = require('path');
-const T = require('../skills/bubble/scripts/lib');
+import test from 'node:test';
+import assert from 'node:assert';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'node:url';
+import * as T from '../skills/bubble/scripts/lib/index.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
 const fallback = read('skills/bubble/fallback.md');
