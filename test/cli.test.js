@@ -494,7 +494,7 @@ test('abilities: bubble:<name> prints the workflow; project beats user; broken a
   assert.match(r.stdout, /^ability "research" \(type: bubble\)/);
   assert.match(r.stdout, /Research the bubble/);
   assert.match(r.stdout, /the human adds: the auth flow/);
-  assert.match(r.stdout, /\n\nLook it up\.\n\n── context: active bubble on track "track" — P ──\n#1 "Login" \(todo\)\n↳ OAuth only\n$/);
+  assert.match(r.stdout, /\n\nLook it up\.\n\n── context: active bubble on track "track" — P ──\n#1 "Login" \(todo\)\n↳ OAuth only\n\n↺ one-off — run the workflow above once on this bubble, /);
   assert.doesNotMatch(r.stdout, /User research/);
 
   const list = run('abilities').stdout.split('\n');
@@ -519,6 +519,7 @@ test('abilities: bubble:<name> prints the workflow; project beats user; broken a
   assert.match(t.stdout, /Review it\.\n\n── context: track "track" — P ──\nP {3}S/);
   assert.match(t.stdout, /→ 2 .* fog/);
   assert.match(t.stdout, /is fog — the human plans it/);
+  assert.match(t.stdout, /\n\n↺ one-off — run the workflow above once on this track, .*invokes it\.\n$/);
 
   // type: bubble needs an active bubble, and prints nothing when there is none
   run('remove', '2');

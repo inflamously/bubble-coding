@@ -27,7 +27,7 @@
     },
     {
       "title": "One-off run",
-      "state": "todo",
+      "state": "done",
       "id": 5,
       "hint": "Applying is one-off: the agent runs the ability's workflow once against the active bubble's content (type: bubble) or the track's context (type: track). The workflow is open-ended. Examples: 'research' (research what the bubble/track needs; on return the agent may change the track), 'step' (a defined flow the active bubble's implementation follows, e.g. tests or a verification process)."
     },

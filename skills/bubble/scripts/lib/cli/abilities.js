@@ -7,6 +7,10 @@ const lib = __require("../index");
 const bubbles_1 = require("./bubbles");
 const print_1 = require("./print");
 const INVOKE_RE = /^\/?bubble:(.*)$/;
+/** The footer: what "run once" means, for whichever agent reads the output. */
+const ONE_OFF = (type) => `↺ one-off — run the workflow above once on this ${type}, then report back to the human. ` +
+    'Change the track only through the CLI, and never fill fog yourself. Nothing stays attached: ' +
+    'the ability runs again only when the human invokes it.';
 /** One line per ability: name, type (or broken), project or user, description (or the problem). */
 function printAbilities(dir) {
     const entries = lib.listAbilities(dir);
@@ -73,5 +77,7 @@ export function runAbilityCommand(cmd, args, ctx) {
     console.log(ability.body);
     console.log('');
     printContext(ability, context, ctx);
+    console.log('');
+    console.log(ONE_OFF(ability.type));
     return 0;
 }
