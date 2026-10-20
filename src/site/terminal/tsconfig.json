@@ -2,5 +2,5 @@
   // The demo page: browser only.
   "extends": "../tsconfig.base.json",
   "compilerOptions": { "lib": ["es2023", "dom", "dom.iterable"], "types": [] },
-  "include": ["*.mts"]
+  "include": ["*.mts", "../bubble-web/cli.d.mts"]
 }

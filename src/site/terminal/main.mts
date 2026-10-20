@@ -1,8 +1,7 @@
-// The demo page. It loads the committed CLI and the story, then wires the parts together:
+// The demo page. It wires the parts together around the CLI (bundled in, see build.mjs):
 //   terminal – the screen shell  – runs a command line (bubble-web underneath)
 //   disk     – the .bubble-tracks/ panel  player – plays demo/story.md after an intro
 //   header   – scene track and controls
-import type { Sources } from '../bubble-web/index.mjs';
 import { Disk } from './disk.mjs';
 import { $ } from './dom.mjs';
 import { Header } from './header.mjs';
@@ -12,26 +11,12 @@ import type { Scene } from './story.mjs';
 import { Terminal } from './terminal.mjs';
 import { FRESH_DISK } from './text.mjs';
 
-/** This build's ?v= (see build.mts), so the JSON is as fresh as the page. */
-const VERSION = new URL(import.meta.url).search;
-
-async function json<T>(url: string): Promise<T> {
-  const res = await fetch(url + VERSION);
-  if (!res.ok) throw new Error(`${url}: ${res.status} ${res.statusText}`);
-  return res.json() as Promise<T>;
-}
-
-let sources: Sources;
-let story: Scene[];
-try {
-  [sources, story] = await Promise.all([json<Sources>('cli-sources.json'), json<Scene[]>('story.json')]);
-} catch (err) {
-  $('out').textContent = `The demo could not load its files (${(err as Error).message}). Serve dist/pages/ over HTTP: npm run site && python3 -m http.server -d dist/pages`;
-  throw err;
-}
+/** demo/story.md as scenes, inlined by build.mjs (esbuild `define`). */
+declare const STORY: Scene[];
+const story = STORY;
 
 const term = new Terminal();
-const shell = new Shell(term, sources, {
+const shell = new Shell(term, {
   booted: () => disk.reset(),
   ran: () => disk.refresh(),
   reset: () => {

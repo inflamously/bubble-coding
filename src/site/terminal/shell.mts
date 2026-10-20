@@ -1,4 +1,4 @@
-import { createMachine, words, type Machine, type Sources } from '../bubble-web/index.mjs';
+import { createMachine, words, type Machine } from '../bubble-web/index.mjs';
 import { $, el } from './dom.mjs';
 import type { Terminal } from './terminal.mjs';
 import { HELP } from './text.mjs';
@@ -24,13 +24,11 @@ export class Shell {
   readonly history: string[] = [];
   historyAt = 0;
   private readonly term: Terminal;
-  private readonly sources: Sources;
   private readonly hooks: ShellHooks;
   private readonly commands: Record<string, Command>;
 
-  constructor(term: Terminal, sources: Sources, hooks: ShellHooks) {
+  constructor(term: Terminal, hooks: ShellHooks) {
     this.term = term;
-    this.sources = sources;
     this.hooks = hooks;
     this.commands = {
       bubble: (args) => this.bubble(args),
@@ -47,7 +45,7 @@ export class Shell {
 
   /** A fresh disk with an empty project on it. */
   boot(): void {
-    this.machine = createMachine(this.sources, { cwd: PROJECT });
+    this.machine = createMachine({ cwd: PROJECT });
     this.machine.fs.writeFileSync(`${PROJECT}/README.md`, '# todo-app\n\nA tiny todo CLI. Planned with bubble-tracks.\n');
     this.term.clear();
     this.updatePrompt();

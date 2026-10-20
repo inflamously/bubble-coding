@@ -12,12 +12,12 @@ bubble-tracks section the installer writes into *users'* AGENTS.md.)
 | `src/site/` | the GitHub Pages demo (see `src/site/README.md`) | — | yes |
 | `skills/bubble/` | the skill: `SKILL.md`, `fallback.md` (no-Node hand edits, drift-tested) + `scripts/` | `scripts/` from `src/` | yes |
 | `skill-install/` | the installer, built | `src/skill-install/` | yes |
-| `dist/site/` | the demo, compiled | `src/site/` | no |
-| `dist/pages/` | the demo, assembled for Pages (CI builds it on every deploy) | `dist/site/` + `demo/story.md` + the CLI | no |
+| `dist/pages/` | the demo, bundled for Pages (CI builds it on every deploy) | `src/site/` + the CLI's `src/` + `demo/story.md` | no |
 | `.claude-plugin/` | Claude Code plugin: `plugin.json` (manifest + the fog-gate hook), `marketplace.json` | — | yes |
 | `adapters/` | templates the installer fills in for other agents | — | yes |
 | `demo/story.md` | the demo story, one source for the page and its test | — | yes |
 | `install.js` | `node install.js …` entry, loads `skill-install/` | — | yes |
+| `build.mjs` | every build: `npm run build`, `site`, `check`; the tests import it | — | yes |
 | `test/` | `node --test` suites | — | yes |
 
 ## Rules
@@ -29,14 +29,17 @@ bubble-tracks section the installer writes into *users'* AGENTS.md.)
   the skill must carry its own JS) and `skill-install/` (`node install.js` from a fresh clone).
 - **`dist/` is git-ignored** and only holds what gets rebuilt anyway: the demo, which CI builds on
   every deploy. Nothing a user runs may live there.
-- **Three tsconfigs, three outputs.** `tsconfig.json`: `src/` → `skills/bubble/scripts/` (excludes
-  `src/skill-install` and `src/site`). `tsconfig.skill-install.json`: `src/skill-install/` → `skill-install/`.
-  `src/site/*/tsconfig.json`: `src/site/` → `dist/site/`. Keep new code inside the one that ships it.
-- **The demo runs the committed CLI unchanged.** `src/site/bubble-web` swaps only what Node provides
-  (`node:fs`, `node:path`, `process`, `console`). Don't change the CLI for the demo's sake;
+- **One build script, two tools** (`build.mjs`). tsc emits the committed JS, one file per module with
+  comments kept: `tsconfig.json`: `src/` → `skills/bubble/scripts/` (excludes `src/skill-install` and
+  `src/site`); `tsconfig.skill-install.json`: `src/skill-install/` → `skill-install/`. The demo's
+  `src/site/*/tsconfig.json` only type-check; esbuild bundles it into `dist/pages/`. Keep new code
+  inside the one that ships it.
+- **The demo runs the CLI's own code.** esbuild bundles `src/lib/cli/main.ts` into the page and swaps only
+  what Node provides (`node:fs`, `node:path`, `process`, `console`; see `src/site/bubble-web/host.mts`).
+  Don't change the CLI for the demo's sake;
   `test/web.test.js` replays the story on both and fails if the output differs.
-- **No runtime dependencies.** Users run the committed JS with plain Node; `typescript` and
-  `@types/node` are dev-only.
+- **No runtime dependencies.** Users run the committed JS with plain Node; `typescript`,
+  `@types/node` and `esbuild` are dev-only.
 - **LF line endings** (`.gitattributes`), so built output matches on every OS.
 - **Planning lives in `.bubble-tracks/`** (committed; only `current` is git-ignored). Change it only through the CLI:
   `node skills/bubble/scripts/cli/bubble.js <command>`, never by editing the JSON.
@@ -60,7 +63,8 @@ Every source file keeps the same order, top to bottom:
 npm install      # dev only
 npm run build    # src -> skills/bubble/scripts, src/skill-install -> skill-install
 npm test         # all suites, including the build-drift and demo-parity checks
-npm run site     # src/site -> dist/site -> dist/pages
+npm run site     # type-check src/site, then bundle it -> dist/pages
+npm run check    # just the src/site type check
 python3 -m http.server -d dist/pages   # preview the demo
 npm run deploy   # redeploy GitHub Pages from master without a push (needs gh auth)
 ```

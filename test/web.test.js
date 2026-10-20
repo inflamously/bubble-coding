@@ -1,41 +1,28 @@
-// The demo site (src/site/) is TypeScript. This compiles it like `npm run site` does, then checks that
-// bubble-web, the CLI in a browser, prints exactly what the real CLI prints: every `bubble …` line
-// of demo/story.md runs on both and the output and the disk are compared.
+// The demo site (src/site/) is TypeScript. This type-checks and bundles it like `npm run site` does, then
+// checks that bubble-web, the CLI in a browser, prints exactly what the real CLI prints: every `bubble …`
+// line of demo/story.md runs on both and the output and the disk are compared.
 import test, { before } from 'node:test';
 import assert from 'node:assert';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { spawnSync } from 'child_process';
-import { pathToFileURL } from 'url';
-import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
+import { ROOT, browserOptions, checkSite, importTs } from '../build.mjs';
 
-const require = createRequire(import.meta.url);
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.join(__dirname, '..');
 const CLI_DIR = path.join(ROOT, 'skills', 'bubble', 'scripts');
 
-/** Compile src/site/<part> into `out` (the tsc type check is part of the test) and import a module of it. */
-function compileSite(out) {
-  const tsc = path.join(path.dirname(require.resolve('typescript/package.json')), 'bin', 'tsc');
-  for (const part of ['bubble-web', 'terminal', 'build']) {
-    const r = spawnSync(process.execPath, [tsc, '-p', path.join(ROOT, 'src', 'site', part), '--outDir', out], { encoding: 'utf8' });
-    assert.strictEqual(r.status, 0, `tsc -p src/site/${part} failed:\n${r.stdout}${r.stderr}`);
-  }
-  return (file) => import(pathToFileURL(path.join(out, file)).href);
-}
-
-// In a hook, not at import time: a broken compile then fails each test by name instead of the whole file.
-let load;
-before(() => {
-  load = compileSite(fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-site-')));
+// In a hook, not at import time: a broken type check or bundle then fails each test by name instead of the whole file.
+let bubbleWeb;
+let story;
+before(async () => {
+  checkSite();
+  bubbleWeb = await importTs('src/site/bubble-web/index.mts', { ...browserOptions, platform: 'neutral' });
+  story = await importTs('src/site/build/story.mts');
 });
 
-test('the browser CLI prints what the real CLI prints, for every line of the demo story', async () => {
-  const { createMachine, words } = await load('bubble-web/index.mjs');
-  const { parseStory } = await load('build/story.mjs');
-  const { cliSources } = await load('build/sources.mjs');
+test('the browser CLI prints what the real CLI prints, for every line of the demo story', () => {
+  const { createMachine, words } = bubbleWeb;
+  const { parseStory } = story;
 
   const commands = parseStory(fs.readFileSync(path.join(ROOT, 'demo', 'story.md'), 'utf8'))
     .flatMap((scene) => scene.steps)
@@ -44,7 +31,7 @@ test('the browser CLI prints what the real CLI prints, for every line of the dem
   assert.ok(commands.length > 20, 'demo/story.md has no bubble commands');
 
   const dir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-web-')));
-  const web = createMachine(cliSources(CLI_DIR), { cwd: '/home/demo/todo-app' });
+  const web = createMachine({ cwd: '/home/demo/todo-app' });
   // Paths and the handoff minute differ between the two machines; everything else must match.
   const norm = (s) => s.split(dir).join(web.cwd()).replace(/\\/g, '/').replace(/\d{4}-\d\d-\d\d \d\d:\d\d UTC/g, '<at> UTC');
   for (const argv of commands) {
@@ -69,8 +56,8 @@ test('the browser CLI prints what the real CLI prints, for every line of the dem
   }
 });
 
-test('parseStory: scenes with captions, commands and notes', async () => {
-  const { parseStory } = await load('build/story.mjs');
+test('parseStory: scenes with captions, commands and notes', () => {
+  const { parseStory } = story;
   const scenes = parseStory('# Demo\n\nintro\n\n## 1. Sketch\n\n> human: plan `it`\n\n```\nbubble add A\nls\n```\n\nA note\nthat wraps.\n');
   assert.deepStrictEqual(scenes, [
     {
@@ -85,16 +72,15 @@ test('parseStory: scenes with captions, commands and notes', async () => {
   ]);
 });
 
-test('words: split a command line like a shell', async () => {
-  const { words } = await load('bubble-web/index.mjs');
+test('words: split a command line like a shell', () => {
+  const { words } = bubbleWeb;
   assert.deepStrictEqual(words(`bubble diverge 3 web-ui "Web UI"`), ['bubble', 'diverge', '3', 'web-ui', 'Web UI']);
   assert.deepStrictEqual(words(`  add  'it''s'  ""  `), ['add', 'its', '']);
   assert.throws(() => words('add "open'), /unterminated quote/);
 });
 
-test('posix path: the calls the CLI makes', async () => {
-  const { createMachine } = await load('bubble-web/index.mjs');
-  const { path: p } = createMachine({}, { cwd: '/home/demo/x' });
+test('posix path: the calls the CLI makes', () => {
+  const { path: p } = bubbleWeb.createMachine({ cwd: '/home/demo/x' });
   assert.strictEqual(p.resolve('q'), '/home/demo/x/q');
   assert.strictEqual(p.resolve('x', '/y', 'z'), '/y/z');
   assert.strictEqual(p.relative('/a/b/c', '/a/d'), '../../d');

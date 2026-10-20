@@ -60,7 +60,7 @@
 <footer class="colophon wrap">
   <div>
     <h2>How this works</h2>
-    <p>The page loads the CLI's committed JavaScript unchanged. Only what Node would provide is swapped: the filesystem lives in memory and the output goes to this terminal. A test replays every scene against the real CLI and fails if one byte differs.</p>
+    <p>The page runs the CLI's own code, bundled for the browser. Only what Node would provide is swapped: the filesystem lives in memory and the output goes to this terminal. A test replays every scene against the real CLI and fails if one byte differs.</p>
   </div>
   <div>
     <h2>Try it in your agent</h2>
@@ -68,6 +68,6 @@
   </div>
 </footer>
 
-<script type="module" src="terminal/main.mjs"></script>
+<script type="module" src="main.js"></script>
 </body>
 </html>

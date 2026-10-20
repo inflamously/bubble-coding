@@ -1,5 +1,5 @@
 {
-  // Node scripts that assemble dist/pages/. Not shipped to the browser.
+  // Node code build.mjs runs to assemble dist/pages/. Not shipped to the browser.
   "extends": "../tsconfig.base.json",
   "compilerOptions": { "lib": ["es2023"], "types": ["node"] },
   "include": ["*.mts"]

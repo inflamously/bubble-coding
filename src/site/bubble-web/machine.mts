@@ -1,11 +1,10 @@
-// The real bubble-tracks CLI on a machine that lives in memory. The committed JS from
-// skills/bubble/scripts runs with only what Node would provide swapped: node:fs is an
+// The real bubble-tracks CLI on a machine that lives in memory. build.mjs bundles the CLI's source
+// (src/lib/cli/main.ts) with only what Node would provide swapped (see host.mts): node:fs is an
 // in-memory disk, node:path is POSIX, and process and console are per-run fakes that capture output.
+import { run } from 'bubble-cli';
 import { makeFs, type MemoryFs } from './fs.mjs';
+import { withHost, type FakeConsole, type FakeProcess } from './host.mjs';
 import { makePath, type PosixPath } from './path.mjs';
-
-/** The CLI's ES module files, keyed by path under skills/bubble/scripts ("cli/bubble.js", "lib/store.js"). */
-export type Sources = Record<string, string>;
 
 export interface Output {
   stream: 'stdout' | 'stderr';
@@ -27,34 +26,11 @@ export interface Machine {
   bubble(argv: string[], opts?: { color?: boolean }): RunResult;
 }
 
-interface FakeProcess {
-  argv: string[];
-  env: Record<string, string>;
-  cwd(): string;
-  pid: number;
-  exitCode: number | undefined;
-  stdout: { isTTY: boolean };
-  stdin: { isTTY: boolean };
-}
-
-interface FakeConsole {
-  log(...args: unknown[]): void;
-  error(...args: unknown[]): void;
-  warn(...args: unknown[]): void;
-}
-
-/** The free variables every CLI module sees, besides require, module and exports. */
-interface Globals {
-  process: FakeProcess;
-  console: FakeConsole;
-}
-
-export function createMachine(sources: Sources, opts: { cwd?: string } = {}): Machine {
+export function createMachine(opts: { cwd?: string } = {}): Machine {
   let cwd = opts.cwd ?? '/home/demo';
   const path = makePath(() => cwd);
   const fs = makeFs(path);
   fs.mkdirSync(cwd, { recursive: true });
-  const builtins: Record<string, unknown> = { 'node:fs': fs, fs, 'node:path': path, path };
 
   return {
     fs,
@@ -71,7 +47,7 @@ export function createMachine(sources: Sources, opts: { cwd?: string } = {}): Ma
       const { out, fakeConsole } = captureConsole();
       const proc = fakeProcess(argv, () => cwd, color);
       try {
-        runCommonJs(sources, 'cli/bubble.js', builtins, { process: proc, console: fakeConsole }, path);
+        withHost({ fs, path, process: proc, console: fakeConsole }, run);
       } catch (err) {
         fakeConsole.error(`bubble-web: ${(err as Error).message}`);
         proc.exitCode = 1;
@@ -101,84 +77,4 @@ function fakeProcess(argv: string[], cwd: () => string, color: boolean): FakePro
     stdout: { isTTY: color },
     stdin: { isTTY: false },
   };
-}
-
-/**
- * Run ES module `sources` starting at `entry`, with a fresh module cache (like a fresh process).
- * Each source is rewritten to CommonJS (see `esmToCjs`) so it can run synchronously inside `new
- * Function`; `require` answers `builtins` by name and everything else relative to the requiring file.
- */
-function runCommonJs(sources: Sources, entry: string, builtins: Record<string, unknown>, globals: Globals, path: PosixPath): void {
-  const cache = new Map<string, { exports: unknown }>();
-
-  const load = (file: string): unknown => {
-    const cached = cache.get(file);
-    if (cached) return cached.exports;
-    if (!(file in sources)) throw new Error(`no module ${file}`);
-    const module = { exports: {} as unknown };
-    cache.set(file, module);
-    const require = (id: string): unknown => (id in builtins ? builtins[id] : load(resolveRelative(path, sources, file, id)));
-    new Function('exports', 'require', 'module', 'process', 'console', esmToCjs(sources[file]))(module.exports, require, module, globals.process, globals.console);
-    return module.exports;
-  };
-
-  load(entry);
-}
-
-/**
- * Rewrite one file of tsc's `nodenext` ESM output into the CommonJS shape `runCommonJs` executes.
- * Handles exactly the import/export forms tsc emits for this codebase (named/namespace imports,
- * `export const`/`export function`, `export * from`, `export { a, b } from`) — not general ESM.
- * Only the declaring line is rewritten, so multi-line values (template literals, object literals)
- * pass through untouched; exported names are assigned to `exports` at the end of the file, once
- * every top-level binding has already run.
- */
-function esmToCjs(source: string): string {
-  const exported: string[] = [];
-  const lines = source.split('\n').map((line) => {
-    let m;
-    if ((m = /^import \* as (\w+) from (['"])([^'"]+)\2;$/.exec(line))) {
-      return `const ${m[1]} = require('${m[3]}');`;
-    }
-    if ((m = /^import \{([^}]+)\} from (['"])([^'"]+)\2;$/.exec(line))) {
-      return `const {${m[1]}} = require('${m[3]}');`;
-    }
-    if ((m = /^import (\w+) from (['"])([^'"]+)\2;$/.exec(line))) {
-      return `const ${m[1]} = require('${m[3]}');`;
-    }
-    if ((m = /^export \* from (['"])([^'"]+)\1;$/.exec(line))) {
-      return `Object.assign(module.exports, require('${m[2]}'));`;
-    }
-    if ((m = /^export \{([^}]+)\} from (['"])([^'"]+)\2;$/.exec(line))) {
-      const names = m[1].split(',').map((n) => n.trim()).filter(Boolean);
-      return `{ const __re = require('${m[3]}'); ${names.map((n) => `exports.${n} = __re.${n};`).join(' ')} }`;
-    }
-    if ((m = /^export (?:const|let|var) (\w+)/.exec(line))) {
-      exported.push(m[1]);
-      return line.slice('export '.length);
-    }
-    if ((m = /^export function (\w+)/.exec(line))) {
-      exported.push(m[1]);
-      return line.slice('export '.length);
-    }
-    if ((m = /^export class (\w+)/.exec(line))) {
-      exported.push(m[1]);
-      return line.slice('export '.length);
-    }
-    return line;
-  });
-  for (const name of exported) lines.push(`exports.${name} = ${name};`);
-  return lines.join('\n');
-}
-
-/**
- * The source key `require(id)` means from `file`, as Node resolves it: "lib/cli/args.js" + "../index" → "lib/index.js",
- * and a folder to its index: "lib/index.js" + "./ops" → "lib/ops/index.js".
- */
-function resolveRelative(path: PosixPath, sources: Sources, file: string, id: string): string {
-  if (!id.startsWith('.')) throw new Error(`no module ${id}`);
-  const dir = path.dirname(file);
-  const rel = path.normalize(dir === '.' ? id : `${dir}/${id}`);
-  if (rel.endsWith('.js')) return rel;
-  return `${rel}.js` in sources ? `${rel}.js` : `${rel}/index.js`;
 }

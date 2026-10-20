@@ -1,0 +1,53 @@
+{
+  "title": "Flow analysis",
+  "bubbles": [
+    {
+      "title": "Interview pain points",
+      "state": "todo",
+      "id": 1,
+      "hint": "Interview the human one question at a time: where the flow felt wrong (missing plan, research, unexplained fog), with concrete examples."
+    },
+    {
+      "title": "E2E dev track",
+      "state": "todo",
+      "id": 8,
+      "hint": "An e2e test (test/*.test.js, temp repo) that builds a development track by running every CLI command in turn (switch/create, add, insert, fog, type, fill, hint, handoff, rename, move, remove, fork, diverge, done, close...) and asserts each step's output. Its rendered transcript doubles as material for the flow analysis."
+    },
+    {
+      "title": "Audit skill flow",
+      "state": "todo",
+      "id": 2,
+      "hint": "Read SKILL.md + fallback.md + CLI; map the actual steps (sketch, classify, walk, fog stop) against the interview's pain points."
+    },
+    {
+      "title": "Plan step gap",
+      "state": "todo",
+      "id": 3,
+      "hint": "Is a proper plan step missing between sketch and walk? Where should it sit and what does it produce?"
+    },
+    {
+      "title": "Research step",
+      "state": "todo",
+      "id": 4,
+      "hint": "Should research be a built-in step (or an ability) instead of only via known-unknown fog?"
+    },
+    {
+      "title": "Fog needs a reason",
+      "state": "todo",
+      "id": 5,
+      "hint": "Fog is sometimes created without saying why, which irritates the user. Require a one-line reason per fog bubble (hint or CLI field)."
+    },
+    {
+      "title": "???",
+      "state": "fog",
+      "id": 6
+    },
+    {
+      "title": "Update skill + docs",
+      "state": "todo",
+      "id": 7,
+      "hint": "Apply the agreed changes to SKILL.md, fallback.md, README, and tests."
+    }
+  ],
+  "nextId": 9
+}

@@ -14,14 +14,15 @@
   },
   "type": "module",
   "scripts": {
-    "build": "tsc -p . && npm run install",
+    "build": "node build.mjs",
     "test": "node --test",
-    "site": "tsc -p src/site/bubble-web && tsc -p src/site/terminal && tsc -p src/site/build && node dist/site/build/build.mjs",
-    "install": "tsc -p tsconfig.skill-install.json",
-    "deploy": "gh workflow run pages.yml --ref master"
+    "site": "node build.mjs site",
+    "deploy": "gh workflow run pages.yml --ref master",
+    "check": "node build.mjs check"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
+    "esbuild": "0.28.2",
     "typescript": "7.0.2"
   }
 }

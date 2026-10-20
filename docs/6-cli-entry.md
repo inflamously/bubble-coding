@@ -1,16 +1,19 @@
 # 6. CLI entry
 
-The CLI is what agents and humans actually run: `node skills/bubble/scripts/cli/bubble.js <command>`. That JS is compiled from `src/cli/bubble.ts` (tsconfig `outDir: skills/bubble/scripts`) and committed, so the skill works without a build step. `test/build.test.js` fails if the committed JS drifts from `src/`.
+The CLI is what agents and humans actually run: `node skills/bubble/scripts/cli/bubble.js <command>`. That JS is compiled from `src/cli/bubble.ts` (tsconfig `outDir: skills/bubble/scripts`, run by `npm run build`) and committed, so the skill works without a build step. `test/build.test.js` fails if the committed JS drifts from `src/`.
 
 | File | Job |
 |---|---|
-| `src/cli/bubble.ts` | entry: parse, build the context, dispatch, turn errors into exit 1 |
+| `src/cli/bubble.ts` | entry: calls `run()` |
+| `src/lib/cli/main.ts` | `run()`: parse, build the context, dispatch, turn errors into exit 1. Shared with the demo site, which bundles it |
 | `src/lib/cli/args.ts` | `HELP` text, `parseArgs`, address helpers (`isAddr`, `isRange`, `needAddr`), the `Ctx` type |
 | `src/lib/cli/tracks.ts` | **track-level** commands: `init` `create` `switch` `tracks` `fork` `diverge` `close` `delete` |
 | `src/lib/cli/bubbles.ts` | **bubble-level** commands on the current track: `show` `add` `insert` `remove` `move` `rename` `title` `handoff` `hint` `fog` `type` `fill` `done` |
 | `src/lib/cli/print.ts` | `printTrack`: what `show` and every change print, and the exit 3 for fog |
 
-## The entry: bubble.ts
+## The entry: bubble.ts → main.ts
+
+`bubble.ts` only calls `run()` from `lib/cli/main.ts`, which wraps `main()`:
 
 ```ts
 const { cmd, args, opts } = parseArgs(process.argv.slice(2));
@@ -78,7 +81,7 @@ Changes ignore `printTrack`'s return value and always exit 0, so a successful `f
 
 `node bubble.js done` on this track, with "CLI entry" active:
 
-1. **`bubble.ts`**: `parseArgs` → `{ cmd: 'done', args: [], opts: {} }`. Not `help`, so it builds `ctx` (dir = cwd, no colour because an agent pipes the output).
+1. **`main.ts`**: `parseArgs` → `{ cmd: 'done', args: [], opts: {} }`. Not `help`, so it builds `ctx` (dir = cwd, no colour because an agent pipes the output).
 2. **`runTrackCommand('done', …)`**: no matching case → `undefined`.
 3. **`runBubbleCommand('done', …)`**:
    1. `lib.findTrack(dir)` walks up to `.bubble-tracks/`, reads `current` (`src-tour`) and loads `src-tour.json`.
@@ -89,7 +92,7 @@ Changes ignore `printTrack`'s return value and always exit 0, so a successful `f
    6. `after()`: this track isn't finished, so nothing pops. If this had been a fork's last bubble, its parent bubble would be set to done and saved, and so on up the chain, each adding a `fork finished — popped …` line.
    7. Prints the message, a blank line, then `printTrack`.
    8. Something is still active → prints the `⏸ stop — show this track to the human and wait…` line. That line is how the CLI enforces SKILL.md step 4: the agent reads it as the last thing in the output.
-4. Back in **`bubble.ts`**: `process.exitCode = 0`.
+4. Back in **`main.ts`**: `process.exitCode = 0`.
 
 ## Things worth knowing
 

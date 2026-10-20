@@ -27,7 +27,7 @@ src/
 |---|---|---|---|
 | `src/cli/` + `src/lib/` | `tsconfig.json` | `skills/bubble/scripts/` (JS checked into the repo) | agents and hooks, in every repo it's installed into |
 | `src/skill-install/` | `tsconfig.skill-install.json` | `skill-install/` | `node install.js` |
-| `src/site/` | `src/site/*/tsconfig.json` | `dist/site/` → `dist/pages/` | GitHub Pages (`npm run site`) |
+| `src/site/` | `src/site/*/tsconfig.json` (type check), esbuild via `build.mjs` | `dist/pages/` | GitHub Pages (`npm run site`) |
 
 ## Things worth knowing
 
