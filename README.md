@@ -33,6 +33,8 @@ Fix generation   S ●──●──❓──○ F   Read logs ‹ ❓ needs yo
 
 ## Install
 
+Requires Node.js 18 or newer. The skill scripts, hooks and installer use only Node built-ins, with no npm install.
+
 ### Claude Code
 
 1. Install the plugin. Inside Claude Code, run:

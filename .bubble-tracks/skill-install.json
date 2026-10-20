@@ -1,0 +1,41 @@
+{
+  "title": "Skill install",
+  "bubbles": [
+    {
+      "title": "Audit current install",
+      "state": "done",
+      "id": 1,
+      "hint": "How install works today (see installer-fixes track): supported agents, target paths, what gets copied, any non-Node steps"
+    },
+    {
+      "title": "Node presence survey",
+      "state": "done",
+      "id": 2,
+      "hint": "Per harness: does installing it imply Node? (Claude Code, Codex CLI, Gemini CLI, Antigravity…) vs. Claude web/desktop skills where no Node/harness exists"
+    },
+    {
+      "title": "Cross-platform research",
+      "state": "done",
+      "id": 3,
+      "type": "known-unknown",
+      "hint": "Research a runtime/distribution that works across harnesses and OSes (incl. sandboxes without Node); human picks"
+    },
+    {
+      "title": "Lower Node floor",
+      "state": "done",
+      "id": 4,
+      "hint": "Test skill scripts on Node 18 and 20 (22 passes already); set engines, .nvmrc, README to the real minimum"
+    },
+    {
+      "title": "Fallback gate file",
+      "state": "todo",
+      "id": 5,
+      "hint": "skills/bubble/fallback.md: soft gate + track JSON format + manual walking commands (show/done/add/insert/fill/type/hint/switch/create/handoff); fork/diverge/close/delete/move --to need the CLI. SKILL.md: if node missing (exit 127) read fallback.md. Drift test vs store code"
+    }
+  ],
+  "nextId": 6,
+  "handoff": {
+    "note": "Decided: keep Node + fallback.md for no-Node envs. Rejected: Python port, Go/Rust binaries, JS single-exe, Cosmopolitan. Node floor is now 18: the full suite (50 tests, incl. build+site after a clean npm ci in docker node:18/20/22-alpine) passes, and the installer + CLI were smoke-tested on 18/20. engines/.nvmrc/lockfile = 18, README Install notes it; CI uses .nvmrc so it tests the floor. Local node_modules has a macOS tsc binary, so build/web tests fail here; use docker + npm ci. A failing hook (missing node) doesn't block edits in Claude Code, so fallback.md must carry the soft gate. Next: write skills/bubble/fallback.md.",
+    "at": "2026-10-20 18:16 UTC"
+  }
+}
