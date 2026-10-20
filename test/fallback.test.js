@@ -49,6 +49,15 @@ test('fallback.md layout matches the store', () => {
   assert.ok(fallback.includes('`YYYY-MM-DD HH:MM UTC`'));
 });
 
+test('fallback.md teaches abilities: folders, frontmatter, types, both commands', () => {
+  const ability = read('src/lib/abilities.ts');
+  const keys = /interface Ability \{([^}]*)\}/.exec(ability)[1].match(/^\s*(\w+):/gm).map((k) => k.trim().slice(0, -1));
+  const frontmatter = keys.filter((k) => !['body', 'file'].includes(k)); // read from the file, not written in it
+  assert.deepStrictEqual(frontmatter, ['name', 'description', 'type']);
+  const dirs = [`${T.TRACK_DIR}/${T.ABILITY_DIR}/`, `~/${T.TRACK_DIR}/${T.ABILITY_DIR}/`];
+  assert.deepStrictEqual(missing([...dirs, ...frontmatter, ...T.ABILITY_TYPES, '---', 'abilities', 'bubble:<name>', '/bubble:<name>']), []);
+});
+
 test('fallback.md example is a valid track', () => {
   const json = /```json\n([\s\S]*?)```/.exec(fallback);
   assert.ok(json, 'no ```json example in fallback.md');

@@ -68,3 +68,12 @@ N is a 1-based position on the track. When N is left out, it means the active bu
 | `tracks` | List the `*.json` files and mark the current one with `→`. |
 
 If a track has `closed`, it's read-only, so don't change it. `fork`, `diverge`, `close`, `delete` and `move … --to` keep links between tracks in sync. Leave them for when Node is available and tell the human that.
+
+## Abilities by hand
+
+An ability is a workflow the human applies with `bubble:<name>` (or `/bubble:<name>`). Reading them needs no Node:
+
+- **Where:** `<name>.md` in `.bubble-tracks/abilities/` (project) and `~/.bubble-tracks/abilities/` (user). When both have the same name, the project one wins.
+- **The file:** a `---` frontmatter block with `name` (default: the filename without `.md`), `description` (one line) and `type` (`bubble` or `track`), then the body: the workflow. A file is broken if it has no frontmatter, a `type` that isn't one of those two, a name with characters other than letters, digits, `-` and `_`, or an empty body.
+- **`abilities`:** list every ability by name with its type, `project` or `user`, and its description. Mark broken ones `broken`, with the reason.
+- **`bubble:<name> [text]`:** read the file and run its body **once**. Any words after the name are the human's extra steer. The context is the active bubble (number, title, state, type, hint) for `type: bubble`, or the whole track, as `show` gives it, for `type: track`. A `type: bubble` ability needs an active bubble. If the track is all done or closed, say so and don't run it. Afterwards, report back to the human. Change the track only with the edits above, and never fill fog yourself. Nothing stays attached: the ability runs again only when the human invokes it.
