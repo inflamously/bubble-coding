@@ -33,13 +33,13 @@
     },
     {
       "title": "Fallback support",
-      "state": "todo",
+      "state": "done",
       "id": 6,
       "hint": "Teach fallback.md (no-node path) how to find, list and apply abilities by hand."
     },
     {
       "title": "Skill + docs",
-      "state": "todo",
+      "state": "done",
       "id": 7,
       "hint": "SKILL.md: when to read/use an applied ability while walking a bubble; README section; tests."
     }

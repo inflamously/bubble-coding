@@ -74,3 +74,14 @@ test('SKILL.md and the AGENTS.md adapter point to fallback.md', () => {
   assert.match(read('skills/bubble/SKILL.md'), /exit 127.*`fallback\.md`/);
   assert.match(read('adapters/agents-md.md'), /exit 127.*`fallback\.md`/);
 });
+
+test('SKILL.md, README and the AGENTS.md adapter teach abilities; the README example parses', () => {
+  for (const f of ['skills/bubble/SKILL.md', 'README.md', 'adapters/agents-md.md']) {
+    const text = read(f);
+    for (const w of ['abilities', 'bubble:<name> [text]']) assert.ok(text.includes(w), `${f} doesn't mention ${w}`);
+  }
+  const example = /```markdown\n(---[\s\S]*?)```/.exec(read('README.md'));
+  assert.ok(example, 'no ability example in README.md');
+  const ability = T.parseAbility(example[1], 'research.md');
+  assert.deepStrictEqual([ability.name, ability.type], ['research', 'bubble']);
+});

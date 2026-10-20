@@ -7,7 +7,7 @@ Manage it only through the CLI, never by hand-editing the JSON:
     node "{{CLI}}" show | switch <name> | tracks | fork [N] <name> | diverge [N] <name> | init <title>
                    | add <title> | add ? | insert at N <title|?> | remove N[:M]
                    | move N[:M] to M | rename N <title> | title <text> | hint N <text> | fog [N[:M]] [TYPE]
-                   | type [N] <TYPE> | fill [N] <title> | done
+                   | type [N] <TYPE> | fill [N] <title> | done | abilities | bubble:<name> [text]
 
 Full instructions: `{{SKILL}}`.
 
@@ -23,4 +23,5 @@ Rules:
 - After `done`, stop (⏸): show the track and wait for the human before starting the next bubble.
 - When the human writes `bubble <command>`, run exactly that command through the CLI and show the result.
 - After every change, show the user the rendered track line.
+- When the human writes `bubble:<name> [text]` (or `/bubble:<name>`), run that through the CLI and follow the printed workflow once against the printed context (the active bubble or the whole track), then report back and stop. Never apply an ability on your own.
 <!-- bubble-tracks:end -->

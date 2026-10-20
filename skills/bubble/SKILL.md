@@ -1,6 +1,6 @@
 ---
 name: bubble
-description: bubble-tracks — iterative, fog-of-war planning on a linear track of task bubbles (S ○──○──❓──○ F) stored in .bubble-tracks/ (one .json per track, switchable). Use when the user runs /bubble or $bubble (e.g. /bubble switch <track> to resume), asks to plan/sketch a task, asks "what's next" or "where are we", marks something done, or when an edit is blocked because the active bubble is fog/unplanned.
+description: bubble-tracks — iterative, fog-of-war planning on a linear track of task bubbles (S ○──○──❓──○ F) stored in .bubble-tracks/ (one .json per track, switchable). Use when the user runs /bubble or $bubble (e.g. /bubble switch <track> to resume), applies an ability with bubble:<name> or /bubble:<name>, asks to plan/sketch a task, asks "what's next" or "where are we", marks something done, or when an edit is blocked because the active bubble is fog/unplanned.
 ---
 
 # bubble-tracks
@@ -48,6 +48,8 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `type [N] <TYPE>` | Record the human's fog classification |
 | `fill [N] <title>` | The human's content for a fog bubble: fog → todo |
 | `done` | Pop the active bubble, then ⏸ stop |
+| `abilities` | List the abilities: name, type, project or user, description (or why one is broken) |
+| `bubble:<name> [text]` | Print ability `<name>`'s workflow, the human's extra text, and its context (the active bubble or the whole track), to run once. See **Abilities**. |
 
 Every bubble command acts on the **current track**. Each track is its own idea or implementation, with its own fog gate.
 
@@ -109,6 +111,15 @@ Links use the bubble's stable `id` (from the track's `nextId` counter), so `move
 A fork stays in sync with its bubble. `title` on the fork renames the bubble, and `rename` on the bubble retitles the fork. The bubble can't be popped until its fork is finished (it has at least one bubble and all are done). When the fork's last bubble is popped, the parent bubble pops too, and so on up the chain. A side track from `diverge` never syncs.
 
 A **closed** track (`close`) is read-only: every bubble command on it refuses, and its line shows 🔒 closed. To keep working, `fork`, `diverge` or `switch`. A closed fork counts as finished, so closing it pops its parent bubble; closing a track closes all its forks too. A closed parent is skipped: its child runs on, but pops and title syncs never reach it.
+
+## Abilities
+
+An ability is a short workflow, kept as a file, that the human applies to the active bubble or the whole track. Abilities live in `.bubble-tracks/abilities/<name>.md` (project) and `~/.bubble-tracks/abilities/<name>.md` (user). When both have the same name, the project one wins. Each file has a `---` frontmatter block with `name`, `description` and `type: bubble | track`, followed by the workflow.
+
+- **Only the human applies one.** When they write `bubble:<name>` or `/bubble:<name>` (any words after it are their extra steer), run `bubble:<name> [text]` through the CLI. Never pick or apply an ability yourself. To see which ones exist, run `abilities`.
+- **Run it once.** Follow the printed workflow against the printed context: the active bubble for `type: bubble`, or the whole track for `type: track`. Then report back and ⏸ stop. Nothing stays attached: the ability runs again only when the human invokes it again.
+- **The track rules still hold.** The workflow can lead to track changes, such as a `research` ability that suggests new bubbles, or a `step` ability whose checks the bubble must pass before `done`. Make those changes only through the CLI. Never fill fog yourself, and the fog gate still applies to project edits.
+- If the CLI refuses (no such ability, a broken file, or no active bubble for `type: bubble`), show the error and stop.
 
 ## Fog gate
 

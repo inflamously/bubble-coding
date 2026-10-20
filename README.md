@@ -116,6 +116,22 @@ Each track is its own idea, stored as one `.json` file in `.bubble-tracks/`. `.b
 - **`diverge`** goes in a different direction from a bubble, in a side track. Nothing waits for it.
 - **`close`** finishes a track for good. It becomes read-only, shows 🔒 closed, and the fog gate ignores it. Closing a track also closes its forks (side tracks stay open), and closing a fork pops its parent bubble.
 
+### Abilities
+
+An ability is a reusable workflow, like an agent skill, that you apply to the active bubble or the whole track. Drop a `<name>.md` file into `.bubble-tracks/abilities/` (project) or `~/.bubble-tracks/abilities/` (user). When both have the same name, the project one wins.
+
+```markdown
+---
+name: research
+description: Research what the active bubble needs before building it
+type: bubble
+---
+Look up how the codebase and its docs already handle this bubble's task.
+List two or three options with their trade-offs, then suggest hints or new bubbles.
+```
+
+`type: bubble` runs against the active bubble, and `type: track` runs against the whole track. Write `bubble:research` (or `/bubble:research`) in chat, plus any extra words to steer it. The agent runs the workflow once, reports back and stops. Nothing stays attached. `abilities` lists the ones it can find, and flags broken files with the reason.
+
 <details>
 <summary><b>CLI reference</b></summary>
 
@@ -149,6 +165,8 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | `type [N] <TYPE>` | Set the fog type: `kk` · `ku` · `uk` · `uu` (or the full names) |
 | `fill [N] <title>` | Plan a fog bubble with your content: fog → todo |
 | `done` | Pop the active bubble, then ⏸ stop |
+| `abilities` | List the abilities: name, type, project or user, description |
+| `bubble:<name> [text]` | Print an ability's workflow and its context, to run once |
 
 - `N` is the Nth bubble on the track. Omitted, it means the active bubble. `N:M` is N through M, inclusive.
 - `--to <track>` on `add`, `insert` and `hint` writes into another existing track, and the current track stays current.
