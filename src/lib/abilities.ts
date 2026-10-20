@@ -3,8 +3,8 @@
 // the project one wins on a name clash. Each file: a --- frontmatter block (name, description,
 // type: bubble | track), then a free-text body, the workflow the agent runs once.
 
-import fs = require('node:fs');
-import path = require('node:path');
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { findBubblesDir, TRACK_DIR } from './store.js';
 
 export type AbilityType = 'bubble' | 'track';

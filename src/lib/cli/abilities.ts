@@ -1,8 +1,8 @@
 // Ability commands: abilities lists them; bubble:<name> (or /bubble:<name>) prints that ability's
 // workflow for the agent to run once, followed by its context: the active bubble or the whole track.
 
-import path = require('node:path');
-import lib = require('../index');
+import * as path from 'node:path';
+import * as lib from '../index.js';
 import type { Ctx } from './args.js';
 import { currentTrack } from './bubbles.js';
 import { printTrack } from './print.js';

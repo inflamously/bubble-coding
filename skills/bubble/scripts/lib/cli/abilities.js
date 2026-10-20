@@ -1,9 +1,7 @@
 // Ability commands: abilities lists them; bubble:<name> (or /bubble:<name>) prints that ability's
 // workflow for the agent to run once, followed by its context: the active bubble or the whole track.
-import { createRequire as _createRequire } from "module";
-const __require = _createRequire(import.meta.url);
-const path = __require("node:path");
-const lib = __require("../index");
+import * as path from 'node:path';
+import * as lib from '../index.js';
 import { currentTrack } from './bubbles.js';
 import { printTrack } from './print.js';
 const INVOKE_RE = /^\/?bubble:(.*)$/;

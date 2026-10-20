@@ -2,10 +2,8 @@
 // Layout: <name>.md in .bubble-tracks/abilities/ (project) and ~/.bubble-tracks/abilities/ (user);
 // the project one wins on a name clash. Each file: a --- frontmatter block (name, description,
 // type: bubble | track), then a free-text body, the workflow the agent runs once.
-import { createRequire as _createRequire } from "module";
-const __require = _createRequire(import.meta.url);
-const fs = __require("node:fs");
-const path = __require("node:path");
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { findBubblesDir, TRACK_DIR } from './store.js';
 export const ABILITY_DIR = 'abilities';
 export const ABILITY_TYPES = ['bubble', 'track'];
