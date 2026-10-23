@@ -35,7 +35,10 @@
       "title": "Guards on demand",
       "state": "done",
       "id": 10,
-      "hint": "Guards print only on switch (resume), after a guard command, and via guard show; not on every show/mutation. Goal line stays."
+      "hint": "Guards print only on switch (resume), after a guard command, and via guard show; not on every show/mutation. Goal line stays.",
+      "sides": [
+        "statusline-guards.json"
+      ]
     },
     {
       "title": "E2E + agent docs",

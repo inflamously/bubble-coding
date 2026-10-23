@@ -1,4 +1,4 @@
-// The one-line track: the status line and `tracks`.
+// The one-line track: the status line and `tracks`, plus the status line's guard count.
 
 import { activeIndex, type Track } from '../model.js';
 import { paint, shorten, symbolFor, symbolsFor, useColor, type RenderOpts } from './symbols.js';
@@ -19,4 +19,12 @@ export function render(track: Track, opts?: RenderOpts): string {
   const here = active.state === 'fog' ? `${sym.fog} needs you` : `${sym.active} ${shorten(active.title, sym)}`;
   const context = (prev ? shorten(prev.title, sym) + sym.prev : '') + here + (next ? sym.next + shorten(next.title, sym) : '');
   return head + paint(color, 'context', context);
+}
+
+/** The status line's guard count after the line: `   ¦ 2 guards`, or '' when the track has none. */
+export function renderGuardCount(track: Track, opts?: RenderOpts): string {
+  const count = (track.guards || []).length;
+  if (!count) return '';
+  const sym = symbolsFor(opts);
+  return '   ' + paint(useColor(opts), 'context', `${sym.guard} ${count} guard${count === 1 ? '' : 's'}`);
 }

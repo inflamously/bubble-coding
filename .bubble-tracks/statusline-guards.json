@@ -1,0 +1,29 @@
+{
+  "title": "Statusline guards",
+  "origin": {
+    "track": "flow-analysis.json",
+    "bubble": 10,
+    "title": "Guards on demand"
+  },
+  "bubbles": [
+    {
+      "title": "Guard count segment",
+      "state": "done",
+      "id": 1,
+      "hint": "Append '   ¦ N guards' after the rendered line (1 guard / N guards), no separator: the same 3-space gap the line uses between F and prev/active/next. Icon is sym.guard (ascii !), dim like the context part. Boundary: src/cli/statusline.ts + src/lib/render/ (line.ts or a small helper); nothing in show/switch output."
+    },
+    {
+      "title": "Statusline tests",
+      "state": "done",
+      "id": 2,
+      "hint": "Extend test/hooks.test.js: no guards (unchanged), 1 guard (singular), several guards, --ascii. Then npm run build + npm test (sandbox: unpack Linux tsc/esbuild per AGENTS.md first)."
+    }
+  ],
+  "goal": "The status line shows a guard count when the current track has guards",
+  "guards": [
+    "No guards: status line output stays byte-for-byte the same",
+    "Count only, never guard text; don't change when show/switch print guards (flow-analysis #6)",
+    "--ascii and --no-color keep working: separator and icon come from the symbol sets"
+  ],
+  "nextId": 3
+}

@@ -117,6 +117,18 @@ test('statusline colors: title green, track blue, context yellow; --no-color and
   assert.strictEqual(noColor.stdout, plain);
 });
 
+test('statusline counts guards after the line: singular, plural, ascii, color; none adds nothing', () => {
+  const guarded = (guards) => repo({ ...todoTrack, guards });
+  assert.strictEqual(run('statusline.js', { cwd: guarded(['x']) }).stdout, 'P   S ◐ F   ◐ A   ¦ 1 guard\n');
+  assert.strictEqual(run('statusline.js', { cwd: guarded(['x', 'y', 'z']) }).stdout, 'P   S ◐ F   ◐ A   ¦ 3 guards\n');
+  assert.strictEqual(run('statusline.js', { cwd: guarded(['x', 'y']) }, { BUBBLES_ASCII: '1' }).stdout, 'P   S @ F   @ A   ! 2 guards\n');
+  assert.strictEqual(
+    run('statusline.js', { cwd: guarded(['x', 'y']) }, { NO_COLOR: '' }).stdout,
+    '\x1b[32mP\x1b[0m   \x1b[34mS ◐ F\x1b[0m   \x1b[33m◐ A\x1b[0m   \x1b[33m¦ 2 guards\x1b[0m\n'
+  );
+  assert.strictEqual(run('statusline.js', { cwd: guarded([]) }).stdout, 'P   S ◐ F   ◐ A\n');
+});
+
 test('fog gate and statusline follow the current track', () => {
   const dir = repo(todoTrack);
   fs.writeFileSync(path.join(dir, '.bubble-tracks', 'foggy.json'), JSON.stringify(fogTrack));

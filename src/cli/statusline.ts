@@ -9,10 +9,11 @@ async function main(): Promise<string> {
   const found = lib.findTrack(resolveRoot(input));
   if (!found) return '';
   if (!found.track) return `bubbles: invalid ${found.name}.json`;
-  return lib.render(found.track, {
+  const opts = {
     ascii: process.argv.includes('--ascii') ? true : undefined,
     color: !process.argv.includes('--no-color'),
-  });
+  };
+  return lib.render(found.track, opts) + lib.renderGuardCount(found.track, opts);
 }
 
 main()
