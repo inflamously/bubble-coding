@@ -27,12 +27,13 @@ export const SITE_CONFIGS = ['src/site/bubble-web', 'src/site/terminal', 'src/si
 
 const BUBBLE_WEB = path.join(ROOT, 'src', 'site', 'bubble-web');
 
-/** Bundles bubble-web's CLI from src/lib/cli/main.ts with node:fs and node:path swapped for the machine's (see host.mts). */
+/** Bundles bubble-web's CLI from src/lib/cli/main.ts with node:fs and node:path swapped for the machine's (see host.mts),
+ *  and node:util for @pkgjs/parseargs. */
 const machine = {
   name: 'bubble-web-machine',
   setup(build) {
     build.onResolve({ filter: /^bubble-cli$/ }, () => ({ path: path.join(ROOT, 'src', 'lib', 'cli', 'main.ts') }));
-    build.onResolve({ filter: /^node:(fs|path)$/ }, (args) => ({ path: path.join(BUBBLE_WEB, `node-${args.path.slice(5)}.mts`) }));
+    build.onResolve({ filter: /^node:(fs|path|util)$/ }, (args) => ({ path: path.join(BUBBLE_WEB, `node-${args.path.slice(5)}.mts`) }));
   },
 };
 

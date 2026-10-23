@@ -21,6 +21,7 @@
     "check": "node build.mjs check"
   },
   "devDependencies": {
+    "@pkgjs/parseargs": "0.11.0",
     "@types/node": "24.19.2",
     "esbuild": "0.28.2",
     "typescript": "7.0.2"
