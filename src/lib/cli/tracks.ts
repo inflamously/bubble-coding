@@ -56,16 +56,30 @@ export function runTrackCommand(cmd: string, args: string[], { dir, opts, render
         console.log('no tracks yet — start one with: switch <name>');
         return 0;
       }
+      if (opts.closed && opts.all) throw new Error('tracks takes --closed or --all, not both');
+      // By default closed tracks are hidden, except the current one; all-done-but-open tracks still show (they wait
+      // to be closed). --closed lists only closed tracks, --all everything.
       const current = lib.currentName(bubblesDir);
+      let hidden = 0;
+      let shown = 0;
       for (const name of names) {
         let line;
         try {
-          line = lib.render(lib.loadTrack(lib.trackPath(bubblesDir, name)), renderOpts);
+          const track = lib.loadTrack(lib.trackPath(bubblesDir, name));
+          const skip = opts.closed ? !track.closed : !opts.all && track.closed && name !== current;
+          if (skip) {
+            if (!opts.closed) hidden++;
+            continue;
+          }
+          line = lib.render(track, renderOpts);
         } catch (err) {
           line = `invalid: ${(err as Error).message}`;
         }
         console.log(`${name === current ? '→' : ' '} ${name.padEnd(16)} ${line}`);
+        shown++;
       }
+      if (opts.closed && !shown) console.log('no closed tracks');
+      if (hidden) console.log(`  ${hidden} closed hidden — tracks --all`);
       return 0;
     }
     case 'fork':

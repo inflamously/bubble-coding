@@ -1,0 +1,30 @@
+{
+  "title": "Closed filter",
+  "bubbles": [
+    {
+      "title": "Closed-track view",
+      "state": "done",
+      "id": 1,
+      "hint": "Decision: no subfolder, all tracks stay in .bubble-tracks/ so fork/side links stay untouched; closed tracks only hidden from tracks. Dimming closed rows: not for now"
+    },
+    {
+      "title": "Hide closed",
+      "state": "done",
+      "id": 5,
+      "hint": "tracks skips closed (track.closed) but keeps all-done-not-closed; footer \"N closed hidden — tracks --all\"; src/lib/cli/tracks.ts"
+    },
+    {
+      "title": "Closed flags",
+      "state": "todo",
+      "id": 7,
+      "hint": "tracks --closed (only closed) / --all (everything); parse in src/lib/cli/args.ts"
+    },
+    {
+      "title": "Tests + docs",
+      "state": "todo",
+      "id": 6,
+      "hint": "test/ coverage, SKILL.md command table, fallback.md, README"
+    }
+  ],
+  "nextId": 8
+}

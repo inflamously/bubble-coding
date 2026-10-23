@@ -5,7 +5,8 @@ export const HELP = `bubble-tracks — the bubble language
 
   switch [name] [title]         resume track <name>, or create it; no name = the current (else default) track
   create <name> [title]         create a new track (refuses if it exists) and make it current
-  tracks                        list all tracks, current marked →
+  tracks [--closed | --all]     list the tracks, current marked →; closed ones are hidden unless
+                                --closed (only closed) or --all (everything)
   close <name> --force          finish and archive a track: read-only for good, no reopen. Also closes
                                 all its forks (side tracks stay open) and pops its parent bubble
   delete <name> --force         delete a track (not the current one)
@@ -52,6 +53,10 @@ export function parseArgs(argv) {
             opts.fog = true;
         else if (a === '--force')
             opts.force = true;
+        else if (a === '--closed')
+            opts.closed = true;
+        else if (a === '--all')
+            opts.all = true;
         else if (a === '--dir')
             opts.dir = argv[++i];
         else if (a === '--at')
