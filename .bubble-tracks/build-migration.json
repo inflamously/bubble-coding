@@ -52,5 +52,8 @@
       "hint": "Done: CI unchanged (npm ci installs esbuild from the lockfile; npm test / npm run site call build.mjs). Docs: AGENTS.md, src/site/README.md, docs/1, docs/6 (main.ts split), docs/8 (bridge + build rewritten), page footer. esbuild warnings are fatal so a missing fs shim fails the bundle. 59/59 on Node 18 and 22, and with FORCE_COLOR=1."
     }
   ],
-  "nextId": 9
+  "nextId": 9,
+  "closed": {
+    "at": "2026-10-23T20:15:12.448Z"
+  }
 }

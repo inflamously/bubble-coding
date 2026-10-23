@@ -32,5 +32,8 @@
       "hint": "parseargs primordials.js reads Node's global; define global as globalThis in build.mjs browserOptions"
     }
   ],
-  "nextId": 7
+  "nextId": 7,
+  "closed": {
+    "at": "2026-10-23T20:14:43.951Z"
+  }
 }

@@ -26,5 +26,8 @@
       "hint": "test/ coverage, SKILL.md command table, fallback.md, README"
     }
   ],
-  "nextId": 8
+  "nextId": 8,
+  "closed": {
+    "at": "2026-10-23T20:15:12.374Z"
+  }
 }

@@ -43,5 +43,8 @@
       "hint": "npm run build; build.test.js checks committed JS matches"
     }
   ],
-  "nextId": 7
+  "nextId": 7,
+  "closed": {
+    "at": "2026-10-23T20:15:12.521Z"
+  }
 }
