@@ -48,7 +48,7 @@ export function runTrackCommand(cmd: string, args: string[], { dir, opts, render
       lib.setCurrent(bubblesDir, name);
       console.log(`resumed track "${name}"`);
       console.log('');
-      return printTrack(file, track, renderOpts);
+      return printTrack(file, track, renderOpts, true);
     }
     case 'tracks': {
       const names = lib.listTracks(bubblesDir);

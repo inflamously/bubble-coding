@@ -1,0 +1,35 @@
+{
+  "title": "Goal guard test",
+  "bubbles": [
+    {
+      "title": "Goal command",
+      "state": "done",
+      "id": 1,
+      "hint": "Set, change and clear the goal; check show and switch print it. Boundary: goal only."
+    },
+    {
+      "title": "Guard commands",
+      "state": "todo",
+      "id": 2,
+      "hint": "Add guards, drop guard N, drop all, bad N, text starting with - (after --). Boundary: guard only."
+    },
+    {
+      "title": "Guards at done",
+      "state": "todo",
+      "id": 3,
+      "hint": "Pop a bubble with guards set: are they visible at the stop, and does the agent check them before done? Boundary: done + guards."
+    },
+    {
+      "title": "Review plan step",
+      "state": "todo",
+      "id": 4,
+      "hint": "Did this plan (goal, guards, use cases before the sketch) give a focused track? Findings go to flow-analysis with add --to. Boundary: the plan step text."
+    }
+  ],
+  "goal": "Test the plan step, goal and guards end to end",
+  "guards": [
+    "Focus only on plan, goal and guards: no other CLI features",
+    "No source file changes: bugs found go to flow-analysis"
+  ],
+  "nextId": 5
+}

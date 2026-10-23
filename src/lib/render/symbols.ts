@@ -7,11 +7,11 @@ export interface RenderOpts {
   color?: boolean;
 }
 
-export type Symbols = Record<'done' | 'active' | 'todo' | 'fog' | 'sep' | 'prev' | 'next' | 'more' | 'fork' | 'side' | 'lock', string>;
+export type Symbols = Record<'done' | 'active' | 'todo' | 'fog' | 'sep' | 'prev' | 'next' | 'more' | 'fork' | 'side' | 'lock' | 'goal' | 'guard', string>;
 
 export const SYMBOLS: { unicode: Symbols; ascii: Symbols } = {
-  unicode: { done: '●', active: '◐', todo: '○', fog: '❓', sep: '──', prev: ' ‹ ', next: ' › ', more: '…', fork: '⑂', side: '↗', lock: '🔒' },
-  ascii: { done: '*', active: '@', todo: 'o', fog: '?', sep: '--', prev: ' < ', next: ' > ', more: '...', fork: 'Y', side: '/', lock: '#' },
+  unicode: { done: '●', active: '◐', todo: '○', fog: '❓', sep: '──', prev: ' ‹ ', next: ' › ', more: '…', fork: '⑂', side: '↗', lock: '🔒', goal: '→', guard: '¦' },
+  ascii: { done: '*', active: '@', todo: 'o', fog: '?', sep: '--', prev: ' < ', next: ' > ', more: '...', fork: 'Y', side: '/', lock: '#', goal: '>', guard: '!' },
 };
 
 // ANSI colors: title dark green, track blue, prev ‹ active › next dark yellow.

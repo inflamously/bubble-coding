@@ -432,6 +432,27 @@ test('handoff note survives switching away and is shown on resume', () => {
   assert.doesNotMatch(run('show').stdout, /handoff/);
 });
 
+test('goal and guards are stored on the track and shown on resume', () => {
+  const { run, track } = repo();
+  assert.match(run('goal', 'Parse', 'v2', 'files').stdout, /→ goal: Parse v2 files/);
+  run('guard', "don't", 'touch', 'src/site');
+  run('guard', 'no', 'new', 'deps');
+  assert.deepStrictEqual(track().guards, ["don't touch src/site", 'no new deps']);
+  assert.match(run('switch').stdout, /¦ guards \(check before done\):\n {4}1 {2}don't touch src\/site\n {4}2 {2}no new deps/);
+  assert.doesNotMatch(run('show').stdout, /guards/); // only on switch, guard and guard show
+  assert.doesNotMatch(run('add', 'D').stdout, /guards/);
+  assert.match(run('guard', 'show').stdout, /^¦ guards \(check before done\):\n {4}1 {2}don't touch src\/site/);
+  assert.match(run('guard', '1', '-').stdout, /dropped guard 1: don't touch src\/site/);
+  assert.deepStrictEqual(track().guards, ['no new deps']);
+  assert.match(run('guard', '5', '-').stderr, /no guard 5/);
+  run('guard', '-');
+  run('goal', '-');
+  assert.strictEqual('guards' in track() || 'goal' in track(), false);
+  assert.doesNotMatch(run('show').stdout, /goal|guards/);
+  assert.match(run('guard').stderr, /guard needs text/);
+  assert.match(run('guard', 'show').stdout, /no guards/);
+});
+
 test('fork: child track links to the parent bubble by relative path and becomes current', () => {
   const { run, track } = repo();
   const res = run('fork', '2', 'b-sub');

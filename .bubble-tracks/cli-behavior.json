@@ -18,7 +18,31 @@
       "state": "todo",
       "id": 3,
       "hint": "Fog gate also checks shell tools (Claude Bash, Codex shell/exec_command, Gemini run_shell_command): add to matchers in plugin.json + skill-install/agents/*. Decided (b) for now: heuristic write detection on tool_input.command (>, >>, tee, sed -i, mv, cp, rm, git commit/checkout); everything else passes, so a bugged gate never fully blocks people. Writes only into .bubble-tracks/ still pass. Still fail open; current track only; switching tracks stays legal. (a) allowlist = possible later hardening"
+    },
+    {
+      "title": "Empty track not done",
+      "state": "todo",
+      "id": 4,
+      "hint": "An empty track renders 'all done' and done says 'all bubbles are already done'; show it as empty instead."
+    },
+    {
+      "title": "Dangling side link",
+      "state": "todo",
+      "id": 5,
+      "hint": "delete of a side track leaves ↗ <name>.json on the parent bubble; drop the link or mark it missing."
+    },
+    {
+      "title": "Move-to spacing",
+      "state": "todo",
+      "id": 6,
+      "hint": "move N --to <track> prints the other track's line with no blank line before the current track's render."
+    },
+    {
+      "title": "Silent option swallow",
+      "state": "todo",
+      "id": 7,
+      "hint": "A dash word inside a title is read as an option with no error: 'add Move --to spacing --to cli-behavior' added 'Move' (last --to wins, 'spacing' dropped). Warn or refuse on a repeated option or an option in the middle of the text."
     }
   ],
-  "nextId": 4
+  "nextId": 8
 }

@@ -4,7 +4,7 @@ import * as fs from 'node:fs';
 import * as lib from '../index.js';
 import * as links from '../links/index.js';
 import { isAddr, isRange, needAddr } from './args.js';
-import { printTrack } from './print.js';
+import { printGuards, printTrack } from './print.js';
 const STOP = '⏸ stop — show this track to the human and wait. They may move, insert, remove, rename, hint or fog ' +
     'bubbles before the next one starts.';
 /** Commands that take --to <track>: add, insert and hint write into it; move sends bubbles to it. */
@@ -110,6 +110,19 @@ export function runBubbleCommand(cmd, args, { dir, opts, renderOpts }) {
             if (track.handoff)
                 msg += ` — in a fresh chat run: /bubble switch ${found.name}`;
             break;
+        case 'goal':
+            msg = lib.setGoal(track, args.join(' '));
+            break;
+        case 'guard':
+            if (args.length === 1 && args[0] === 'show') {
+                if (track.guards && track.guards.length)
+                    printGuards(track, renderOpts);
+                else
+                    console.log('no guards — add one: guard <text>');
+                return 0;
+            }
+            msg = lib.guard(track, args.join(' '));
+            break;
         case 'title':
             msg = lib.setTitle(track, args.join(' '));
             after = () => links.syncTitle(file, track);
@@ -157,7 +170,7 @@ export function runBubbleCommand(cmd, args, { dir, opts, renderOpts }) {
     const linked = after ? after() : '';
     console.log(linked ? `${msg}\n${linked}` : msg);
     console.log('');
-    printTrack(file, track, renderOpts);
+    printTrack(file, track, renderOpts, cmd === 'guard');
     if (stop && lib.activeBubble(track)) {
         console.log('');
         console.log(STOP);

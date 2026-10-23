@@ -32,6 +32,8 @@ Without Node, no hook blocks your edits. Before editing any project file, read t
 Track fields:
 
 - `title`: the track's name, kept short.
+- `goal`: the one end result every bubble serves.
+- `guards`: rules of what not to do, as an array of strings. Check them before `done`.
 - `bubbles`: the bubbles in order, S to F. Required, even when empty (`[]`).
 - `nextId`: the id the next new bubble gets. Missing means 1.
 - `handoff`: `{ "note", "at" }`, where `at` is UTC as `YYYY-MM-DD HH:MM UTC`.
@@ -63,6 +65,8 @@ N is a 1-based position on the track. When N is left out, it means the active bu
 | `type [N] <TYPE>` | Set `type`. Expand `kk`, `ku`, `uk` and `uu`. |
 | `hint N <text>` · `hint N -` | Set `hint`, or delete the field with `-`. |
 | `handoff <note>` · `handoff -` | Set `handoff` to `{ "note", "at" }`, or delete it with `-`. |
+| `goal <text>` · `goal -` | Set `goal`, or delete it with `-`. |
+| `guard <text>` · `guard N -` · `guard -` · `guard show` | Append to `guards`, drop guard N, or delete `guards` with `-`. Delete the field when it ends up empty. `guard show` lists them; `show` doesn't, only `switch` does. |
 | `done` | Set the active bubble's `state` to `done` (never a fog bubble), then ⏸ stop. If it has a `fork`, don't pop it: that bubble waits for its fork track. |
 | `rename N` · `title` · `remove` · `move N to M` · `fog` | Edit `title`, delete bubbles, reorder the array, or set `state` to `fog`. Done bubbles turn into fog only after the human confirms. |
 | `tracks` · `--closed` · `--all` | List the `*.json` files and mark the current one with `→`. Skip tracks that have `closed` (unless current) and say how many you skipped; `--closed` lists only those, `--all` lists everything. |

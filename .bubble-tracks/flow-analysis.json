@@ -15,27 +15,39 @@
     },
     {
       "title": "Audit skill flow",
-      "state": "todo",
+      "state": "done",
       "id": 2,
       "hint": "Read SKILL.md + fallback.md + CLI; map the actual steps (sketch, classify, walk, fog stop) against the interview's pain points. For each change (plan step, guards, seams, research, grill-me), decide: reusable ability or core library/CLI feature? The human is undecided."
     },
     {
       "title": "Plan step gap",
-      "state": "todo",
+      "state": "done",
       "id": 3,
-      "hint": "Plan up front, before the first bubble: its output is a better track focused on the core end goal. Guards (what not to do) and use-case seams fall out of the plan and are stored as hints or similar, not as separate bubbles. Also a mini-plan ability for planning later in the track when needed."
+      "hint": "Plan up front, before the first bubble: its output is a better track focused on the core end goal. Guards (what not to do) and use-case seams fall out of the plan and are stored as hints or similar, not as separate bubbles. Also a mini-plan ability for planning later in the track when needed. Audit: core. Short plan step before sketch produces goal + guards + use cases; goal and guards stored on the track (new Track fields, model.ts) and printed by show/switch; guards are soft rules the agent checks before done. Seams: skill text only, one bubble per use case, hint names its boundary; work past it → stop and propose insert. mini-plan (type: track) = ability."
+    },
+    {
+      "title": "Subtle goal icons",
+      "state": "done",
+      "id": 9,
+      "hint": "Goal/guards icons: → goal, ¦ guards (ascii > and !), in the symbol sets so --ascii works. Was ◎ and ⛔."
+    },
+    {
+      "title": "Guards on demand",
+      "state": "done",
+      "id": 10,
+      "hint": "Guards print only on switch (resume), after a guard command, and via guard show; not on every show/mutation. Goal line stays."
     },
     {
       "title": "Research step",
       "state": "todo",
       "id": 4,
-      "hint": "Should research be a built-in step (or an ability) instead of only via known-unknown fog?"
+      "hint": "Should research be a built-in step (or an ability) instead of only via known-unknown fog? Audit: ability. research + grill abilities (type: bubble), offered when the human answers ? while classifying fog; uu interview already is grill-me."
     },
     {
       "title": "Fog needs a reason",
       "state": "todo",
       "id": 5,
-      "hint": "Fog is sometimes created without saying why, which irritates the user. Require a one-line reason per fog bubble (hint or CLI field)."
+      "hint": "Fog is sometimes created without saying why, which irritates the user. Require a one-line reason per fog bubble (hint or CLI field). Audit: core. Every fog carries a one-line reason (why it's unclear, not what it is), so 'never plan fog' holds. Fix SKILL.md step 1 'add --fog with no detail' and use add ? consistently."
     },
     {
       "title": "???",
@@ -46,8 +58,18 @@
       "title": "Update skill + docs",
       "state": "todo",
       "id": 7,
-      "hint": "Apply the agreed changes to SKILL.md, fallback.md, README, and tests."
+      "hint": "Apply the agreed changes to SKILL.md, fallback.md, README, and tests. Flow text lives in 5 places: SKILL.md, fallback.md, adapters/agents-md.md, adapters/gemini/bubble.toml, and CLI-printed guidance (tracks.ts fork/diverge line, print.ts fog line, bubbles.ts stop line). From bubble 4: goal/guard commands exist (CLI, help, fallback.md done). Still to write: plan step before sketch (goal + guards + use cases) in SKILL.md and adapters, check guards before done, seams (one bubble per use case, hint names its boundary), mini-plan ability (type: track)."
+    },
+    {
+      "title": "Goal test findings",
+      "state": "todo",
+      "id": 11,
+      "hint": "From goal-guard-test bubble 1: (a) goal - with no goal says 'cleared the goal'; say 'no goal to clear' like guard - does. (b) changing a goal doesn't show the old one; title prints old → new. (c) the → goal icon reads like the → active-bubble marker right below it."
     }
   ],
-  "nextId": 9
+  "nextId": 12,
+  "handoff": {
+    "note": "Bubbles 1-3 done. Interview answers are in bubble 1's hint; ability-vs-core decisions (human agreed) are in the hints of 4-6; bubble 8's hint lists the 5 places the flow text lives. test/e2e.test.js is new and uncommitted (55 per-step tests, BUBBLES_TRANSCRIPT=<file> dumps the session). 6 failing tests in the full suite fail on a clean tree too (node_modules from macOS, no Linux tsc binary). Next: bubble 4, design the plan step and the track-level goal/guards fields.",
+    "at": "2026-10-23 20:59 UTC"
+  }
 }

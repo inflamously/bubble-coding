@@ -1,5 +1,5 @@
 // Rendering: the one-line track (status line, `tracks`) and the numbered listing (`show`).
 
-export { SYMBOLS, shorten, type RenderOpts } from './symbols.js';
+export { SYMBOLS, shorten, symbolsFor, type RenderOpts } from './symbols.js';
 export * from './line.js';
 export * from './list.js';
