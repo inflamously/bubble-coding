@@ -9,7 +9,7 @@
     },
     {
       "title": "Swap CLI flags",
-      "state": "todo",
+      "state": "done",
       "id": 2,
       "hint": "replace the flag loop in src/lib/cli/args.ts; keep phrase split + leading 'bubble' on top; keep CliOpts shape and error texts"
     },
