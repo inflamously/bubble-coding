@@ -29,7 +29,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `show` | Render the track and list its bubbles with addresses. Exits **3** if the active bubble is fog. |
 | `switch [name] [title]` | Resume track `<name>`, or create it if it doesn't exist. It becomes current. No name: resume the current track (else the default `track`). |
 | `create <name> [title]` | Create a new track (refuses if it exists) and make it current |
-| `tracks` | List all tracks, current marked `→` |
+| `tracks` · `tracks --closed` · `tracks --all` | List the tracks, current marked `→`. Closed tracks are hidden (except the current one) and counted in a footer; `--closed` lists only closed tracks, `--all` lists everything. |
 | `close <name> --force` | Finish a track for good, after the human confirms: read-only, no reopen. Also closes all its forks (side tracks stay open) and pops its parent bubble. Without `--force` it refuses and lists every track it would close. |
 | `delete <name> --force` | Delete a track that isn't current, after the human confirms |
 | `init <title>` | Create the default track (`.bubble-tracks/track.json`) |
@@ -93,7 +93,7 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
 
    First save what only this chat knows: `handoff <note>` (what's half done, the decisions made and why, gotchas, and the next concrete step), plus `hint`s on the bubbles ahead. Keep the note to a few lines. Then tell the human: *"Context is getting heavy. Run `/clear`, then `/bubble switch <name>`."* The CLI prints that exact line, track name included. Don't push it: if they want to keep going, keep going.
 6. **Show progress.** After every change, show the user the rendered line the CLI prints. Most agents have no status line, so this is how they see the track.
-   When the human asks for a list or overview (`list`, "list tracks", "where are we"), run `tracks` (or `show` for one track) and paste its output **unchanged in a code block**: every line, aligned as printed, nothing summarized or reworded. Then add at most a few short bullets on what stands out (current track, broken or finished tracks).
+   When the human asks for a list or overview (`list`, "list tracks", "where are we"), run `tracks` (or `show` for one track; `tracks --all` when they ask about closed tracks too) and paste its output **unchanged in a code block**: every line, aligned as printed, nothing summarized or reworded. Then add at most a few short bullets on what stands out (current track, broken or finished tracks).
 
 ## Fork or diverge: keep each track to one domain
 

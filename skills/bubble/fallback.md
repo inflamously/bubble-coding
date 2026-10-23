@@ -65,7 +65,7 @@ N is a 1-based position on the track. When N is left out, it means the active bu
 | `handoff <note>` · `handoff -` | Set `handoff` to `{ "note", "at" }`, or delete it with `-`. |
 | `done` | Set the active bubble's `state` to `done` (never a fog bubble), then ⏸ stop. If it has a `fork`, don't pop it: that bubble waits for its fork track. |
 | `rename N` · `title` · `remove` · `move N to M` · `fog` | Edit `title`, delete bubbles, reorder the array, or set `state` to `fog`. Done bubbles turn into fog only after the human confirms. |
-| `tracks` | List the `*.json` files and mark the current one with `→`. |
+| `tracks` · `--closed` · `--all` | List the `*.json` files and mark the current one with `→`. Skip tracks that have `closed` (unless current) and say how many you skipped; `--closed` lists only those, `--all` lists everything. |
 
 If a track has `closed`, it's read-only, so don't change it. `fork`, `diverge`, `close`, `delete` and `move … --to` keep links between tracks in sync. Leave them for when Node is available and tell the human that.
 

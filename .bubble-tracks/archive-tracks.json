@@ -15,13 +15,13 @@
     },
     {
       "title": "Closed flags",
-      "state": "todo",
+      "state": "done",
       "id": 7,
       "hint": "tracks --closed (only closed) / --all (everything); parse in src/lib/cli/args.ts"
     },
     {
       "title": "Tests + docs",
-      "state": "todo",
+      "state": "done",
       "id": 6,
       "hint": "test/ coverage, SKILL.md command table, fallback.md, README"
     }

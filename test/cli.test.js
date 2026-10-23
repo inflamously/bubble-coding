@@ -111,6 +111,35 @@ test('close: needs --force, marks the track closed, stays current, only once', (
   assert.match(run('close', 'track', '--force').stderr, /already closed/);
 });
 
+test('tracks hides closed tracks unless current; --closed lists only them, --all everything', () => {
+  const { run } = repo();
+  for (const t of ['old', 'open', 'done']) run('switch', t);
+  run('add', 'D');
+  run('done'); // "done" is all done but not closed: it still shows
+  run('close', 'old', '--force');
+  run('close', 'track', '--force');
+  run('switch', 'track'); // current and closed: it still shows
+  const names = (out) => out.split('\n').filter((l) => /^[→ ] [a-z]/.test(l)).map((l) => l.slice(2).split(' ')[0]);
+  let out = run('tracks').stdout;
+  assert.deepStrictEqual(names(out), ['done', 'open', 'track']);
+  assert.match(out, /  1 closed hidden — tracks --all/);
+  out = run('tracks', '--closed').stdout;
+  assert.deepStrictEqual(names(out), ['old', 'track']);
+  assert.doesNotMatch(out, /hidden/);
+  out = run('tracks', '--all').stdout;
+  assert.deepStrictEqual(names(out), ['done', 'old', 'open', 'track']);
+  assert.doesNotMatch(out, /hidden/);
+  assert.match(run('tracks', '--closed', '--all').stderr, /--closed or --all, not both/);
+  run('switch', 'open');
+  assert.deepStrictEqual(names(run('tracks').stdout), ['done', 'open']); // no longer current: hidden too
+  assert.match(run('tracks').stdout, /2 closed hidden/);
+});
+
+test('tracks --closed with nothing closed says so', () => {
+  const { run } = repo();
+  assert.match(run('tracks', '--closed').stdout, /^no closed tracks$/m);
+});
+
 test('closed track is read-only: every change is refused, nothing is written', () => {
   const { run, track } = repo();
   run('hint', '2', 'note');

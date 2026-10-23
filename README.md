@@ -114,7 +114,7 @@ Each track is its own idea, stored as one `.json` file in `.bubble-tracks/`. `.b
 
 - **`fork`** builds on a bubble in a child track. The bubble waits until the fork is finished.
 - **`diverge`** goes in a different direction from a bubble, in a side track. Nothing waits for it.
-- **`close`** finishes a track for good. It becomes read-only, shows 🔒 closed, and the fog gate ignores it. Closing a track also closes its forks (side tracks stay open), and closing a fork pops its parent bubble.
+- **`close`** finishes a track for good. It becomes read-only, shows 🔒 closed, and the fog gate ignores it. `tracks` hides it from then on; `tracks --closed` or `tracks --all` lists it again. Closing a track also closes its forks (side tracks stay open), and closing a fork pops its parent bubble.
 
 ### Abilities
 
@@ -146,7 +146,7 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | `show` | Render the track and list its bubbles (exit 3 = active bubble is fog) |
 | `switch [name] [title]` | Resume a track, or create it (no name: the current one) |
 | `create <name> [title]` | Create a new track (refuses if it exists) |
-| `tracks` | List tracks, current marked `→` |
+| `tracks` · `--closed` · `--all` | List tracks, current marked `→`; closed ones are hidden unless `--closed` (only closed) or `--all` |
 | `close <name> --force` | Finish a track for good: read-only, closes its forks, pops its parent bubble |
 | `delete <name> --force` | Delete a track (not the current one) |
 | `fork [N] <name>` | Build on bubble N in a child track; the bubble waits for it |
