@@ -24,7 +24,13 @@
       "state": "done",
       "id": 5,
       "hint": "test/cli.test.js flag/error cases (incl. -- for dash words, --to=x), build size check; docs: HELP text, SKILL.md, fallback.md, README — document the -- rule for text starting with -"
+    },
+    {
+      "title": "Browser global shim",
+      "state": "done",
+      "id": 6,
+      "hint": "parseargs primordials.js reads Node's global; define global as globalThis in build.mjs browserOptions"
     }
   ],
-  "nextId": 6
+  "nextId": 7
 }

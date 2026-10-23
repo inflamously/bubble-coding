@@ -44,6 +44,8 @@ export const browserOptions = {
   target: 'es2022',
   plugins: [machine],
   inject: [path.join(BUBBLE_WEB, 'globals.mts')],
+  // @pkgjs/parseargs reads Node's `global` (internal/primordials.js); browsers only have globalThis.
+  define: { global: 'globalThis' },
 };
 
 /** Run tsc with `args`; throws with its output if it fails. */
@@ -98,7 +100,7 @@ export async function buildSite(out = path.join(ROOT, 'dist', 'pages')) {
     entryNames: '[name]-[hash]',
     outdir: out,
     platform: 'browser',
-    define: { STORY: JSON.stringify(story) },
+    define: { ...browserOptions.define, STORY: JSON.stringify(story) },
     metafile: true,
   });
 
