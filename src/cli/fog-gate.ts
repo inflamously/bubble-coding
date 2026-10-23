@@ -9,7 +9,9 @@ async function main(): Promise<number> {
   const input = await readStdinJson();
   const root = resolveRoot(input);
   const found = lib.findTrack(root);
-  if (!found || !found.track || found.track.closed) return 0; // a closed track is an archive: it gates nothing
+  
+  // a closed track is an archive: it gates nothing
+  if (!found || !found.track || found.track.closed) return 0;
 
   // Editing the plan itself is always allowed — that's how fog gets filled.
   const targets = extractTargetPaths(input, root);

@@ -1,0 +1,35 @@
+{
+  "title": "Arg parser lib",
+  "bubbles": [
+    {
+      "title": "Pick a parser",
+      "state": "done",
+      "id": 1,
+      "hint": "Decision: node:util parseArgs, strict mode, options table (no tokens wrapper) — goal is readable code. Words starting with - need -- (hint 2 -- use -v flag). mri: no strict; commander: fights the bubble grammar"
+    },
+    {
+      "title": "Swap CLI flags",
+      "state": "todo",
+      "id": 2,
+      "hint": "replace the flag loop in src/lib/cli/args.ts; keep phrase split + leading 'bubble' on top; keep CliOpts shape and error texts"
+    },
+    {
+      "title": "???",
+      "state": "fog",
+      "id": 3
+    },
+    {
+      "title": "Swap installer flags",
+      "state": "todo",
+      "id": 4,
+      "hint": "src/skill-install/args.ts parseArgs, same parser"
+    },
+    {
+      "title": "Tests + docs",
+      "state": "todo",
+      "id": 5,
+      "hint": "test/cli.test.js flag/error cases (incl. -- for dash words, --to=x), build size check; docs: HELP text, SKILL.md, fallback.md, README — document the -- rule for text starting with -"
+    }
+  ],
+  "nextId": 6
+}

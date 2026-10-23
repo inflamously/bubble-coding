@@ -69,21 +69,21 @@ export function parseArgs(argv: string[]): { cmd: string | undefined; args: stri
   const pos: string[] = [];
   const opts: CliOpts = {};
   for (let i = 0; i < argv.length; i++) {
-    const a = argv[i];
-    if (a === '--ascii') opts.ascii = true;
-    else if (a === '--fog') opts.fog = true;
-    else if (a === '--force') opts.force = true;
-    else if (a === '--closed') opts.closed = true;
-    else if (a === '--all') opts.all = true;
-    else if (a === '--dir') opts.dir = argv[++i];
-    else if (a === '--at') opts.at = argv[++i];
-    else if (a === '--to') {
+    const arg = argv[i];
+    if (arg === '--ascii') opts.ascii = true;
+    else if (arg === '--fog') opts.fog = true;
+    else if (arg === '--force') opts.force = true;
+    else if (arg === '--closed') opts.closed = true;
+    else if (arg === '--all') opts.all = true;
+    else if (arg === '--dir') opts.dir = argv[++i];
+    else if (arg === '--at') opts.at = argv[++i];
+    else if (arg === '--to') {
       opts.to = argv[++i];
       if (!opts.to || opts.to.startsWith('--')) throw new Error('--to needs a track name');
     }
-    else if (a === '-h' || a === '--help') opts.help = true;
-    else if (a.startsWith('--')) throw new Error(`unknown option "${a}" — try: help`);
-    else pos.push(a);
+    else if (arg === '-h' || arg === '--help') opts.help = true;
+    else if (arg.startsWith('--')) throw new Error(`unknown option "${arg}" — try: help`);
+    else pos.push(arg);
   }
   // A whole phrase passed as one argument: "move 2 to 5".
   if (pos.length === 1 && /\s/.test(pos[0].trim())) pos.splice(0, 1, ...pos[0].trim().split(/\s+/));
