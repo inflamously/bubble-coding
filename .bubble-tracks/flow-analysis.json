@@ -64,7 +64,7 @@
       "title": "Update skill + docs",
       "state": "todo",
       "id": 7,
-      "hint": "Apply the agreed changes to SKILL.md, fallback.md, README, and tests. Flow text lives in 5 places: SKILL.md, fallback.md, adapters/agents-md.md, adapters/gemini/bubble.toml, and CLI-printed guidance (tracks.ts fork/diverge line, print.ts fog line, bubbles.ts stop line). From bubble 4: goal/guard commands exist (CLI, help, fallback.md done). Still to write: plan step before sketch (goal + guards + use cases) in SKILL.md and adapters, check guards before done, seams (one bubble per use case, hint names its boundary), mini-plan ability (type: track)."
+      "hint": "Apply the agreed changes to SKILL.md, fallback.md, README, and tests. Flow text lives in 5 places: SKILL.md, fallback.md, adapters/agents-md.md, adapters/gemini/bubble.toml, and CLI-printed guidance (tracks.ts fork/diverge line, print.ts fog line, bubbles.ts stop line). From bubble 4: goal/guard commands exist (CLI, help, fallback.md done). Still to write: plan step before sketch (goal + guards + use cases) in SKILL.md and adapters; guards come BEFORE acting (human, goal-guard-test): read them (guard show) before implementing a bubble or taking any action, not as a check at done; seams (one bubble per use case, hint names its boundary); mini-plan ability (type: track). Plan-step flow (agreed): switch on an existing name resumes at once (step 0 unchanged); a new name or 'I want X' gets the plan first, in chat, no track yet: 3 short questions (goal, guards, use cases) → one compact proposal (name + title, goal, guards, bubbles with fog reasons, or 'fits track X, add there?') → human ok/edits → create, goal, guard xN, add xN, hints in one burst → classify fog → ⏸. No CLI change; check tracks for the name."
     },
     {
       "title": "Goal test findings",
@@ -76,12 +76,18 @@
       "title": "Guard test findings",
       "state": "todo",
       "id": 12,
-      "hint": "From goal-guard-test bubble 2: (a) guard 3 (likely a typo for guard 3 -) silently adds a guard titled '3'; refuse a bare number. (b) guard show extra / guard 1 - x also become guard text silently. (c) no way to edit a guard: drop + add moves it to the end. (d) guard - drops all without asking; fine for now?"
+      "hint": "From goal-guard-test bubble 2: (a) guard 3 (likely a typo for guard 3 -) silently adds a guard titled '3'; refuse a bare number. (b) guard show extra / guard 1 - x also become guard text silently. (c) no way to edit a guard: drop + add moves it to the end. (d) guard - drops all without asking; fine for now? From bubble 3: (e) guards are pre-action rules, not a done check (human). Relabel 'guards (check before done)' to e.g. 'guards (before you act)' in print.ts, model.ts comment, help text, fallback.md, tests."
+    },
+    {
+      "title": "Plan step findings",
+      "state": "todo",
+      "id": 14,
+      "hint": "From goal-guard-test bubble 4. Worked: a one-line goal gave 4 use-case bubbles, no fog, no over-planning; 'Boundary:' in hints kept each bubble scoped; guard 2 routed 4 source requests (icons, guards on demand, e2e/docs, relabel) to flow-analysis, so the test track stayed clean. Fix in SKILL.md: (a) the plan asked 3 questions at once and the human answered only the goal, so the agent drafted guards and use cases; say that the agent may propose guards and use cases and the human confirms. (b) Say what guards are for: read before acting, not a done check (the human corrected this mid-track). (c) A fresh agent can't run the plan step yet; it only exists in bubble hints. Decided (human): a guard stands even against a direct human ask; route the work to the right track."
     }
   ],
-  "nextId": 14,
+  "nextId": 15,
   "handoff": {
-    "note": "Bubbles 1-3 done. Interview answers are in bubble 1's hint; ability-vs-core decisions (human agreed) are in the hints of 4-6; bubble 8's hint lists the 5 places the flow text lives. test/e2e.test.js is new and uncommitted (55 per-step tests, BUBBLES_TRANSCRIPT=<file> dumps the session). 6 failing tests in the full suite fail on a clean tree too (node_modules from macOS, no Linux tsc binary). Next: bubble 4, design the plan step and the track-level goal/guards fields.",
-    "at": "2026-10-23 20:59 UTC"
+    "note": "Bubbles 1-7 done. goal/guard/guard show are built (CLI, help, fallback.md, cli + e2e tests; AGENTS.md rule: CLI changes extend e2e; CLAUDE.md imports AGENTS.md). goal-guard-test (closed) tested them; findings are in 12-14, and the decisions (guards are read before acting; a guard stands even against a direct human ask; plan in chat before the track is created) are in the hints of 11 and 14. Built JS was compiled with a Linux tsc from the scratchpad: run npm run build on the Mac before committing. Nothing committed. Next: bubble 8, research + grill abilities.",
+    "at": "2026-10-23 21:23 UTC"
   }
 }
