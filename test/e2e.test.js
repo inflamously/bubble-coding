@@ -56,6 +56,25 @@ describe('e2e: a development track from sketch to close', () => {
     step(['rename', '2', 'Check input'], /renamed "Validate" → "Check input"/);
   });
 
+  describe('plan: goal and guards on the track', () => {
+    step(['goal', 'Parse and check input'], [/goal: Parse and check input/, /→ goal: Parse and check input/]);
+    step(['guard', 'show'], /no guards — add one: guard <text>/);
+    step(['guard', 'no new deps'], [/guard 1: no new deps/, /¦ guards \(check before done\):\n {4}1 {2}no new deps/]);
+    step(['guard', '--', '-v stays verbose'], / {4}2 {2}-v stays verbose/);
+    step(['guard', '9', '-'], /no guard 9/, 1);
+    step(['guard', '2', '-'], /dropped guard 2: -v stays verbose/);
+    step(['guard', 'show'], /^¦ guards \(check before done\):\n {4}1 {2}no new deps$/);
+    it('show prints the goal but not the guards', () => {
+      const r = spawnSync(process.execPath, [CLI, '--dir', dir, 'show'], { encoding: 'utf8' });
+      assert.match(r.stdout, /→ goal: Parse and check input/);
+      assert.doesNotMatch(r.stdout, /guards/);
+    });
+    it('dev.json holds the goal and guards', () => {
+      assert.strictEqual(read('dev').goal, 'Parse and check input');
+      assert.deepStrictEqual(read('dev').guards, ['no new deps']);
+    });
+  });
+
   describe('classify and fill the fog', () => {
     step(['rename', '3', 'Guess'], /"\?\?\?" is fog — plan it with fill/, 1); // fog is the human's to plan
     step(['type', '3', 'ku'], [/classified as known-unknown/, /❓ fog {4}\?\?\? \[known-unknown\]/]);

@@ -9,7 +9,7 @@
     },
     {
       "title": "Guard commands",
-      "state": "todo",
+      "state": "done",
       "id": 2,
       "hint": "Add guards, drop guard N, drop all, bad N, text starting with - (after --). Boundary: guard only."
     },

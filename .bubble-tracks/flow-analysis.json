@@ -38,6 +38,12 @@
       "hint": "Guards print only on switch (resume), after a guard command, and via guard show; not on every show/mutation. Goal line stays."
     },
     {
+      "title": "E2E + agent docs",
+      "state": "done",
+      "id": 13,
+      "hint": "e2e steps for goal, guard, guard show; AGENTS.md rule: CLI changes extend test/e2e.test.js; CLAUDE.md that imports AGENTS.md."
+    },
+    {
       "title": "Research step",
       "state": "todo",
       "id": 4,
@@ -65,9 +71,15 @@
       "state": "todo",
       "id": 11,
       "hint": "From goal-guard-test bubble 1: (a) goal - with no goal says 'cleared the goal'; say 'no goal to clear' like guard - does. (b) changing a goal doesn't show the old one; title prints old → new. (c) the → goal icon reads like the → active-bubble marker right below it."
+    },
+    {
+      "title": "Guard test findings",
+      "state": "todo",
+      "id": 12,
+      "hint": "From goal-guard-test bubble 2: (a) guard 3 (likely a typo for guard 3 -) silently adds a guard titled '3'; refuse a bare number. (b) guard show extra / guard 1 - x also become guard text silently. (c) no way to edit a guard: drop + add moves it to the end. (d) guard - drops all without asking; fine for now?"
     }
   ],
-  "nextId": 12,
+  "nextId": 14,
   "handoff": {
     "note": "Bubbles 1-3 done. Interview answers are in bubble 1's hint; ability-vs-core decisions (human agreed) are in the hints of 4-6; bubble 8's hint lists the 5 places the flow text lives. test/e2e.test.js is new and uncommitted (55 per-step tests, BUBBLES_TRANSCRIPT=<file> dumps the session). 6 failing tests in the full suite fail on a clean tree too (node_modules from macOS, no Linux tsc binary). Next: bubble 4, design the plan step and the track-level goal/guards fields.",
     "at": "2026-10-23 20:59 UTC"

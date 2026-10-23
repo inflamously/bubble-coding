@@ -38,6 +38,8 @@ bubble-tracks section the installer writes into *users'* AGENTS.md.)
   what Node provides (`node:fs`, `node:path`, `process`, `console`; see `src/site/bubble-web/host.mts`).
   Don't change the CLI for the demo's sake;
   `test/web.test.js` replays the story on both and fails if the output differs.
+- **A CLI change extends `test/e2e.test.js`.** Every command, and every new output a human sees, gets a
+  step in its story, so the e2e transcript (`BUBBLES_TRANSCRIPT=<file>`) covers the whole bubble language.
 - **No runtime dependencies.** Users run the committed JS with plain Node; `typescript`,
   `@types/node` and `esbuild` are dev-only.
 - **LF line endings** (`.gitattributes`), so built output matches on every OS.
