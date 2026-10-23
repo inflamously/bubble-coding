@@ -3,13 +3,13 @@
   "bubbles": [
     {
       "title": "Interview pain points",
-      "state": "todo",
+      "state": "done",
       "id": 1,
-      "hint": "Interview the human one question at a time: where the flow felt wrong (missing plan, research, unexplained fog), with concrete examples."
+      "hint": "Interview the human one question at a time. Pain points so far: (1) bare ??? fog leaves the human unsure what to say, uu doesn't help much; a grill-me or research step would; (2) pre-bubble track planning to avoid premature tracks, short and not a plan-mode wall of text; (3) no guards on what to change or not to touch (target files/domains), so the agent drifts; (4) vague bubbles like 'implement new parsing method' let the agent go rogue; need better seams (not one bubble per file) that also make review easier. (3a) Guards = a ruleset of what NOT to do, to focus on the real end result; hard to write while the human is still at an unknown stage. (4a) Seams: not a one-shot across many files, and size varies (one file vs several). Split per use case, within that use case's identified boundaries. (2a) The plan's output is a better track, focused on the core end-goal problem; its guards and extra context make a stable track with fewer unknowns."
     },
     {
       "title": "E2E dev track",
-      "state": "todo",
+      "state": "done",
       "id": 8,
       "hint": "An e2e test (test/*.test.js, temp repo) that builds a development track by running every CLI command in turn (switch/create, add, insert, fog, type, fill, hint, handoff, rename, move, remove, fork, diverge, done, close...) and asserts each step's output. Its rendered transcript doubles as material for the flow analysis."
     },
@@ -17,13 +17,13 @@
       "title": "Audit skill flow",
       "state": "todo",
       "id": 2,
-      "hint": "Read SKILL.md + fallback.md + CLI; map the actual steps (sketch, classify, walk, fog stop) against the interview's pain points."
+      "hint": "Read SKILL.md + fallback.md + CLI; map the actual steps (sketch, classify, walk, fog stop) against the interview's pain points. For each change (plan step, guards, seams, research, grill-me), decide: reusable ability or core library/CLI feature? The human is undecided."
     },
     {
       "title": "Plan step gap",
       "state": "todo",
       "id": 3,
-      "hint": "Is a proper plan step missing between sketch and walk? Where should it sit and what does it produce?"
+      "hint": "Plan up front, before the first bubble: its output is a better track focused on the core end goal. Guards (what not to do) and use-case seams fall out of the plan and are stored as hints or similar, not as separate bubbles. Also a mini-plan ability for planning later in the track when needed."
     },
     {
       "title": "Research step",
