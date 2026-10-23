@@ -14,13 +14,8 @@
       "hint": "replace the flag loop in src/lib/cli/args.ts; keep phrase split + leading 'bubble' on top; keep CliOpts shape and error texts"
     },
     {
-      "title": "???",
-      "state": "fog",
-      "id": 3
-    },
-    {
       "title": "Swap installer flags",
-      "state": "todo",
+      "state": "done",
       "id": 4,
       "hint": "src/skill-install/args.ts parseArgs, same parser"
     },

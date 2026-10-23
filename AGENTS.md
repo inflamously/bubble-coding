@@ -69,5 +69,25 @@ python3 -m http.server -d dist/pages   # preview the demo
 npm run deploy   # redeploy GitHub Pages from master without a push (needs gh auth)
 ```
 
+### In a sandbox (`$SANDBOX_NAME` is set)
+
+`node_modules/` is shared with the host, and the host's `npm install` keeps only its own platform's
+`typescript` and `esbuild` binaries. Here, `npm run build` then fails with `Unable to resolve
+@typescript/typescript-linux-…` **after it has already deleted `skills/bubble/scripts/`**. Don't run
+`npm install` or `npm ci` in the sandbox: on Linux they drop the host's binaries in turn. Unpack just the
+missing ones next to the host's (versions from the lockfile, nothing else touched), then build:
+
+```
+for pkg in "@typescript/typescript-$(node -p 'process.platform+"-"+process.arch')" "@esbuild/$(node -p 'process.platform+"-"+process.arch')"; do
+  [ -d "node_modules/$pkg" ] && continue
+  ver=$(node -p "require('./package-lock.json').packages['node_modules/$pkg'].version")
+  tgz=$(npm pack "$pkg@$ver" --silent --pack-destination "${TMPDIR:-/tmp}")
+  mkdir -p "node_modules/$pkg" && tar -xzf "${TMPDIR:-/tmp}/$tgz" -C "node_modules/$pkg" --strip-components=1
+done
+```
+
+Re-run it whenever the host reinstalls (the build error above is the sign). If a build already wiped
+`skills/bubble/scripts/`, `npm run build` after this restores it.
+
 Pages deploys on every push to `master` (`.github/workflows/pages.yml`); the repo's Pages source
 must be "GitHub Actions" (Settings → Pages).

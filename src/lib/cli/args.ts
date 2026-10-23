@@ -5,6 +5,15 @@ import { parseArgs as parseFlags } from 'node:util';
 import { TYPES } from '../model.js';
 import type { RenderOpts } from '../render/index.js';
 
+export type CliOpts = ReturnType<typeof flags>['values'];
+
+/** What every command gets: the repo dir, the parsed options, and how to render. */
+export interface Ctx {
+  dir: string;
+  opts: CliOpts;
+  renderOpts: RenderOpts;
+}
+
 const OPTIONS = {
   ascii: { type: 'boolean' },
   fog: { type: 'boolean' },
@@ -18,23 +27,6 @@ const OPTIONS = {
 } as const;
 
 const flags = (args: string[]) => parseFlags({ args, options: OPTIONS, allowPositionals: true });
-
-/** Node's parse errors are long and speak its own syntax; say them in the bubble language. */
-function flagError(err: Error & { code?: string }): Error {
-  const name = /'(-[^' ]+)/.exec(err.message)?.[1];
-  if (err.code === 'ERR_PARSE_ARGS_UNKNOWN_OPTION') return new Error(`unknown option "${name}" — try: help (text starting with - goes after --)`);
-  if (err.code === 'ERR_PARSE_ARGS_INVALID_OPTION_VALUE') return new Error(name === '--to' ? '--to needs a track name' : `${name} needs a value`);
-  return err;
-}
-
-export type CliOpts = ReturnType<typeof flags>['values'];
-
-/** What every command gets: the repo dir, the parsed options, and how to render. */
-export interface Ctx {
-  dir: string;
-  opts: CliOpts;
-  renderOpts: RenderOpts;
-}
 
 export const HELP = `bubble-tracks — the bubble language
 
@@ -73,10 +65,19 @@ export const HELP = `bubble-tracks — the bubble language
   N: position on the track (omitted = the active bubble). N:M: N through M, inclusive.
   TYPE: ${TYPES.join(' | ')}  (or kk | ku | uk | uu)
   Options: --dir <repo> (default: cwd)   --ascii (or BUBBLES_ASCII=1)   --force
-           --to <track>: add, insert and hint write into that track; the current track stays current
+           --to <track> (or --to=<track>): add, insert and hint write into that track; the current track stays current
+           a word that starts with - is an option; put text like that after --:  hint 2 -- -v means verbose
            color on a terminal; BUBBLES_COLOR=1/0 forces it, NO_COLOR disables it
            add <title> --at N  and  add --fog [title]  still work.
   Exit codes: 0 ok, 1 error, 3 (show only) active bubble is fog — needs the human`;
+
+/** Node's parse errors are long and speak its own syntax; say them in the bubble language. */
+function flagError(err: Error & { code?: string }): Error {
+  const name = /'(-[^' ]+)/.exec(err.message)?.[1];
+  if (err.code === 'ERR_PARSE_ARGS_UNKNOWN_OPTION') return new Error(`unknown option "${name}" — try: help (text starting with - goes after --)`);
+  if (err.code === 'ERR_PARSE_ARGS_INVALID_OPTION_VALUE') return new Error(name === '--to' ? '--to needs a track name' : `${name} needs a value`);
+  return err;
+}
 
 export function parseArgs(argv: string[]): { cmd: string | undefined; args: string[]; opts: CliOpts } {
   let parsed;
