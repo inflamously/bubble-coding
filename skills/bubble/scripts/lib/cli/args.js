@@ -14,15 +14,6 @@ const OPTIONS = {
     help: { type: 'boolean', short: 'h' },
 };
 const flags = (args) => parseFlags({ args, options: OPTIONS, allowPositionals: true });
-/** Node's parse errors are long and speak its own syntax; say them in the bubble language. */
-function flagError(err) {
-    const name = /'(-[^' ]+)/.exec(err.message)?.[1];
-    if (err.code === 'ERR_PARSE_ARGS_UNKNOWN_OPTION')
-        return new Error(`unknown option "${name}" — try: help (text starting with - goes after --)`);
-    if (err.code === 'ERR_PARSE_ARGS_INVALID_OPTION_VALUE')
-        return new Error(name === '--to' ? '--to needs a track name' : `${name} needs a value`);
-    return err;
-}
 export const HELP = `bubble-tracks — the bubble language
 
   switch [name] [title]         resume track <name>, or create it; no name = the current (else default) track
@@ -60,10 +51,20 @@ export const HELP = `bubble-tracks — the bubble language
   N: position on the track (omitted = the active bubble). N:M: N through M, inclusive.
   TYPE: ${TYPES.join(' | ')}  (or kk | ku | uk | uu)
   Options: --dir <repo> (default: cwd)   --ascii (or BUBBLES_ASCII=1)   --force
-           --to <track>: add, insert and hint write into that track; the current track stays current
+           --to <track> (or --to=<track>): add, insert and hint write into that track; the current track stays current
+           a word that starts with - is an option; put text like that after --:  hint 2 -- -v means verbose
            color on a terminal; BUBBLES_COLOR=1/0 forces it, NO_COLOR disables it
            add <title> --at N  and  add --fog [title]  still work.
   Exit codes: 0 ok, 1 error, 3 (show only) active bubble is fog — needs the human`;
+/** Node's parse errors are long and speak its own syntax; say them in the bubble language. */
+function flagError(err) {
+    const name = /'(-[^' ]+)/.exec(err.message)?.[1];
+    if (err.code === 'ERR_PARSE_ARGS_UNKNOWN_OPTION')
+        return new Error(`unknown option "${name}" — try: help (text starting with - goes after --)`);
+    if (err.code === 'ERR_PARSE_ARGS_INVALID_OPTION_VALUE')
+        return new Error(name === '--to' ? '--to needs a track name' : `${name} needs a value`);
+    return err;
+}
 export function parseArgs(argv) {
     let parsed;
     try {

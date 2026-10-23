@@ -169,7 +169,8 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | `bubble:<name> [text]` | Print an ability's workflow and its context, to run once |
 
 - `N` is the Nth bubble on the track. Omitted, it means the active bubble. `N:M` is N through M, inclusive.
-- `--to <track>` on `add`, `insert` and `hint` writes into another existing track, and the current track stays current.
+- `--to <track>` (or `--to=<track>`) on `add`, `insert` and `hint` writes into another existing track, and the current track stays current.
+- A word that starts with `-` is an option. Put text like that after `--`: `hint 2 -- use -v for verbose`.
 
 </details>
 

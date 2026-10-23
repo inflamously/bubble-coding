@@ -356,6 +356,21 @@ test('--to: add, insert and hint write into that track; the current track stays 
   assert.strictEqual(current(), 'main');
 });
 
+test('options: --to=<track> works, text starting with - goes after --, a missing value is named', () => {
+  const { run, read } = twoTracks();
+  assert.strictEqual(run('add', 'Eq', '--to=other').status, 0);
+  assert.strictEqual(read('other').bubbles.at(-1).title, 'Eq');
+  const r = run('hint', '2', 'use', '-v', 'flag');
+  assert.strictEqual(r.status, 1);
+  assert.match(r.stderr, /unknown option "-v" — try: help \(text starting with - goes after --\)/);
+  assert.strictEqual(read('main').bubbles[1].hint, undefined);
+  assert.strictEqual(run('hint', '2', '--', 'use', '-v', 'flag').status, 0);
+  assert.strictEqual(read('main').bubbles[1].hint, 'use -v flag');
+  assert.strictEqual(run('hint', '2', '-').status, 0); // a lone - still clears
+  assert.strictEqual(read('main').bubbles[1].hint, undefined);
+  assert.match(run('show', '--at').stderr, /--at needs a value/);
+});
+
 test('--to refuses: missing or closed target, commands that do not take it; nothing is written', () => {
   const { run, read } = twoTracks();
   const before = () => JSON.stringify([read('main'), read('other')]);

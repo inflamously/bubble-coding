@@ -21,7 +21,7 @@
     },
     {
       "title": "Tests + docs",
-      "state": "todo",
+      "state": "done",
       "id": 5,
       "hint": "test/cli.test.js flag/error cases (incl. -- for dash words, --to=x), build size check; docs: HELP text, SKILL.md, fallback.md, README — document the -- rule for text starting with -"
     }
