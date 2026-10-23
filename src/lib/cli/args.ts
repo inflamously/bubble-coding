@@ -1,20 +1,33 @@
 // CLI language: help text and argument parsing. A leading "bubble" word is optional,
 // and a whole phrase can be passed as one quoted argument: node bubble.js "move 2 to 5".
 
+import { parseArgs as parseFlags } from 'node:util';
 import { TYPES } from '../model.js';
 import type { RenderOpts } from '../render/index.js';
 
-export interface CliOpts {
-  ascii?: boolean;
-  fog?: boolean;
-  force?: boolean;
-  closed?: boolean;
-  all?: boolean;
-  dir?: string;
-  at?: string;
-  to?: string;
-  help?: boolean;
+const OPTIONS = {
+  ascii: { type: 'boolean' },
+  fog: { type: 'boolean' },
+  force: { type: 'boolean' },
+  closed: { type: 'boolean' },
+  all: { type: 'boolean' },
+  dir: { type: 'string' },
+  at: { type: 'string' },
+  to: { type: 'string' },
+  help: { type: 'boolean', short: 'h' },
+} as const;
+
+const flags = (args: string[]) => parseFlags({ args, options: OPTIONS, allowPositionals: true });
+
+/** Node's parse errors are long and speak its own syntax; say them in the bubble language. */
+function flagError(err: Error & { code?: string }): Error {
+  const name = /'(-[^' ]+)/.exec(err.message)?.[1];
+  if (err.code === 'ERR_PARSE_ARGS_UNKNOWN_OPTION') return new Error(`unknown option "${name}" — try: help (text starting with - goes after --)`);
+  if (err.code === 'ERR_PARSE_ARGS_INVALID_OPTION_VALUE') return new Error(name === '--to' ? '--to needs a track name' : `${name} needs a value`);
+  return err;
 }
+
+export type CliOpts = ReturnType<typeof flags>['values'];
 
 /** What every command gets: the repo dir, the parsed options, and how to render. */
 export interface Ctx {
@@ -66,27 +79,15 @@ export const HELP = `bubble-tracks — the bubble language
   Exit codes: 0 ok, 1 error, 3 (show only) active bubble is fog — needs the human`;
 
 export function parseArgs(argv: string[]): { cmd: string | undefined; args: string[]; opts: CliOpts } {
-  const pos: string[] = [];
-  const opts: CliOpts = {};
-  for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
-    if (arg === '--ascii') opts.ascii = true;
-    else if (arg === '--fog') opts.fog = true;
-    else if (arg === '--force') opts.force = true;
-    else if (arg === '--closed') opts.closed = true;
-    else if (arg === '--all') opts.all = true;
-    else if (arg === '--dir') opts.dir = argv[++i];
-    else if (arg === '--at') opts.at = argv[++i];
-    else if (arg === '--to') {
-      opts.to = argv[++i];
-      if (!opts.to || opts.to.startsWith('--')) throw new Error('--to needs a track name');
-    }
-    else if (arg === '-h' || arg === '--help') opts.help = true;
-    else if (arg.startsWith('--')) throw new Error(`unknown option "${arg}" — try: help`);
-    else pos.push(arg);
+  let parsed;
+  try {
+    parsed = flags(argv);
+  } catch (err) {
+    throw flagError(err as Error);
   }
+  const { values: opts, positionals } = parsed;
   // A whole phrase passed as one argument: "move 2 to 5".
-  if (pos.length === 1 && /\s/.test(pos[0].trim())) pos.splice(0, 1, ...pos[0].trim().split(/\s+/));
+  const pos = positionals.length === 1 ? positionals[0].trim().split(/\s+/) : positionals;
   if (pos[0] === 'bubble') pos.shift();
   return { cmd: pos[0], args: pos.slice(1), opts };
 }
