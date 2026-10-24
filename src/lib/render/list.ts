@@ -12,8 +12,10 @@ export function list(track: Track, opts?: RenderOpts): string {
       const mark = i === index ? '→' : ' ';
       const type = b.type ? ` [${b.type}]` : '';
       const fork = (b.fork ? ` ${sym.fork} ${b.fork}` : '') + (b.sides || []).map((s) => ` ${sym.side} ${s}`).join('');
+      const why = b.why ? `\n        why: ${b.why}` : '';
+      const answer = b.answer ? `\n        human: ${b.answer}` : '';
       const hint = b.hint ? `\n        ↳ ${b.hint}` : '';
-      return `${mark} ${String(i + 1).padEnd(3)} ${symbolFor(b, i === index, sym)} ${b.state.padEnd(6)} ${b.title}${type}${fork}${hint}`;
+      return `${mark} ${String(i + 1).padEnd(3)} ${symbolFor(b, i === index, sym)} ${b.state.padEnd(6)} ${b.title}${type}${fork}${why}${answer}${hint}`;
     })
     .join('\n');
 }

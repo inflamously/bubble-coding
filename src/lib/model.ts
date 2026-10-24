@@ -15,6 +15,8 @@ export interface Bubble {
   id?: number;
   type?: FogType;
   hint?: string;
+  why?: string; // why it is fog: what is unclear (not what it is); set while fog, kept after fill
+  answer?: string; // the human's own words on it while it stays fog; kept after fill
   fork?: string; // child track this bubble waits for
   sides?: string[]; // side tracks that diverged from it
 }

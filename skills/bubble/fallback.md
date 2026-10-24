@@ -46,6 +46,9 @@ Bubble fields:
 - `id`: stable and never reused. Take it from `nextId`, then add 1 to `nextId`.
 - `type`: the fog classification: `known-known`, `known-unknown`, `unknown-known` or `unknown-unknown`.
 - `hint`: the human's note for this bubble.
+- `why`: set while fog: one line on why it's unclear (not what it is).
+- `answer`: set while fog: the human's own words on it, kept as they said them while it stays fog.
+- Both stay after `fill`, as the trail of how the bubble was planned.
 - `fork`, `sides`: links to other tracks. Leave them as they are.
 
 Keep valid JSON with 2-space indentation and a final newline. Change only the fields a command touches, and leave unknown fields alone.
@@ -59,10 +62,11 @@ N is a 1-based position on the track. When N is left out, it means the active bu
 | `show` | Read the file and draw the line: `<title>   S ●──◐──○ F   prev ‹ ◐ active › next`. `●` is done, `◐` is the active bubble, `○` is todo and `❓` is fog. If the active bubble is fog, its label is `❓ needs you`. Then list the bubbles by number with their hints. An active fog bubble is the gate (step 3). |
 | `switch <name>` | If `<name>.json` exists, write `<name>` to `current` and resume it. Otherwise create it (below). |
 | `create <name> [title]` · `init <title>` | Write `{ "title": "<title or name>", "bubbles": [] }` to `<name>.json`, then write `<name>` to `current`. `init` creates `track`. |
-| `add <title>` · `add ?` | Append `{ "title", "state": "todo", "id" }`, or `{ "title": "???", "state": "fog", "id" }` for fog. Take the id from `nextId`. |
+| `add <title>` · `add ? <why>` | Append `{ "title", "state": "todo", "id" }`, or `{ "title": "???", "state": "fog", "id", "why" }` for fog. Take the id from `nextId`. |
 | `insert at N …` | Like `add`, but put the bubble at position N. |
 | `fill [N] <title>` | Only for a fog bubble: set `title`, and set `state` to `todo`. |
 | `type [N] <TYPE>` | Set `type`. Expand `kk`, `ku`, `uk` and `uu`. |
+| `why [N] <text>` · `answer [N] <text>` | Only for a fog bubble: set `why` or `answer`, or delete the field with `-`. |
 | `hint N <text>` · `hint N -` | Set `hint`, or delete the field with `-`. |
 | `handoff <note>` · `handoff -` | Set `handoff` to `{ "note", "at" }`, or delete it with `-`. |
 | `goal <text>` · `goal -` | Set `goal`, or delete it with `-`. |

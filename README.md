@@ -152,8 +152,8 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | `fork [N] <name>` | Build on bubble N in a child track; the bubble waits for it |
 | `diverge [N] <name> [title]` | Go a different direction from bubble N in a side track; nothing waits |
 | `init <title>` | Create the default track (`.bubble-tracks/track.json`) |
-| `add <title>` · `add ?` | Append a todo (or fog) bubble |
-| `insert at N <title>` · `insert at N ?` | Insert a todo (or fog) bubble at position N |
+| `add <title>` · `add ? <why>` | Append a todo (or fog) bubble; a fog says why it's unclear |
+| `insert at N <title>` · `insert at N ? <why>` | Insert a todo (or fog) bubble at position N |
 | `remove N` · `remove N:M` | Delete a bubble or a range |
 | `move N to M` · `move N:M to M` | Move a bubble or block so it starts at position M |
 | `move N --to <track>` · `move N:M --to <track>` | Move a bubble or block to the end of another track |
@@ -162,7 +162,9 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat resumes from |
 | `hint N <text>` · `hint N -` | Attach (or clear) a note for that bubble |
 | `fog [N \| N:M] [TYPE]` | Turn bubbles into fog (done bubbles need `--force`) |
+| `why [N] <text>` · `why [N] -` | Say (or clear) why a fog bubble is unclear |
 | `type [N] <TYPE>` | Set the fog type: `kk` · `ku` · `uk` · `uu` (or the full names) |
+| `answer [N] <text>` · `answer [N] -` | Keep (or clear) your own words on a fog that stays fog |
 | `fill [N] <title>` | Plan a fog bubble with your content: fog → todo |
 | `done` | Pop the active bubble, then ⏸ stop |
 | `abilities` | List the abilities: name, type, project or user, description |

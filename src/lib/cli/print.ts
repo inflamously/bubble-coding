@@ -36,6 +36,7 @@ export function printTrack(file: string, track: lib.Track, opts?: lib.RenderOpts
   if (active && active.state === 'fog') {
     console.log('');
     console.log(`⚠ "${active.title}" is fog — the human plans it. Ask them to classify it (${lib.TYPES.join(', ')}) and fill it.`);
+    if (active.answer) console.log('  Their words above are the start: turn them, with the human, into a fill, a hint, a guard, new bubbles or a fork.');
     return 3;
   }
   return 0;

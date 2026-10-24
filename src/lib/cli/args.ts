@@ -43,8 +43,8 @@ export const HELP = `bubble-tracks — the bubble language
   init <title>                  create the default track (.bubble-tracks/track.json)
 
   show                          render the current track + list its bubbles
-  add <title>   | add ?         append a todo (or fog) bubble
-  insert at N <title> | insert at N ?
+  add <title>   | add ? [why]   append a todo (or fog) bubble; a fog says in one line why it's unclear
+  insert at N <title> | insert at N ? [why]
                                 insert a todo (or fog) bubble at position N
   remove N | N:M                delete a bubble or a range
   move N to M | move N:M to M   move a bubble or block so it starts at M
@@ -58,7 +58,10 @@ export const HELP = `bubble-tracks — the bubble language
   handoff <note> | handoff -    save (or clear) the note a fresh chat reads to resume
   hint N <text> | hint N -      attach (or clear) a note for that bubble
   fog [N | N:M] [TYPE]          turn bubbles into fog (done ones need --force)
+  why [N] <text> | why [N] -    say (or clear) why a fog bubble is unclear: not what it is
   type [N] <TYPE>               classify a fog bubble
+  answer [N] <text> | answer [N] -
+                                keep (or clear) the human's own words on a fog that stays fog
   fill [N] <title>              the human's content for a fog bubble: fog -> todo
   done                          pop the active bubble, then ⏸ stop
 

@@ -12,7 +12,8 @@ If the request is `switch <name>`: run it right away and don't ask why. If you s
 (e.g. `single commit` -> `single-commit`), use it and say so in one line. If it says "resumed", read every
 bubble and hint and continue at the active bubble. If it says "created", sketch the new track with the human,
 then list every fog bubble by number and ask the human to answer each one as `N: <their content>`
-(then `fill`) or `N:kk|ku|uk|uu` (then `type`).
+(then `fill`) or `N:kk|ku|uk|uu` (then `type`). Every fog gets one line on why it's unclear (`add ? <why>`).
+If their words don't settle a fog yet, it stays fog: keep them verbatim with `answer N <their words>`.
 If the request is a bubble command (move, insert, remove, rename, hint, fog, type, fill, done, ...),
 run exactly that through the CLI and show the result. Don't reinterpret it.
 If the human asks for something that doesn't belong to the active bubble, don't `add` it: `fork <name>` if it

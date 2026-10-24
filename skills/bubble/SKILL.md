@@ -35,8 +35,8 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `init <title>` | Create the default track (`.bubble-tracks/track.json`) |
 | `fork [N] <name>` | **Build on** bubble N in a new child track `<name>`, titled after the bubble, and make it current. The bubble keeps its state and gets `fork` (relative path to the child); the child gets `parent` (relative path, the bubble's stable `id`, and its title for display). The bubble waits for its fork. |
 | `diverge [N] <name> [title]` | Go **a different direction** from bubble N in a new side track `<name>` (titled after the bubble unless you give a title), and make it current. The bubble (any state) adds the path to its `sides`; the side track gets `origin`. Nothing waits for it. |
-| `add <title>` · `add ?` | Append a todo (or fog) bubble |
-| `insert at N <title>` · `insert at N ?` | Insert a todo (or fog) bubble at position N |
+| `add <title>` · `add ? <why>` | Append a todo (or fog) bubble. A fog says in one line why it's unclear. |
+| `insert at N <title>` · `insert at N ? <why>` | Insert a todo (or fog) bubble at position N |
 | `remove N` · `remove N:M` | Delete a bubble or a range |
 | `move N to M` · `move N:M to M` | Move a bubble or block so it starts at position M |
 | `move N --to <track>` · `move N:M --to <track>` | Move a bubble or block to the end of another existing track (state, type and hint kept; new ids). Refuses bubbles with a fork or side track. |
@@ -45,7 +45,9 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat reads to resume this track |
 | `hint N <text>` · `hint N -` | Attach (or clear) the human's note for that bubble |
 | `fog [N \| N:M] [TYPE]` | Turn bubbles into fog. Done bubbles need `--force`, after the human confirms. |
+| `why [N] <text>` · `why [N] -` | Say (or clear) why a fog bubble is unclear: not what it is |
 | `type [N] <TYPE>` | Record the human's fog classification |
+| `answer [N] <text>` · `answer [N] -` | Keep (or clear) the human's own words on a fog that stays fog |
 | `fill [N] <title>` | The human's content for a fog bubble: fog → todo |
 | `done` | Pop the active bubble, then ⏸ stop |
 | `abilities` | List the abilities: name, type, project or user, description (or why one is broken) |
@@ -71,9 +73,10 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
    - `created track "<name>"`: it's new, so go to step 1.
 
    **Apply `switch` right away. Don't ask why, and don't ask what the track is for first.** If you see a better name, use it and say so in one line instead of asking. For example, `switch single commit` becomes `switch single-commit "Single commit"`, and if `single-commit` looks like a typo of an existing track, say which one. If the human hasn't said what the track is for, the sketch step asks.
-1. **Sketch.** With no track, `switch <name>` (or `init`), then make one rough pass from S to F. Steps that are clear become todo bubbles with short titles; add a `hint` when a step needs more words. Anything unclear becomes `add --fog` with no detail. Keep it short and don't over-plan.
+1. **Sketch.** With no track, `switch <name>` (or `init`), then make one rough pass from S to F. Steps that are clear become todo bubbles with short titles; add a `hint` when a step needs more words. Anything unclear becomes `add ? <why>`: fog, plus one line on **why** it's unclear (what's missing or undecided), never what it is. Keep it short and don't over-plan.
    - **Then always classify every fog bubble in one go.** Do this after every sketch, without skipping it. List every fog bubble by number and ask the human to answer each line with either:
      - `N: <what they think it is>`: their content. Run `fill N` with a short title, and put the detail in a `hint`.
+       If their words don't settle it yet (a direction, not a task), it stays fog: keep them **as they said them** with `answer N <their words>`, and type it if they gave a level.
      - `N:kk` · `N:ku` · `N:uk` · `N:uu`: the knowledge level. Run `type N`.
 
      For example: `1:uk  2: tighten the fog gate  3:uu`. The levels shape everything after this, because they decide how you work each bubble in step 3.
@@ -86,6 +89,7 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
      - **unknown-known**: you surface what the codebase and docs already say, they confirm.
      - **unknown-unknown**: you interview them, one question at a time.
    - Record the answer with `type`. The type can change as you go.
+   - The listing shows the fog's `why:` and, if the human said something, `human:`. Their words are where the work starts: propose turning them into a `fill`, a `hint`, a `guard`, new bubbles or a `fork`, and let them confirm. Don't drop or reword them.
    - Only after the human gives or approves the content, run `fill` (single task). If it's really several tasks, `fill` it with the first and `insert at` the rest right after it on the same line.
 4. **⏸ Stop after every bubble.** After `done`, the CLI prints a ⏸ line. Show the track, summarize what you did, and **wait for the human** before starting the next bubble. This is their chance to move, insert, remove, rename, hint or fog bubbles. Start the next bubble only when they say go (or give an edit, then go).
 5. **Hand off when the chat gets heavy.** At a ⏸ stop, offer a fresh chat if:

@@ -2,10 +2,16 @@
 
 import { ensureId, type Addr, type Bubble, type Track } from '../model.js';
 
-export function add(track: Track, title: string | undefined, { fog = false, at }: { fog?: boolean; at?: Addr } = {}): string {
+/** `why` (fog only) is the one-line reason the fog exists; without it the message asks for one. */
+export function add(
+  track: Track,
+  title: string | undefined,
+  { fog = false, at, why }: { fog?: boolean; at?: Addr; why?: string } = {}
+): string {
   const bubbles = track.bubbles;
   const bubble: Bubble = fog ? { title: title || '???', state: 'fog' } : { title: title || '', state: 'todo' };
   if (!bubble.title) throw new Error('add needs a title');
+  if (fog && why) bubble.why = why;
   if (at !== undefined) {
     const pos = Number(at) - 1;
     if (!Number.isInteger(pos) || pos < 0 || pos > bubbles.length) throw new Error(`bad position "${at}"`);
@@ -14,5 +20,7 @@ export function add(track: Track, title: string | undefined, { fog = false, at }
     bubbles.push(bubble);
   }
   ensureId(track, bubble);
-  return `added ${fog ? 'fog' : 'bubble'} "${bubble.title}"`;
+  if (!fog) return `added bubble "${bubble.title}"`;
+  const n = bubbles.indexOf(bubble) + 1;
+  return `added fog "${bubble.title}"` + (why ? ` — why: ${why}` : ` — no reason yet, say why it's unclear: why ${n} <text>`);
 }

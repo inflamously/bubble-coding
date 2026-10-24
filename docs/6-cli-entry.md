@@ -97,7 +97,7 @@ Changes ignore `printTrack`'s return value and always exit 0, so a successful `f
 ## Things worth knowing
 
 - **The quoted-phrase split is all or nothing.** `bubble.js "hint 3" "some text"` is two positionals, so nothing is split and `cmd` is `hint 3`, an unknown command.
-- **`add ? foo` isn't fog.** Fog needs `?` as the only argument (or `--fog`), so this adds a todo titled `? foo`.
+- **`add ? foo` is fog with a reason.** A leading `?` makes fog, and the words after it are its `why`. `--fog foo` still names the fog `foo` instead.
 - **`switch <name> <title>` ignores the title when the track already exists.** The title is only used when `switch` creates the track.
 - **An unknown command with no track gives the wrong error.** `runBubbleCommand` looks up the track before it reaches `default:`, so a typo in a repo without tracks prints `no bubble track found` instead of `unknown command`.
 - **`after` runs once the track is saved.** If a follow-up fails (say a parent file can't be written), this track's change is already on disk and the command still exits 1.

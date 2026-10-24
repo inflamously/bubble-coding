@@ -40,6 +40,12 @@ function namedTrack(dir: string, name: string): lib.Found & { track: lib.Track }
   }
 }
 
+/** add/insert words: `? [why]` is fog with its reason; `--fog [title]` still names the fog; anything else is a todo. */
+function addBubble(track: lib.Track, args: string[], fog: boolean | undefined, at: lib.Addr): string {
+  if (args[0] === '?') return lib.add(track, undefined, { fog: true, at, why: args.slice(1).join(' ') || undefined });
+  return lib.add(track, args.join(' ') || undefined, { fog, at });
+}
+
 const closedError = (name: string) => new Error(`track "${name}" is closed (read-only) — fork, diverge or switch to keep working`);
 
 /** Run a bubble-level command on the current track (or the --to track); returns an exit code. */
@@ -58,16 +64,13 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
     case 'show':
     case 'status':
       return printTrack(file, track, renderOpts);
-    case 'add': {
-      const fog = opts.fog || (args.length === 1 && args[0] === '?');
-      msg = lib.add(track, fog && args[0] === '?' ? undefined : args.join(' '), { fog, at: opts.at });
+    case 'add':
+      msg = addBubble(track, args, opts.fog, opts.at);
       break;
-    }
     case 'insert': {
       if (args[0] === 'at') args.shift();
-      const at = needAddr(args, 'insert at N <title> | insert at N ?');
-      const fog = opts.fog || (args.length === 1 && args[0] === '?');
-      msg = lib.add(track, fog && args[0] === '?' ? undefined : args.join(' '), { fog, at });
+      const at = needAddr(args, 'insert at N <title> | insert at N ? [why]');
+      msg = addBubble(track, args, opts.fog, at);
       break;
     }
     case 'remove':
@@ -133,6 +136,12 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
     case 'type': {
       const addr = isAddr(args[0]) ? args.shift() : undefined;
       msg = lib.setType(track, addr, args[0]);
+      break;
+    }
+    case 'why':
+    case 'answer': {
+      const addr = isAddr(args[0]) ? args.shift() : undefined;
+      msg = (cmd === 'why' ? lib.setWhy : lib.setAnswer)(track, addr, args.join(' '));
       break;
     }
     case 'fill': {

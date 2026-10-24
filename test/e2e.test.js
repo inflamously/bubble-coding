@@ -47,7 +47,7 @@ describe('e2e: a development track from sketch to close', () => {
     step(['create', 'dev', 'Dev track'], [/created track "dev"/, /Dev track {3}S F/]);
     step(['create', 'dev'], /track "dev" already exists — use: switch dev/, 1);
     step(['add', 'Parse input'], [/added bubble "Parse input"/, /→ 1 {3}◐ todo {3}Parse input/]);
-    step(['add', '?'], [/added fog "\?\?\?"/, /S ◐──❓ F/]);
+    step(['add', '?'], [/added fog "\?\?\?" — no reason yet, say why it's unclear: why 2 <text>/, /S ◐──❓ F/]);
     step(['add', 'Write output'], /S ◐──❓──○ F/);
     step(['insert', 'at', '2', 'Validate'], [/added bubble "Validate"/, /2 {3}○ todo {3}Validate/]);
     step(['hint', '1', 'read stdin'], [/hint on "Parse input": read stdin/, /↳ read stdin/]);
@@ -77,16 +77,29 @@ describe('e2e: a development track from sketch to close', () => {
 
   describe('classify and fill the fog', () => {
     step(['rename', '3', 'Guess'], /"\?\?\?" is fog — plan it with fill/, 1); // fog is the human's to plan
+    step(['why', '3', 'no output format chosen'], [/why on "\?\?\?": no output format chosen/, /\n {8}why: no output format chosen/]);
+    step(['why', '1', 'x'], /"Parse input" isn't fog — use hint for a note on it/, 1);
     step(['type', '3', 'ku'], [/classified as known-unknown/, /❓ fog {4}\?\?\? \[known-unknown\]/]);
-    step(['fill', '3', 'Pick format'], [/filled "Pick format"/, /S ◐──○──○──○ F/]);
+    step(['answer', '3', 'json or csv, whatever the team reads'], [/answer on "\?\?\?": json or csv/, /\n {8}human: json or csv, whatever the team reads/]);
+    step(['fill', '3', 'Pick format'], [/filled "Pick format"/, /S ◐──○──○──○ F/, /why: no output format chosen\n {8}human: json or csv/]);
+    it('the filled bubble keeps why and answer, as the trail of how it was planned', () => {
+      const b = read('dev').bubbles[2];
+      assert.strictEqual(b.why, 'no output format chosen');
+      assert.strictEqual(b.answer, 'json or csv, whatever the team reads');
+    });
   });
 
   describe('reshape: fog, move, remove, handoff, title', () => {
     step(['fog', '4'], /"Write output" is now fog/);
     step(['move', '4', 'to', '1'], [/moved "Write output" to 1/, /⚠ "Write output" is fog/]);
     step(['show'], /❓ needs you/, 3); // the fog gate
+    step(['answer', 'maybe stdout'], [/answer on "Write output": maybe stdout/, /Their words above are the start/]);
+    step(['answer', '1', '-'], /cleared answer on "Write output"/);
+    step(['answer', '1', '-'], /no answer on "Write output" to clear/);
     step(['move', '1', 'to', '4'], /S ◐──○──○──❓ F/);
     step(['remove', '4'], [/removed "Write output"/, /S ◐──○──○ F/]);
+    step(['insert', 'at', '3', '?', 'no writer picked yet'], [/added fog "\?\?\?" — why: no writer picked yet/, /S ◐──○──❓──○ F/]);
+    step(['remove', '3'], /S ◐──○──○ F/);
     step(['handoff', 'next: parse'], [/switch dev/, /✎ handoff \(.+\): next: parse/]);
     step(['title', 'Dev flow'], /track "Dev track" → "Dev flow"/);
     it('dev.json holds the three todo bubbles', () => {
