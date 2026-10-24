@@ -1,3 +1,5 @@
+.bubble-tracks/*.json
+!.bubble-tracks/abilities
 .bubble-tracks/current
 node_modules/
 *.bak
