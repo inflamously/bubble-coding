@@ -2,7 +2,7 @@
   "name": "bubble-tracks",
   "version": "0.1.0",
   "private": true,
-  "description": "Gamified fog-of-war planning for coding agents (Claude Code, Codex CLI, Gemini CLI, AGENTS.md).",
+  "description": "Gamified fog-of-war planning for agents (Claude Code, Codex CLI, Gemini CLI, AGENTS.md).",
   "license": "MIT",
   "homepage": "https://github.com/inflamously/bubble-coding",
   "repository": {
