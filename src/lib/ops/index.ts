@@ -5,6 +5,7 @@ export * from './add.js';
 export * from './fog.js';
 export * from './rename.js';
 export * from './hint.js';
+export * from './finding.js';
 export * from './remove.js';
 export * from './move.js';
 export * from './handoff.js';

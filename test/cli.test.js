@@ -453,6 +453,43 @@ test('goal and guards are stored on the track and shown on resume', () => {
   assert.match(run('guard', 'show').stdout, /no guards/);
 });
 
+test('research prints the workflow and the bubble context; findings are noted on the bubble', () => {
+  const { run, track } = repo();
+  run('goal', 'Ship C');
+  run('guard', 'no', 'new', 'deps');
+  run('hint', '2', 'use the old parser');
+  const r = run('research', '2', 'focus', 'on', 'speed');
+  assert.strictEqual(r.status, 0, r.stderr);
+  assert.match(r.stdout, /^research #2 "B" — run this once; extend the human's intent, never overrule it\nthe human adds: focus on speed/);
+  assert.match(r.stdout, /finding 2 <tip — source>/);
+  assert.match(r.stdout, /insert at 3 <title>/);
+  assert.match(r.stdout, /→ goal: Ship C\n¦ guards \(check before done\):\n {4}1 {2}no new deps\n#2 "B" \(todo\)\n↳ use the old parser/);
+  assert.match(r.stdout, /before: #1 "A" \(todo\)\nafter: #3 "C" \(todo\)/);
+  assert.match(r.stdout, /⏸ stop/);
+  assert.match(run('research').stdout, /#1 "A" \(todo, active\)/); // no N: the active bubble
+  assert.match(run('research', '9').stderr, /no bubble at "9"/);
+  const before = JSON.stringify(track());
+  run('research', '1');
+  assert.strictEqual(JSON.stringify(track()), before); // research changes nothing itself
+
+  assert.match(run('finding', '2', 'cache the AST — docs/parser.md').stdout, /finding 1 on "B": cache the AST — docs\/parser.md/);
+  run('finding', '2', 'stream input — node:readline');
+  assert.deepStrictEqual(track().bubbles[1].findings, ['cache the AST — docs/parser.md', 'stream input — node:readline']);
+  assert.match(run('show').stdout, /↳ use the old parser\n {8}found 1: cache the AST — docs\/parser.md\n {8}found 2: stream input/);
+  assert.match(run('research', '2').stdout, /found 1: cache the AST/); // findings feed the next research
+  assert.match(run('finding', '2', '1', '-').stdout, /dropped finding 1 on "B": cache the AST/);
+  assert.match(run('finding', '2', '5', '-').stderr, /no finding 5 on "B"/);
+  assert.match(run('finding', '2', '-').stdout, /dropped 1 finding on "B"/);
+  assert.strictEqual('findings' in track().bubbles[1], false);
+  assert.match(run('finding', '2', '-').stdout, /no findings on "B" to drop/);
+  assert.match(run('finding', '2').stderr, /finding needs text/);
+  assert.match(run('finding', 'x').stderr, /usage: finding N/);
+
+  run('fog', '3');
+  assert.match(run('finding', '3', 'json is what the team reads').stdout, /finding 1 on "C"/); // fog takes findings too
+  assert.match(run('research', '3').stdout, /#3 "C" \(fog\)/);
+});
+
 test('fork: child track links to the parent bubble by relative path and becomes current', () => {
   const { run, track } = repo();
   const res = run('fork', '2', 'b-sub');

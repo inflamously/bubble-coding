@@ -50,6 +50,8 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `answer [N] <text>` · `answer [N] -` | Keep (or clear) the human's own words on a fog that stays fog |
 | `fill [N] <title>` | The human's content for a fog bubble: fog → todo |
 | `done` | Pop the active bubble, then ⏸ stop |
+| `research [N] [focus]` | Print the research workflow and bubble N's whole context, to run once. See **Research**. Changes nothing itself. |
+| `finding N <text>` · `finding N M -` · `finding N -` | Note what research found for bubble N (a guide or tip, with its source), drop finding M, or drop them all |
 | `abilities` | List the abilities: name, type, project or user, description (or why one is broken) |
 | `bubble:<name> [text]` | Print ability `<name>`'s workflow, the human's extra text, and its context (the active bubble or the whole track), to run once. See **Abilities**. |
 
@@ -85,7 +87,7 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
    - **Never plan fog yourself.** Don't invent its content and don't run `fill` on your own.
    - Ask the human to classify it, using the same `N: text` / `N:kk|ku|uk|uu` reply format (and if more fog lies ahead, ask about all of it at once):
      - **known-known**: they write the bubble.
-     - **known-unknown**: you research or spike options, they pick.
+     - **known-unknown**: you research (see **Research**) or spike options, they pick.
      - **unknown-known**: you surface what the codebase and docs already say, they confirm.
      - **unknown-unknown**: you interview them, one question at a time.
    - Record the answer with `type`. The type can change as you go.
@@ -117,6 +119,17 @@ Links use the bubble's stable `id` (from the track's `nextId` counter), so `move
 A fork stays in sync with its bubble. `title` on the fork renames the bubble, and `rename` on the bubble retitles the fork. The bubble can't be popped until its fork is finished (it has at least one bubble and all are done). When the fork's last bubble is popped, the parent bubble pops too, and so on up the chain. A side track from `diverge` never syncs.
 
 A **closed** track (`close`) is read-only: every bubble command on it refuses, and its line shows 🔒 closed. To keep working, `fork`, `diverge` or `switch`. A closed fork counts as finished, so closing it pops its parent bubble; closing a track closes all its forks too. A closed parent is skipped: its child runs on, but pops and title syncs never reach it.
+
+## Research
+
+Research fills the human's knowledge gaps: a topic they don't know, or the information a bubble needs before it can be built or planned. It works on any bubble, any time, fog included.
+
+- **The human starts it**: "let's research", "research 4", or a fog they can't classify yet. You may *offer* it when a bubble clearly needs information nobody has yet, but run it only after they say yes.
+- **Run `research [N] [focus]`** (N omitted = the active bubble; any words after it are the human's focus) and follow the printed workflow once against the printed context.
+- **Extend the human's intent, never overrule it.** Research adds to what they asked for. It doesn't rename the bubble, rewrite its hint or fill its fog. A finding that goes against what they asked is a question for them, not a change.
+- **Stay on the target bubble.** Bring back at least 2–3 guides or tips, each with what it means for this bubble and its source. If you can start subagents, give each one focused question plus the printed context instead of the whole chat, so the research stays focused and this chat stays light.
+- **Note each one on the bubble** with `finding N <tip — source>`. The listing shows them as `found 1:`, `found 2:`…, so whoever builds the bubble later reads them as context.
+- **Then propose, don't apply**: a missing step of this bubble → `insert at N+1 <title>`; another direction → `fork` or `diverge`; on fog, the findings help the human classify and `fill` it. Then ⏸ stop and wait for the human.
 
 ## Abilities
 

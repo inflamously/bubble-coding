@@ -7,7 +7,8 @@ Manage it only through the CLI, never by hand-editing the JSON:
     node "{{CLI}}" show | switch <name> | tracks | fork [N] <name> | diverge [N] <name> | init <title>
                    | add <title> | add ? <why> | insert at N <title|? <why>> | remove N[:M]
                    | move N[:M] to M | rename N <title> | title <text> | hint N <text> | fog [N[:M]] [TYPE]
-                   | why [N] <text> | type [N] <TYPE> | answer [N] <text> | fill [N] <title> | done | abilities | bubble:<name> [text]
+                   | why [N] <text> | type [N] <TYPE> | answer [N] <text> | fill [N] <title> | done | research [N] [focus]
+                   | finding N <text> | abilities | bubble:<name> [text]
 
 Full instructions: `{{SKILL}}`.
 
@@ -20,6 +21,7 @@ Rules:
 - `bubble switch <name>` resumes a track (read all bubbles and hints, then continue at the active one) or creates it. Apply it right away without asking why. If you see a better name (e.g. `single commit` -> `single-commit`), use it and say so in one line.
 - Every fog gets one line on why it's unclear (`add ? <why>` or `why N <text>`), never what it is.
 - After sketching a track, always list every fog bubble by number and ask the human to answer each one as `N: <their content>` (then `fill`) or `N:kk|ku|uk|uu` (then `type`). If their words don't settle it yet, it stays fog: keep them verbatim with `answer N <their words>`, and build on them with the human (fill, hint, guard, new bubbles or a fork).
+- When the human asks to research a bubble (`research [N] [focus]`), run it and follow the printed workflow once: extend their intent, never overrule it; stay on that bubble; bring back at least 2–3 guides or tips with sources (subagents with the printed context, if you have them), note each with `finding N <tip — source>`, propose inserts or a fork/diverge without applying them, never fill fog, then stop.
 - When the chat gets long, save `handoff <note>` (what's half done, the decisions made, the next step) and suggest a fresh chat with `bubble switch <name>`.
 - After `done`, stop (⏸): show the track and wait for the human before starting the next bubble.
 - When the human writes `bubble <command>`, run exactly that command through the CLI and show the result.

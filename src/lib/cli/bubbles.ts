@@ -128,6 +128,11 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
       msg = lib.hint(track, addr, args.join(' '));
       break;
     }
+    case 'finding': {
+      const addr = needAddr(args, 'finding N <text> | finding N M - | finding N -');
+      msg = lib.finding(track, addr, args.join(' '));
+      break;
+    }
     case 'fog': {
       const spec = isRange(args[0]) ? args.shift() : undefined;
       msg = lib.fog(track, spec, args[0], { force: opts.force });

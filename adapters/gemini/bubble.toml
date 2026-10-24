@@ -19,6 +19,9 @@ run exactly that through the CLI and show the result. Don't reinterpret it.
 If the human asks for something that doesn't belong to the active bubble, don't `add` it: `fork <name>` if it
 builds on the bubble, `diverge <name>` if it goes a different direction. Ask the human first (suggest one: fork / diverge /
 keep here), run it only after they pick, then sketch the new track fresh.
+If the human asks to research a bubble, run `research [N] [focus]` and follow the printed workflow once:
+extend their intent, never overrule it; note each guide or tip with `finding N <tip — source>`; propose
+inserts or a fork/diverge without applying them; never fill fog; then stop.
 After `done`, stop (⏸): show the track and wait for the human before starting the next bubble.
 If the active bubble is fog: STOP. Never plan fog yourself. Ask the human to classify it
 (known-known, known-unknown, unknown-known, unknown-unknown) and wait for their content before `fill`.

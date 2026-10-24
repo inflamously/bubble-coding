@@ -51,6 +51,12 @@ export const HELP = `bubble-tracks — the bubble language
   fill [N] <title>              the human's content for a fog bubble: fog -> todo
   done                          pop the active bubble, then ⏸ stop
 
+  research [N] [focus]          print the research workflow and bubble N's context, to run once
+                                (subagents welcome); it changes nothing itself
+  finding N <text> | finding N M - | finding N -
+                                note what research found for bubble N (a guide or tip, with its source),
+                                drop finding M, or drop them all
+
   abilities                     list the abilities: name, type, project or user, description
   bubble:<ability> [text]       print an ability's workflow to run once on the active bubble or track
                                 (<name>.md in .bubble-tracks/abilities/, then ~/.bubble-tracks/abilities/)

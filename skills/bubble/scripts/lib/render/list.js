@@ -13,7 +13,8 @@ export function list(track, opts) {
         const why = b.why ? `\n        why: ${b.why}` : '';
         const answer = b.answer ? `\n        human: ${b.answer}` : '';
         const hint = b.hint ? `\n        ↳ ${b.hint}` : '';
-        return `${mark} ${String(i + 1).padEnd(3)} ${symbolFor(b, i === index, sym)} ${b.state.padEnd(6)} ${b.title}${type}${fork}${why}${answer}${hint}`;
+        const found = (b.findings || []).map((f, n) => `\n        found ${n + 1}: ${f}`).join('');
+        return `${mark} ${String(i + 1).padEnd(3)} ${symbolFor(b, i === index, sym)} ${b.state.padEnd(6)} ${b.title}${type}${fork}${why}${answer}${hint}${found}`;
     })
         .join('\n');
 }

@@ -116,21 +116,25 @@ Each track is its own idea, stored as one `.json` file in `.bubble-tracks/`. `.b
 - **`diverge`** goes in a different direction from a bubble, in a side track. Nothing waits for it.
 - **`close`** finishes a track for good. It becomes read-only, shows 🔒 closed, and the fog gate ignores it. `tracks` hides it from then on; `tracks --closed` or `tracks --all` lists it again. Closing a track also closes its forks (side tracks stay open), and closing a fork pops its parent bubble.
 
+### Research
+
+When you don't know a topic well enough to plan or build a bubble, say "let's research" (or `research 4`, plus anything you want it to focus on). The agent looks things up for that one bubble, with subagents if it has them, and brings back at least two or three guides or tips with their sources. Each one is noted on the bubble with `finding`, so it stays in the bubble's context. The agent then proposes new bubbles or a fork, and you decide. Research only adds to what you asked for. It never renames a bubble, rewrites your hint or fills fog.
+
 ### Abilities
 
 An ability is a reusable workflow, like an agent skill, that you apply to the active bubble or the whole track. Drop a `<name>.md` file into `.bubble-tracks/abilities/` (project) or `~/.bubble-tracks/abilities/` (user). When both have the same name, the project one wins.
 
 ```markdown
 ---
-name: research
-description: Research what the active bubble needs before building it
+name: ready
+description: Check the active bubble is ready to build
 type: bubble
 ---
-Look up how the codebase and its docs already handle this bubble's task.
-List two or three options with their trade-offs, then suggest hints or new bubbles.
+Restate the bubble's task in one line, and list the files it will touch.
+Flag anything its hint leaves open as a question for the human.
 ```
 
-`type: bubble` runs against the active bubble, and `type: track` runs against the whole track. Write `bubble:research` (or `/bubble:research`) in chat, plus any extra words to steer it. The agent runs the workflow once, reports back and stops. Nothing stays attached. `abilities` lists the ones it can find, and flags broken files with the reason.
+`type: bubble` runs against the active bubble, and `type: track` runs against the whole track. Write `bubble:ready` (or `/bubble:ready`) in chat, plus any extra words to steer it. The agent runs the workflow once, reports back and stops. Nothing stays attached. `abilities` lists the ones it can find, and flags broken files with the reason.
 
 <details>
 <summary><b>CLI reference</b></summary>
@@ -167,6 +171,8 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | `answer [N] <text>` · `answer [N] -` | Keep (or clear) your own words on a fog that stays fog |
 | `fill [N] <title>` | Plan a fog bubble with your content: fog → todo |
 | `done` | Pop the active bubble, then ⏸ stop |
+| `research [N] [focus]` | Print the research workflow and bubble N's context, to run once |
+| `finding N <text>` · `finding N M -` · `finding N -` | Note (or drop) what research found for bubble N |
 | `abilities` | List the abilities: name, type, project or user, description |
 | `bubble:<name> [text]` | Print an ability's workflow and its context, to run once |
 

@@ -59,6 +59,7 @@ function printContext(ability: lib.Ability, { found, index }: ReturnType<typeof 
   console.log(`── context: active bubble on track "${name}"${title} ──`);
   console.log(`#${index + 1} "${b.title}" (${b.state}${b.type ? `, ${b.type}` : ''})`);
   if (b.hint) console.log(`↳ ${b.hint}`);
+  (b.findings || []).forEach((f, n) => console.log(`found ${n + 1}: ${f}`));
 }
 
 /** Run an ability command; returns an exit code, or undefined if `cmd` isn't one. */

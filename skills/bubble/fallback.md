@@ -49,6 +49,7 @@ Bubble fields:
 - `why`: set while fog: one line on why it's unclear (not what it is).
 - `answer`: set while fog: the human's own words on it, kept as they said them while it stays fog.
 - Both stay after `fill`, as the trail of how the bubble was planned.
+- `findings`: what research found for this bubble, as an array of strings (a guide or tip, with its source).
 - `fork`, `sides`: links to other tracks. Leave them as they are.
 
 Keep valid JSON with 2-space indentation and a final newline. Change only the fields a command touches, and leave unknown fields alone.
@@ -69,6 +70,8 @@ N is a 1-based position on the track. When N is left out, it means the active bu
 | `why [N] <text>` · `answer [N] <text>` | Only for a fog bubble: set `why` or `answer`, or delete the field with `-`. |
 | `hint N <text>` · `hint N -` | Set `hint`, or delete the field with `-`. |
 | `handoff <note>` · `handoff -` | Set `handoff` to `{ "note", "at" }`, or delete it with `-`. |
+| `finding N <text>` · `finding N M -` · `finding N -` | Append to `findings`, drop finding M, or delete `findings` with `-`. Delete the field when it ends up empty. `show` lists them as `found 1:`, `found 2:`… |
+| `research [N] [focus]` | Changes nothing. Follow SKILL.md's **Research** section on bubble N, with its context: the track's `goal` and `guards`, the bubble's `title`, `state`, `type`, `why`, `answer`, `hint` and `findings`, and the bubbles before and after it. Not on a closed track. |
 | `goal <text>` · `goal -` | Set `goal`, or delete it with `-`. |
 | `guard <text>` · `guard N -` · `guard -` · `guard show` | Append to `guards`, drop guard N, or delete `guards` with `-`. Delete the field when it ends up empty. `guard show` lists them; `show` doesn't, only `switch` does. |
 | `done` | Set the active bubble's `state` to `done` (never a fog bubble), then ⏸ stop. If it has a `fork`, don't pop it: that bubble waits for its fork track. |

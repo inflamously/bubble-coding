@@ -89,6 +89,18 @@ describe('e2e: a development track from sketch to close', () => {
     });
   });
 
+  describe('research: the workflow, then findings on the bubble', () => {
+    step(['research', '2', 'rule', 'syntax'], [/research #2 "Check input" — run this once/, /the human adds: rule syntax/, /finding 2 <tip — source>/, /── context: bubble #2 on track "dev"/, /⏸ stop/]);
+    step(['finding', '2', 'reuse the parser rules — src/rules.ts'], [/finding 1 on "Check input": reuse the parser rules/, /\n {8}found 1: reuse the parser rules — src\/rules.ts/]);
+    step(['finding', '2', 'fail fast on the first bad rule — node:assert docs'], /found 2: fail fast/);
+    step(['finding', '2', '2', '-'], /dropped finding 2 on "Check input"/);
+    step(['research', '2'], /found 1: reuse the parser rules/);
+    step(['finding', '9', 'x'], /no bubble at "9"/, 1);
+    it('dev.json holds the finding on the bubble', () => {
+      assert.deepStrictEqual(read('dev').bubbles[1].findings, ['reuse the parser rules — src/rules.ts']);
+    });
+  });
+
   describe('reshape: fog, move, remove, handoff, title', () => {
     step(['fog', '4'], /"Write output" is now fog/);
     step(['move', '4', 'to', '1'], [/moved "Write output" to 1/, /⚠ "Write output" is fog/]);
@@ -159,6 +171,7 @@ describe('e2e: a development track from sketch to close', () => {
     step(['close', 'dev-alt'], /confirm with the human/, 1);
     step(['close', 'dev-alt', '--force'], [/closed track "dev-alt"/, /🔒 closed/]);
     step(['add', 'Late'], /track "dev-alt" is closed/, 1);
+    step(['research', '1'], /track "dev-alt" is closed \(read-only\) — its bubbles can't take findings/, 1);
     step(['switch', 'dev'], /resumed track "dev"/);
     step(['tracks'], /1 closed hidden/);
     step(['tracks', '--closed'], /dev-alt .*🔒 closed/);

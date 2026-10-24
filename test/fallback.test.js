@@ -36,6 +36,7 @@ test('fallback.md covers every CLI command, by hand or as CLI-only', () => {
   const src = read('src/lib/cli/bubbles.ts') + read('src/lib/cli/tracks.ts');
   const aliases = ['status', 'rm', 'mv'];
   const commands = [...src.matchAll(/case '(\w+)':/g)].map((m) => m[1]).filter((c) => !aliases.includes(c));
+  commands.push('research'); // its own module, cli/research.ts
   assert.ok(commands.length > 15, 'found too few commands — did the CLI move?');
   assert.deepStrictEqual(missing(commands), []);
 });
@@ -83,6 +84,6 @@ test('SKILL.md, README and the AGENTS.md adapter teach abilities; the README exa
   }
   const example = /```markdown\n(---[\s\S]*?)```/.exec(read('README.md'));
   assert.ok(example, 'no ability example in README.md');
-  const ability = T.parseAbility(example[1], 'research.md');
-  assert.deepStrictEqual([ability.name, ability.type], ['research', 'bubble']);
+  const ability = T.parseAbility(example[1], 'ready.md');
+  assert.deepStrictEqual([ability.name, ability.type], ['ready', 'bubble']);
 });
