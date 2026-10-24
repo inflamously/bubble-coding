@@ -97,7 +97,7 @@ In a fresh chat, `/bubble switch <name>` picks a track back up. Hints and the ha
 
 ### Fog types
 
-When the agent reaches a fog bubble, you classify it:
+When the agent reaches a fog bubble, you classify it. If you don't know enough to say, answer `N:?` and the agent researches it first (see **Research**):
 
 | Type | Who does what |
 |---|---|

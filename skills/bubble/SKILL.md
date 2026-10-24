@@ -80,12 +80,13 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
      - `N: <what they think it is>`: their content. Run `fill N` with a short title, and put the detail in a `hint`.
        If their words don't settle it yet (a direction, not a task), it stays fog: keep them **as they said them** with `answer N <their words>`, and type it if they gave a level.
      - `N:kk` · `N:ku` · `N:uk` · `N:uu`: the knowledge level. Run `type N`.
+     - `N:?`: they don't know enough to say yet. Run `research N` on it (see **Research**), show the findings, then ask them to classify or fill it again. It stays fog until they do.
 
-     For example: `1:uk  2: tighten the fog gate  3:uu`. The levels shape everything after this, because they decide how you work each bubble in step 3.
+     For example: `1:uk  2: tighten the fog gate  3:?`. The levels shape everything after this, because they decide how you work each bubble in step 3.
 2. **Walk.** Run `show`. If the active bubble is known, implement it, then run `done`. Read the bubble's `↳` hint first: it's the human's steer for that bubble.
 3. **Hit fog → STOP.** When the active bubble is fog (`show` exits 3, or an edit is blocked):
    - **Never plan fog yourself.** Don't invent its content and don't run `fill` on your own.
-   - Ask the human to classify it, using the same `N: text` / `N:kk|ku|uk|uu` reply format (and if more fog lies ahead, ask about all of it at once):
+   - Ask the human to classify it, using the same `N: text` / `N:kk|ku|uk|uu` / `N:?` reply format (and if more fog lies ahead, ask about all of it at once):
      - **known-known**: they write the bubble.
      - **known-unknown**: you research (see **Research**) or spike options, they pick.
      - **unknown-known**: you surface what the codebase and docs already say, they confirm.
@@ -124,7 +125,7 @@ A **closed** track (`close`) is read-only: every bubble command on it refuses, a
 
 Research fills the human's knowledge gaps: a topic they don't know, or the information a bubble needs before it can be built or planned. It works on any bubble, any time, fog included.
 
-- **The human starts it**: "let's research", "research 4", or a fog they can't classify yet. You may *offer* it when a bubble clearly needs information nobody has yet, but run it only after they say yes.
+- **The human starts it**: "let's research", "research 4", or `N:?` when classifying fog. You may *offer* it when a bubble clearly needs information nobody has yet, but run it only after they say yes.
 - **Run `research [N] [focus]`** (N omitted = the active bubble; any words after it are the human's focus) and follow the printed workflow once against the printed context.
 - **Extend the human's intent, never overrule it.** Research adds to what they asked for. It doesn't rename the bubble, rewrite its hint or fill its fog. A finding that goes against what they asked is a question for them, not a change.
 - **Stay on the target bubble.** Bring back at least 2–3 guides or tips, each with what it means for this bubble and its source. If you can start subagents, give each one focused question plus the printed context instead of the whole chat, so the research stays focused and this chat stays light.
