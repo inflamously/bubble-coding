@@ -60,7 +60,7 @@ N is a 1-based position on the track. When N is left out, it means the active bu
 
 | Command | Edit |
 |---|---|
-| `show` | Read the file and draw the line: `<title>   S ●──◐──○ F   prev ‹ ◐ active › next`. `●` is done, `◐` is the active bubble, `○` is todo and `❓` is fog. If the active bubble is fog, its label is `❓ needs you`. Then list the bubbles by number with their hints. An active fog bubble is the gate (step 3). |
+| `show` | Read the file and draw the line: `<title>   S ●──◐──○ F   prev ‹ ◐ active › next`. `●` is done, `◐` is the active bubble, `○` is todo and `❓` is fog. If the active bubble is fog, its label is `❓ needs you`; with every bubble done it's `all done`, and with no bubbles at all it's `empty` (not done). Then list the bubbles by number with their hints. An active fog bubble is the gate (step 3). |
 | `switch <name>` | If `<name>.json` exists, write `<name>` to `current` and resume it. Otherwise create it (below). |
 | `create <name> [title]` · `init <title>` | Write `{ "title": "<title or name>", "bubbles": [] }` to `<name>.json`, then write `<name>` to `current`. `init` creates `track`. |
 | `add <title>` · `add ? <why>` | Append `{ "title", "state": "todo", "id" }`, or `{ "title": "???", "state": "fog", "id", "why" }` for fog. Take the id from `nextId`. |

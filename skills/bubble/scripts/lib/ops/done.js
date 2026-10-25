@@ -3,6 +3,8 @@ import { activeIndex } from '../model.js';
 /** Mark the active bubble done. */
 export function done(track) {
     const i = activeIndex(track);
+    if (!(track.bubbles || []).length)
+        throw new Error('the track is empty — add a bubble first');
     if (i === -1)
         throw new Error('all bubbles are already done');
     const b = track.bubbles[i];

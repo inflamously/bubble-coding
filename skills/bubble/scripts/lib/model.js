@@ -31,6 +31,8 @@ export function activeBubble(track) {
 export function resolve(track, addr) {
     if (addr === undefined || addr === null || addr === '') {
         const i = activeIndex(track);
+        if (!(track.bubbles || []).length)
+            throw new Error('the track is empty — nothing active');
         if (i === -1)
             throw new Error('all bubbles are done — nothing active');
         return i;

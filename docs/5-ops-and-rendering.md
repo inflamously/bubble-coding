@@ -77,6 +77,7 @@ Src tour   S ●──●──●──●──◐──○──○──○ 
 3. **The context**, which depends on the state:
    - closed → `🔒 closed`
    - everything done → `all done`
+   - no bubbles yet → `empty` (an empty track isn't done, and `done` on it refuses)
    - active is fog → `prev ‹ ❓ needs you › next`
    - otherwise → `prev ‹ ◐ active › next`, each title cut by `shorten` to 20 characters at a word boundary (if the boundary is past the halfway point), ending in `…`.
 

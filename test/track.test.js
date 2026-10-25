@@ -27,7 +27,7 @@ test('render with active todo, and all done', () => {
   assert.strictEqual(T.render(t, { ascii: false }), 'P   S ●──◐ F   A ‹ ◐ B');
   T.done(t);
   assert.strictEqual(T.render(t, { ascii: false }), 'P   S ●──● F   all done');
-  assert.strictEqual(T.render({ title: 'E', bubbles: [] }, { ascii: true }), 'E   S F   all done');
+  assert.strictEqual(T.render({ title: 'E', bubbles: [] }, { ascii: true }), 'E   S F   empty');
 });
 
 test('render closed: nothing active, a lock instead of prev ‹ active › next', () => {

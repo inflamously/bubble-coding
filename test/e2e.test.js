@@ -143,7 +143,8 @@ describe('e2e: a development track from sketch to close', () => {
 
   describe('fork: finishing the child pops its bubble', () => {
     step(['fork', '2', 'dev-check'], [/forked "Check input" into track "dev-check"/, /⑂ fork of #2 "Check input" in dev.json/]);
-    step(['done'], /all bubbles are already done/, 1); // an empty track reads as all done
+    step(['show'], /Check input {3}S F {3}empty/); // an empty track isn't all done
+    step(['done'], /the track is empty — add a bubble first/, 1);
     step(['add', 'Rule list'], /→ 1 {3}◐ todo {3}Rule list/);
     step(['done'], [/popped "Rule list"/, /fork finished — popped "Check input" in dev.json/]);
     step(['switch', 'dev'], [/resumed track "dev"/, /2 {3}● done {3}Check input ⑂ dev-check.json/, /✎ handoff/]);
