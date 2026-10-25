@@ -54,7 +54,7 @@ On any internal error, `main().catch(() => process.exit(0))` **fails open**. The
 
 ### What it doesn't cover
 
-- **Shell commands.** The matchers only list file-editing tools, so `sed -i`, `echo >` or a script run through Bash are never checked.
+- **Shell commands, on purpose.** The matchers only list file-editing tools, so `sed -i`, `echo >` or a script run through Bash are never checked. Spotting writes in shell commands was tried and dropped: it can't cover every platform's shell (PowerShell, cmd), and any interpreter can write a file anyway. The gate nudges the agent back to the human on the common path; it doesn't try to be a wall.
 - **Only the current track counts.** Fog on any other track blocks nothing. An agent that runs `switch` to a track whose active bubble isn't fog is no longer blocked.
 - **Any file in the repo is blocked, related or not.** While fog is active, even editing a README unrelated to the track is refused. The gate doesn't know what the bubble is about; it only knows the plan has a gap.
 - **Agents can edit the plan by hand.** Rule 2 lets the agent edit `.bubble-tracks/*.json` directly, although SKILL.md says all changes should go through the CLI. The CLI itself writes with Node `fs`, not with an agent tool, so it never meets the gate.

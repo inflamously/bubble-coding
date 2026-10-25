@@ -228,7 +228,7 @@ npm run site    # build the demo site; preview with: python3 -m http.server -d d
 Edit `src/`, never the generated JS, and commit both together. For a walkthrough of the code, see [`docs/`](docs/1-big-picture-map.md).
 
 > [!WARNING]
-> The fog gate covers file-edit tools only. Writes made through shell commands (Bash, `run_shell_command`) aren't blocked.
+> The fog gate covers file-edit tools only, and that's on purpose: it's a guardrail, not a security boundary. Writes made through shell commands (Bash, `run_shell_command`, PowerShell) aren't blocked. No hook can stop an agent for sure (any interpreter can write a file), and shell write detection can't cover every platform's shell.
 
 ## License
 
