@@ -7,6 +7,8 @@ import { isAddr, isRange, needAddr } from './args.js';
 import { printGuards, printTrack } from './print.js';
 const STOP = '⏸ stop — show this track to the human and wait. They may move, insert, remove, rename, hint or fog ' +
     'bubbles before the next one starts.';
+/** Every bubble-level command, so an unknown one is named before any track is looked up. */
+const COMMANDS = ['show', 'status', 'add', 'insert', 'remove', 'rm', 'move', 'mv', 'rename', 'handoff', 'goal', 'guard', 'title', 'hint', 'finding', 'fog', 'type', 'why', 'answer', 'fill', 'done'];
 /** Commands that take --to <track>: add, insert and hint write into it; move sends bubbles to it. */
 const TO_COMMANDS = ['add', 'insert', 'hint', 'move', 'mv'];
 /** The current track, loaded; throws when there is none or it can't be read. */
@@ -69,6 +71,8 @@ function guardWords(track, args, { all, force }) {
 }
 /** Run a bubble-level command on the current track (or the --to track); returns an exit code. */
 export function runBubbleCommand(cmd, args, { dir, opts, renderOpts }) {
+    if (!COMMANDS.includes(cmd))
+        throw new Error(`unknown command "${cmd}" — try: help`);
     if (opts.to !== undefined && !TO_COMMANDS.includes(cmd))
         throw new Error(`--to works only with add, insert, hint and move`);
     // add, insert and hint --to change the --to track; move --to takes from the current one.

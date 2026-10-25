@@ -46,9 +46,13 @@ export function runTrackCommand(cmd: string, args: string[], { dir, opts, render
       if (!fs.existsSync(file)) return create(name, args.join(' '));
       const track = lib.loadTrack(file);
       lib.setCurrent(bubblesDir, name);
-      console.log(`resumed track "${name}"`);
+      const title = args.join(' ');
+      // a title on an existing track isn't applied: say so, and how to rename it
+      const kept = track.title ? `the title stays "${track.title}"` : 'it keeps no title';
+      console.log(title && title !== track.title ? `resumed track "${name}" — ${kept}; to rename it: title ${title}` : `resumed track "${name}"`);
       console.log('');
-      return printTrack(file, track, renderOpts, true);
+      printTrack(file, track, renderOpts, true);
+      return 0; // the fog warning still prints; exit 3 is show's alone
     }
     case 'tracks': {
       const names = lib.listTracks(bubblesDir);

@@ -44,6 +44,7 @@ describe('e2e: a development track from sketch to close', () => {
 
   describe('sketch a track with one fog bubble', () => {
     step(['show'], /switch <name>/, 1);
+    step(['frobnicate'], /unknown command "frobnicate" — try: help/, 1); // named even with no track yet
     step(['create', 'dev', 'Dev track'], [/created track "dev"/, /Dev track {3}S F/]);
     step(['create', 'dev'], /track "dev" already exists — use: switch dev/, 1);
     step(['add', 'Parse input'], [/added bubble "Parse input"/, /→ 1 {3}◐ todo {3}Parse input/]);
@@ -117,6 +118,7 @@ describe('e2e: a development track from sketch to close', () => {
     step(['fog', '4'], /"Write output" is now fog/);
     step(['move', '4', 'to', '1'], [/moved "Write output" to 1/, /⚠ "Write output" is fog/]);
     step(['show'], /❓ needs you/, 3); // the fog gate
+    step(['switch', 'dev'], /⚠ "Write output" is fog/); // warns, but exit 3 is show's alone
     step(['answer', 'maybe stdout'], [/answer on "Write output": maybe stdout/, /Their words above are the start/]);
     step(['answer', '1', '-'], /cleared answer on "Write output"/);
     step(['answer', '1', '-'], /no answer on "Write output" to clear/);
@@ -145,6 +147,7 @@ describe('e2e: a development track from sketch to close', () => {
     step(['add', 'Rule list'], /→ 1 {3}◐ todo {3}Rule list/);
     step(['done'], [/popped "Rule list"/, /fork finished — popped "Check input" in dev.json/]);
     step(['switch', 'dev'], [/resumed track "dev"/, /2 {3}● done {3}Check input ⑂ dev-check.json/, /✎ handoff/]);
+    step(['switch', 'dev', 'Other'], /resumed track "dev" — the title stays "Dev flow"; to rename it: title Other/);
   });
 
   describe('diverge: a side track nothing waits for', () => {
