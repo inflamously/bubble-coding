@@ -162,7 +162,7 @@ describe('e2e: a development track from sketch to close', () => {
   describe('--to: record work on another track', () => {
     step(['add', 'Extra', '--to', 'dev-alt'], /added bubble "Extra" — on track "dev-alt"; the current track stays "dev"/);
     step(['hint', '2', 'from dev', '--to', 'dev-alt'], /↳ from dev/);
-    step(['move', '3', '--to', 'dev-alt'], [/moved "Pick format" to track "dev-alt"/, /Dev flow {3}S ●──● F {3}all done/]);
+    step(['move', '3', '--to', 'dev-alt'], [/moved "Pick format" to track "dev-alt"\n\nAlt idea {3}S /, /Dev flow {3}S ●──● F {3}all done/]);
     it('the moved bubble keeps its fog type', () => {
       assert.deepStrictEqual(read('dev-alt').bubbles.map((b) => b.title), ['Spike', 'Extra', 'Pick format']);
       assert.strictEqual(read('dev-alt').bubbles[2].type, 'known-unknown');

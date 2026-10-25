@@ -115,7 +115,7 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
         if (target.file === file) throw new Error(`"${target.name}" is the current track — use: move N to M`);
         if (target.track.closed) throw closedError(target.name);
         msg = lib.moveTo(track, spec, target.track, target.name);
-        msg += `\n${lib.render(target.track, renderOpts)}`;
+        msg += `\n\n${lib.render(target.track, renderOpts)}`; // its own block, like the current track's below
         before = () => lib.saveTrack(target.file, target.track); // first: a crash in between duplicates, never loses
         break;
       }

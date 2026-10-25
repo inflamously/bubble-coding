@@ -398,7 +398,7 @@ test('move --to: bubbles go to the end of the other track with new ids; linked o
   run('done');
   const r = run('move', '1:2', '--to', 'other');
   assert.strictEqual(r.status, 0);
-  assert.match(r.stdout, /moved "A", "B" to track "other"\nO   S ◐──●──○ F/);
+  assert.match(r.stdout, /moved "A", "B" to track "other"\n\nO   S ◐──●──○ F/);
   assert.match(r.stdout, /^M   S ◐ F   ◐ C$/m); // then the current track, now without them
   assert.deepStrictEqual(read('main').bubbles, [{ title: 'C', state: 'todo', id: 3 }]);
   assert.deepStrictEqual(read('other').bubbles, [
