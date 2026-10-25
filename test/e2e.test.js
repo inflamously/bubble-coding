@@ -63,11 +63,19 @@ describe('e2e: a development track from sketch to close', () => {
     step(['goal', 'Parse input', '--force'], /goal "Parse and check input" → "Parse input"/);
     step(['goal', 'Parse and check input', '--force'], /⚑ goal: Parse and check input/);
     step(['guard', 'show'], /no guards — add one: guard <text>/);
-    step(['guard', 'no new deps'], [/guard 1: no new deps/, /¦ guards \(check before done\):\n {4}1 {2}no new deps/]);
+    step(['guard', 'no new deps'], [/guard 1: no new deps/, /¦ guards \(before you act\):\n {4}1 {2}no new deps/]);
     step(['guard', '--', '-v stays verbose'], / {4}2 {2}-v stays verbose/);
-    step(['guard', '9', '-'], /no guard 9/, 1);
-    step(['guard', '2', '-'], /dropped guard 2: -v stays verbose/);
-    step(['guard', 'show'], /^¦ guards \(check before done\):\n {4}1 {2}no new deps$/);
+    step(['guard', '1', 'no new runtime deps'], [/guard 1: "no new deps" → "no new runtime deps"/, / {4}1 {2}no new runtime deps\n {4}2 {2}-v stays verbose/]);
+    step(['guard', '3'], /guard 3 needs text: guard 3 <text> rewrites it/, 1);
+    step(['guard', '9', 'x'], /no guard 9 — guard N <text> rewrites guard N/, 1);
+    step(['guard', 'show', 'extra'], /usage: guard show/, 1);
+    step(['guard', '2', '-'], /guards drop with: guard drop N \| guard drop --all/, 1);
+    step(['guard', 'drop', '1', 'x'], /usage: guard drop N \| guard drop --all/, 1);
+    step(['guard', 'drop', '9'], /no guard 9/, 1);
+    step(['guard', 'drop', '2'], /dropped guard 2: -v stays verbose/);
+    step(['guard', 'drop', '--all'], /dropping all 1 guard — confirm with the human, then re-run with --force\n {4}1 {2}no new runtime deps/, 1);
+    step(['guard', '1', 'no new deps'], /guard 1: "no new runtime deps" → "no new deps"/);
+    step(['guard', 'show'], /^¦ guards \(before you act\):\n {4}1 {2}no new deps$/);
     it('show prints the goal but not the guards', () => {
       const r = spawnSync(process.execPath, [CLI, '--dir', dir, 'show'], { encoding: 'utf8' });
       assert.match(r.stdout, /⚑ goal: Parse and check input/);

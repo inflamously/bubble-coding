@@ -32,7 +32,7 @@ export interface Link {
 export interface Track {
   title?: string;
   goal?: string; // the one end result every bubble serves
-  guards?: string[]; // what not to do on the way: soft rules checked before done
+  guards?: string[]; // what not to do on the way: soft rules read before acting
   bubbles: Bubble[];
   nextId?: number;
   handoff?: { note: string; at: string };

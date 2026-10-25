@@ -33,7 +33,7 @@ Track fields:
 
 - `title`: the track's name, kept short.
 - `goal`: the one end result every bubble serves.
-- `guards`: rules of what not to do, as an array of strings. Check them before `done`.
+- `guards`: rules of what not to do, as an array of strings. Read them before acting, not as a check at `done`.
 - `bubbles`: the bubbles in order, S to F. Required, even when empty (`[]`).
 - `nextId`: the id the next new bubble gets. Missing means 1.
 - `handoff`: `{ "note", "at" }`, where `at` is UTC as `YYYY-MM-DD HH:MM UTC`.
@@ -73,7 +73,7 @@ N is a 1-based position on the track. When N is left out, it means the active bu
 | `finding N <text>` · `finding N M -` · `finding N -` | Append to `findings`, drop finding M, or delete `findings` with `-`. Delete the field when it ends up empty. `show` lists them as `found 1:`, `found 2:`… |
 | `research [N] [focus]` | Changes nothing. Follow SKILL.md's **Research** section on bubble N, with its context: the track's `goal` and `guards`, the bubble's `title`, `state`, `type`, `why`, `answer`, `hint` and `findings`, and the bubbles before and after it. Not on a closed track. |
 | `goal <text>` | Set `goal` if the track has none. It's set once: never delete it, and change its wording only after the human confirms (`--force`). A new goal is a new track. |
-| `guard <text>` · `guard N -` · `guard -` · `guard show` | Append to `guards`, drop guard N, or delete `guards` with `-`. Delete the field when it ends up empty. `guard show` lists them; `show` doesn't, only `switch` does. |
+| `guard <text>` · `guard N <text>` · `guard drop N` · `guard drop --all` · `guard show` | Append to `guards`, or replace guard N in place. `drop` removes guard N; `drop --all` deletes `guards`, only after the human confirms. Delete the field when it ends up empty. `guard show` lists them; `show` doesn't, only `switch` does. |
 | `done` | Set the active bubble's `state` to `done` (never a fog bubble), then ⏸ stop. If it has a `fork`, don't pop it: that bubble waits for its fork track. |
 | `rename N` · `title` · `remove` · `move N to M` · `fog` | Edit `title`, delete bubbles, reorder the array, or set `state` to `fog`. Done bubbles turn into fog only after the human confirms. |
 | `tracks` · `--closed` · `--all` | List the `*.json` files and mark the current one with `→`. Skip tracks that have `closed` (unless current) and say how many you skipped; `--closed` lists only those, `--all` lists everything. |

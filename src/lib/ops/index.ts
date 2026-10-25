@@ -10,5 +10,6 @@ export * from './remove.js';
 export * from './move.js';
 export * from './handoff.js';
 export * from './goal.js';
+export * from './guard.js';
 export * from './mark.js';
 export * from './done.js';

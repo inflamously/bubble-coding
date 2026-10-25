@@ -53,8 +53,9 @@ export const HELP = `bubble-tracks — the bubble language
   title <text>                  rename the track itself
   goal <text>                   set the track's goal once: the one end result every bubble serves
                                 (a new goal is a new track; --force rewords it, after the human confirms)
-  guard <text> | guard N - | guard -
-                                add a guard (what not to do; checked before done), drop guard N, or drop all
+  guard <text> | guard N <text> add a guard (what not to do; read before acting), or rewrite guard N
+  guard drop N | guard drop --all
+                                drop guard N, or all of them (--all needs --force, after the human confirms)
   guard show                    list the guards (also printed on switch and after every guard change)
   handoff <note> | handoff -    save (or clear) the note a fresh chat reads to resume
   hint N <text> | hint N -      attach (or clear) a note for that bubble

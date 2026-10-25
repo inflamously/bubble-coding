@@ -48,6 +48,21 @@ function addBubble(track: lib.Track, args: string[], fog: boolean | undefined, a
 
 const closedError = (name: string) => new Error(`track "${name}" is closed (read-only) — fork, diverge or switch to keep working`);
 
+/** guard words: `drop N` · `drop --all` drop, `N <text>` rewrites guard N, anything else is a new guard. */
+function guardWords(track: lib.Track, args: string[], { all, force }: Ctx['opts']): string {
+  const [first, ...rest] = args;
+  if (first === 'drop') {
+    if (all && !rest.length) return lib.dropAllGuards(track, { force });
+    if (all || rest.length !== 1 || !isAddr(rest[0])) throw new Error('usage: guard drop N | guard drop --all');
+    return lib.dropGuard(track, Number(rest[0]));
+  }
+  const n = isAddr(first) ? Number(first) : null;
+  const text = (n === null ? args : rest).join(' ');
+  if (!text) throw new Error(n === null ? 'guard needs text (guard N <text> rewrites guard N; guard drop N | --all drops)' : `guard ${n} needs text: guard ${n} <text> rewrites it (guard drop ${n} drops it)`);
+  if (text === '-') throw new Error('guards drop with: guard drop N | guard drop --all');
+  return n === null ? lib.addGuard(track, text) : lib.rewriteGuard(track, n, text);
+}
+
 /** Run a bubble-level command on the current track (or the --to track); returns an exit code. */
 export function runBubbleCommand(cmd: string, args: string[], { dir, opts, renderOpts }: Ctx): number {
   if (opts.to !== undefined && !TO_COMMANDS.includes(cmd)) throw new Error(`--to works only with add, insert, hint and move`);
@@ -112,12 +127,13 @@ export function runBubbleCommand(cmd: string, args: string[], { dir, opts, rende
       msg = lib.setGoal(track, args.join(' '), { force: opts.force });
       break;
     case 'guard':
-      if (args.length === 1 && args[0] === 'show') {
+      if (args[0] === 'show') {
+        if (args.length > 1) throw new Error('usage: guard show (it takes nothing else)');
         if (track.guards && track.guards.length) printGuards(track, renderOpts);
         else console.log('no guards — add one: guard <text>');
         return 0;
       }
-      msg = lib.guard(track, args.join(' '));
+      msg = guardWords(track, args, opts);
       break;
     case 'title':
       msg = lib.setTitle(track, args.join(' '));

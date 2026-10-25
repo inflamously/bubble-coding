@@ -6,7 +6,7 @@ Manage it only through the CLI, never by hand-editing the JSON:
 
     node "{{CLI}}" show | switch <name> | tracks | fork [N] <name> | diverge [N] <name> | init <title>
                    | add <title> | add ? <why> | insert at N <title|? <why>> | remove N[:M]
-                   | move N[:M] to M | rename N <title> | title <text> | goal <text> | guard <text> | guard show
+                   | move N[:M] to M | rename N <title> | title <text> | goal <text> | guard [N] <text> | guard drop N | guard show
                    | hint N <text> | fog [N[:M]] [TYPE]
                    | why [N] <text> | type [N] <TYPE> | answer [N] <text> | fill [N] <title> | done | research [N] [focus]
                    | finding N <text> | abilities | bubble:<name> [text]

@@ -5,7 +5,7 @@ import * as links from '../links/index.js';
 export function printGuards(track, opts) {
     if (!track.guards || !track.guards.length)
         return;
-    console.log(`${lib.symbolsFor(opts).guard} guards (check before done):`);
+    console.log(`${lib.symbolsFor(opts).guard} guards (before you act):`);
     track.guards.forEach((g, i) => console.log(`    ${i + 1}  ${g}`));
 }
 /**

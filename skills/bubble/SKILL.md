@@ -43,7 +43,8 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `rename N <title>` | Retitle a planned bubble (not fog) |
 | `title <text>` | Rename the track itself (keep it short too) |
 | `goal <text>` | Set the track's goal, **once**: the one end result every bubble serves. `show` prints it. It can't be cleared or replaced: a new goal is a new track (`diverge`). `--force` rewords it, only after the human confirms. |
-| `guard <text>` · `guard N -` · `guard -` | Add a guard (a rule of what **not** to do), drop guard N, or drop them all |
+| `guard <text>` · `guard N <text>` | Add a guard (a rule of what **not** to do), or rewrite guard N in place. A new guard can't start with a number. |
+| `guard drop N` · `guard drop --all` | Drop guard N, or all of them. `--all` refuses and lists them; re-run with `--force` only after the human confirms. |
 | `guard show` | List the guards. `switch` (resume) and every guard change print them too; `show` doesn't. |
 | `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat reads to resume this track |
 | `hint N <text>` · `hint N -` | Attach (or clear) the human's note for that bubble |

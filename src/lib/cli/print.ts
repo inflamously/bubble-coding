@@ -6,7 +6,7 @@ import * as links from '../links/index.js';
 /** The track's guards, numbered; nothing when it has none. */
 export function printGuards(track: lib.Track, opts?: lib.RenderOpts): void {
   if (!track.guards || !track.guards.length) return;
-  console.log(`${lib.symbolsFor(opts).guard} guards (check before done):`);
+  console.log(`${lib.symbolsFor(opts).guard} guards (before you act):`);
   track.guards.forEach((g, i) => console.log(`    ${i + 1}  ${g}`));
 }
 

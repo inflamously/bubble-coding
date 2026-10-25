@@ -164,7 +164,8 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | `rename N <title>` | Retitle a planned bubble |
 | `title <text>` | Rename the track itself |
 | `goal <text>` | Set the one end result every bubble serves, once (a new goal is a new track; `--force` rewords it) |
-| `guard <text>` · `guard N -` · `guard -` · `guard show` | Add a rule of what not to do, drop one or all, or list them |
+| `guard <text>` · `guard N <text>` · `guard show` | Add a rule of what not to do, rewrite guard N, or list them |
+| `guard drop N` · `guard drop --all` | Drop guard N, or all of them (`--all` needs `--force`) |
 | `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat resumes from |
 | `hint N <text>` · `hint N -` | Attach (or clear) a note for that bubble |
 | `fog [N \| N:M] [TYPE]` | Turn bubbles into fog (done bubbles need `--force`) |

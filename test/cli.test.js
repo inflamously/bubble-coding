@@ -438,14 +438,18 @@ test('goal and guards are stored on the track and shown on resume', () => {
   run('guard', "don't", 'touch', 'src/site');
   run('guard', 'no', 'new', 'deps');
   assert.deepStrictEqual(track().guards, ["don't touch src/site", 'no new deps']);
-  assert.match(run('switch').stdout, /¦ guards \(check before done\):\n {4}1 {2}don't touch src\/site\n {4}2 {2}no new deps/);
+  assert.match(run('switch').stdout, /¦ guards \(before you act\):\n {4}1 {2}don't touch src\/site\n {4}2 {2}no new deps/);
   assert.doesNotMatch(run('show').stdout, /guards/); // only on switch, guard and guard show
   assert.doesNotMatch(run('add', 'D').stdout, /guards/);
-  assert.match(run('guard', 'show').stdout, /^¦ guards \(check before done\):\n {4}1 {2}don't touch src\/site/);
-  assert.match(run('guard', '1', '-').stdout, /dropped guard 1: don't touch src\/site/);
+  assert.match(run('guard', 'show').stdout, /^¦ guards \(before you act\):\n {4}1 {2}don't touch src\/site/);
+  assert.match(run('guard', 'drop', '1').stdout, /dropped guard 1: don't touch src\/site/);
   assert.deepStrictEqual(track().guards, ['no new deps']);
-  assert.match(run('guard', '5', '-').stderr, /no guard 5/);
-  run('guard', '-');
+  assert.match(run('guard', 'drop', '5').stderr, /no guard 5/);
+  assert.match(run('guard', '-').stderr, /guards drop with: guard drop N/);
+  assert.match(run('guard', 'drop', '--all').stderr, /re-run with --force/);
+  assert.deepStrictEqual(track().guards, ['no new deps']);
+  assert.match(run('guard', 'drop', '--all', '--force').stdout, /dropped 1 guard/);
+  assert.match(run('guard', 'drop', '--all').stdout, /no guards to drop/);
   assert.strictEqual('guards' in track(), false);
   assert.doesNotMatch(run('show').stdout, /guards/);
   assert.match(run('goal', 'Ship', 'it').stderr, /already has a goal: "Parse v2 files" — a new goal is a new track: diverge <name>/);
@@ -466,7 +470,7 @@ test('research prints the workflow and the bubble context; findings are noted on
   assert.match(r.stdout, /^research #2 "B" — run this once; extend the human's intent, never overrule it\nthe human adds: focus on speed/);
   assert.match(r.stdout, /finding 2 <tip — source>/);
   assert.match(r.stdout, /insert at 3 <title>/);
-  assert.match(r.stdout, /⚑ goal: Ship C\n¦ guards \(check before done\):\n {4}1 {2}no new deps\n#2 "B" \(todo\)\n↳ use the old parser/);
+  assert.match(r.stdout, /⚑ goal: Ship C\n¦ guards \(before you act\):\n {4}1 {2}no new deps\n#2 "B" \(todo\)\n↳ use the old parser/);
   assert.match(r.stdout, /before: #1 "A" \(todo\)\nafter: #3 "C" \(todo\)/);
   assert.match(r.stdout, /⏸ stop/);
   assert.match(run('research').stdout, /#1 "A" \(todo, active\)/); // no N: the active bubble
