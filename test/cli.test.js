@@ -520,7 +520,10 @@ test('fork: child track links to the parent bubble by relative path and becomes 
   run('switch', 'b-sub');
   assert.match(run('show').stdout, /fork of #1 "B" in track\.json/);
   run('switch', 'track');
-  run('remove', '1');
+  assert.match(run('remove', '1').stderr, /"B" has an open fork or side track: b-sub\.json — close or delete it first/);
+  assert.match(run('fog', '1').stderr, /"B" has an open fork: b-sub\.json/);
+  run('close', 'b-sub', '--force'); // a closed fork no longer holds its bubble
+  assert.strictEqual(run('remove', '1').status, 0);
   run('switch', 'b-sub');
   assert.match(run('show').stdout, /fork of "B" in track\.json/);
 });

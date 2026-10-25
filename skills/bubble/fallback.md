@@ -75,7 +75,7 @@ N is a 1-based position on the track. When N is left out, it means the active bu
 | `goal <text>` | Set `goal` if the track has none. It's set once: never delete it, and change its wording only after the human confirms (`--force`). A new goal is a new track. |
 | `guard <text>` · `guard N <text>` · `guard drop N` · `guard drop --all` · `guard show` | Append to `guards`, or replace guard N in place. `drop` removes guard N; `drop --all` deletes `guards`, only after the human confirms. Delete the field when it ends up empty. `guard show` lists them; `show` doesn't, only `switch` does. |
 | `done` | Set the active bubble's `state` to `done` (never a fog bubble), then ⏸ stop. If it has a `fork`, don't pop it: that bubble waits for its fork track. |
-| `rename N` · `title` · `remove` · `move N to M` · `fog` | Edit `title`, delete bubbles, reorder the array, or set `state` to `fog`. Done bubbles turn into fog only after the human confirms. |
+| `rename N` · `title` · `remove` · `move N to M` · `fog` | Edit `title`, delete bubbles, reorder the array, or set `state` to `fog`. Done bubbles turn into fog only after the human confirms. Don't remove a bubble whose `fork` or `sides` track is still open (exists and isn't `closed`), or fog one whose `fork` is. |
 | `tracks` · `--closed` · `--all` | List the `*.json` files and mark the current one with `→`. Skip tracks that have `closed` (unless current) and say how many you skipped; `--closed` lists only those, `--all` lists everything. |
 
 If a track has `closed`, it's read-only, so don't change it. `fork`, `diverge`, `close`, `delete` and `move … --to` keep links between tracks in sync. Leave them for when Node is available and tell the human that.

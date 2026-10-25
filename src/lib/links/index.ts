@@ -2,5 +2,6 @@
 // A forked bubble waits for its child, and the child's changes flow back to it; side tracks only link back.
 
 export * from './finish.js';
+export * from './hold.js';
 export * from './sync.js';
 export * from './tree.js';

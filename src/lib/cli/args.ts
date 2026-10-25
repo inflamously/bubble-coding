@@ -46,7 +46,7 @@ export const HELP = `bubble-tracks — the bubble language
   add <title>   | add ? [why]   append a todo (or fog) bubble; a fog says in one line why it's unclear
   insert at N <title> | insert at N ? [why]
                                 insert a todo (or fog) bubble at position N
-  remove N | N:M                delete a bubble or a range
+  remove N | N:M                delete a bubble or a range (not while its fork or side track is open)
   move N to M | move N:M to M   move a bubble or block so it starts at M
   move N | N:M --to <track>     move a bubble or block to the end of another track
   rename N <title>              retitle a planned bubble

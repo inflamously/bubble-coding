@@ -37,7 +37,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `diverge [N] <name> [title]` | Go **a different direction** from bubble N in a new side track `<name>` (titled after the bubble unless you give a title), and make it current. The bubble (any state) adds the path to its `sides`; the side track gets `origin`. Nothing waits for it. |
 | `add <title>` · `add ? <why>` | Append a todo (or fog) bubble. A fog says in one line why it's unclear. |
 | `insert at N <title>` · `insert at N ? <why>` | Insert a todo (or fog) bubble at position N |
-| `remove N` · `remove N:M` | Delete a bubble or a range |
+| `remove N` · `remove N:M` | Delete a bubble or a range. Refuses a bubble whose fork or side track is still open: close or delete that track first. |
 | `move N to M` · `move N:M to M` | Move a bubble or block so it starts at position M |
 | `move N --to <track>` · `move N:M --to <track>` | Move a bubble or block to the end of another existing track (state, type and hint kept; new ids). Refuses bubbles with a fork or side track. |
 | `rename N <title>` | Retitle a planned bubble (not fog) |
@@ -48,7 +48,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `guard show` | List the guards. `switch` (resume) and every guard change print them too; `show` doesn't. |
 | `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat reads to resume this track |
 | `hint N <text>` · `hint N -` | Attach (or clear) the human's note for that bubble |
-| `fog [N \| N:M] [TYPE]` | Turn bubbles into fog. Done bubbles need `--force`, after the human confirms. |
+| `fog [N \| N:M] [TYPE]` | Turn bubbles into fog. Done bubbles need `--force`, after the human confirms. Refuses a bubble whose fork is still open. |
 | `why [N] <text>` · `why [N] -` | Say (or clear) why a fog bubble is unclear: not what it is |
 | `type [N] <TYPE>` | Record the human's fog classification |
 | `answer [N] <text>` · `answer [N] -` | Keep (or clear) the human's own words on a fog that stays fog |

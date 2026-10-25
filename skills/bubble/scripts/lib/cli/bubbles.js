@@ -43,6 +43,11 @@ function addBubble(track, args, fog, at) {
         return lib.add(track, undefined, { fog: true, at, why: args.slice(1).join(' ') || undefined });
     return lib.add(track, args.join(' ') || undefined, { fog, at });
 }
+/** The bubbles at N or N:M (omitted: the active one), for checks that need them before the op runs. */
+function picked(track, spec) {
+    const [from, to] = spec === undefined ? [lib.resolve(track), lib.resolve(track)] : lib.resolveRange(track, spec);
+    return track.bubbles.slice(from, to + 1);
+}
 const closedError = (name) => new Error(`track "${name}" is closed (read-only) — fork, diverge or switch to keep working`);
 /** guard words: `drop N` · `drop --all` drop, `N <text>` rewrites guard N, anything else is a new guard. */
 function guardWords(track, args, { all, force }) {
@@ -92,6 +97,7 @@ export function runBubbleCommand(cmd, args, { dir, opts, renderOpts }) {
         case 'rm':
             if (!isRange(args[0]))
                 throw new Error('usage: remove N | remove N:M');
+            links.checkLinksClosed(file, picked(track, args[0]), { sides: true });
             msg = lib.remove(track, args[0]);
             break;
         case 'move':
@@ -162,6 +168,7 @@ export function runBubbleCommand(cmd, args, { dir, opts, renderOpts }) {
         }
         case 'fog': {
             const spec = isRange(args[0]) ? args.shift() : undefined;
+            links.checkLinksClosed(file, picked(track, spec));
             msg = lib.fog(track, spec, args[0], { force: opts.force });
             break;
         }

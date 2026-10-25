@@ -151,6 +151,8 @@ describe('e2e: a development track from sketch to close', () => {
     step(['diverge', '2', 'dev-alt', 'Alt idea'], [/diverged from "Check input" into track "dev-alt"/, /↗ diverged from #2/]);
     step(['add', 'Spike'], /◐ Spike/);
     step(['switch', 'dev'], /Check input ⑂ dev-check.json ↗ dev-alt.json/);
+    step(['remove', '2'], /"Check input" has an open fork or side track: dev-check.json, dev-alt.json — close or delete it first/, 1);
+    step(['fog', '2', '--force'], /"Check input" has an open fork: dev-check.json — close or delete it first/, 1);
   });
 
   describe('--to: record work on another track', () => {
@@ -185,6 +187,7 @@ describe('e2e: a development track from sketch to close', () => {
     step(['add', 'Late'], /track "dev-alt" is closed/, 1);
     step(['research', '1'], /track "dev-alt" is closed \(read-only\) — its bubbles can't take findings/, 1);
     step(['switch', 'dev'], /resumed track "dev"/);
+    step(['remove', '2'], /"Check input" has an open fork or side track: dev-check.json — close/, 1); // closed dev-alt no longer holds it
     step(['tracks'], /1 closed hidden/);
     step(['tracks', '--closed'], /dev-alt .*🔒 closed/);
     step(['delete', 'dev-alt'], /confirm with the human/, 1);
