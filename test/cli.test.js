@@ -371,6 +371,23 @@ test('options: --to=<track> works, text starting with - goes after --, a missing
   assert.match(run('show', '--at').stderr, /--at needs a value/);
 });
 
+test('options: a repeated option or one inside the text is refused, nothing is written', () => {
+  const { run, read } = twoTracks();
+  const saved = JSON.stringify([read('main'), read('other')]);
+  const twice = run('add', 'Move', '--to', 'spacing', '--to', 'other');
+  assert.strictEqual(twice.status, 1);
+  assert.match(twice.stderr, /--to given twice — give it once/);
+  assert.match(run('add', 'Move', '--to', 'other', 'spacing').stderr, /--to splits the text — put options after it/);
+  assert.match(run('hint', '2', '--force', 'more', 'text').stderr, /--force splits the text/);
+  assert.match(run('bubble', 'add', 'A', '--at=1', 'B').stderr, /--at splits the text/);
+  assert.strictEqual(JSON.stringify([read('main'), read('other')]), saved);
+  // Options before the text, after it, or a same-value repeat still work.
+  assert.strictEqual(run('bubble', '--to', 'other', 'add', 'Lead').status, 0);
+  assert.strictEqual(run('add', '--to', 'other', 'Pre', 'text').status, 0);
+  assert.strictEqual(run('add', 'Post', 'text', '--to', 'other', '--to', 'other').status, 0);
+  assert.deepStrictEqual(read('other').bubbles.slice(-3).map(b => b.title), ['Lead', 'Pre text', 'Post text']);
+});
+
 test('--to refuses: missing or closed target, commands that do not take it; nothing is written', () => {
   const { run, read } = twoTracks();
   const before = () => JSON.stringify([read('main'), read('other')]);

@@ -160,6 +160,8 @@ describe('e2e: a development track from sketch to close', () => {
   });
 
   describe('--to: record work on another track', () => {
+    step(['add', 'Extra', '--to', 'spacing', '--to', 'dev-alt'], /--to given twice — give it once \(text starting with - goes after --\)/, 1);
+    step(['add', 'Extra', '--to', 'dev-alt', 'spacing'], /--to splits the text — put options after it \(text starting with - goes after --\)/, 1);
     step(['add', 'Extra', '--to', 'dev-alt'], /added bubble "Extra" — on track "dev-alt"; the current track stays "dev"/);
     step(['hint', '2', 'from dev', '--to', 'dev-alt'], /↳ from dev/);
     step(['move', '3', '--to', 'dev-alt'], [/moved "Pick format" to track "dev-alt"\n\nAlt idea {3}S /, /Dev flow {3}S ●──● F {3}all done/]);

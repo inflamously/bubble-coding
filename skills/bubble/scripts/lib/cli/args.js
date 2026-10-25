@@ -13,7 +13,7 @@ const OPTIONS = {
     to: { type: 'string' },
     help: { type: 'boolean', short: 'h' },
 };
-const flags = (args) => parseFlags({ args, options: OPTIONS, allowPositionals: true });
+const flags = (args) => parseFlags({ args, options: OPTIONS, allowPositionals: true, tokens: true });
 export const HELP = `bubble-tracks — the bubble language
 
   switch [name] [title]         resume track <name>, or create it; no name = the current (else default) track
@@ -68,6 +68,7 @@ export const HELP = `bubble-tracks — the bubble language
   Options: --dir <repo> (default: cwd)   --ascii (or BUBBLES_ASCII=1)   --force
            --to <track> (or --to=<track>): add, insert and hint write into that track; the current track stays current
            a word that starts with - is an option; put text like that after --:  hint 2 -- -v means verbose
+           options go before or after the text, each once: an option inside the text is refused
            color on a terminal; BUBBLES_COLOR=1/0 forces it, NO_COLOR disables it
            add <title> --at N  and  add --fog [title]  still work.
   Exit codes: 0 ok, 1 error, 3 (show only) active bubble is fog — needs the human`;
@@ -80,6 +81,29 @@ function flagError(err) {
         return new Error(name === '--to' ? '--to needs a track name' : `${name} needs a value`);
     return err;
 }
+/** Node keeps the last of a repeated option and lifts an option out of the text around it, both
+ *  silently: "add Move --to spacing --to x" would add "Move" to x. Refuse both instead (a repeat
+ *  with the same value changes nothing, so it passes). */
+function checkOptions(tokens) {
+    const seen = new Map();
+    let words = 0; // positionals so far, a leading "bubble" not counted; past 1 they are the text
+    for (const [i, t] of tokens.entries()) {
+        if (t.kind === 'option-terminator')
+            return;
+        if (t.kind === 'positional') {
+            if (!(words === 0 && t.value === 'bubble'))
+                words++;
+            continue;
+        }
+        if (seen.has(t.name) && seen.get(t.name) !== t.value) {
+            throw new Error(`${t.rawName} given twice — give it once (text starting with - goes after --)`);
+        }
+        seen.set(t.name, t.value);
+        if (words > 1 && tokens.slice(i + 1).some(n => n.kind === 'positional')) {
+            throw new Error(`${t.rawName} splits the text — put options after it (text starting with - goes after --)`);
+        }
+    }
+}
 export function parseArgs(argv) {
     let parsed;
     try {
@@ -88,6 +112,7 @@ export function parseArgs(argv) {
     catch (err) {
         throw flagError(err);
     }
+    checkOptions(parsed.tokens);
     const { values: opts, positionals } = parsed;
     // A whole phrase passed as one argument: "move 2 to 5".
     const pos = positionals.length === 1 ? positionals[0].trim().split(/\s+/) : positionals;

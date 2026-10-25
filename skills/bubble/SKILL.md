@@ -63,7 +63,7 @@ Every bubble command acts on the **current track**. Each track is its own idea o
 
 `--to <track>` on `add`, `insert` and `hint` writes into another existing track instead, and the current track stays current. Use it to record future work for another track while you walk this one, rather than `switch`, `add`, `switch` back.
 
-A word that starts with `-` is read as an option, so a title or hint with one, like `-v`, goes after `--`: `hint 2 -- use -v for verbose`. A lone `-` (as in `hint N -`) is fine.
+A word that starts with `-` is read as an option, so a title or hint with one, like `-v`, goes after `--`: `hint 2 -- use -v for verbose`. A lone `-` (as in `hint N -`) is fine. Options go before or after the text, each once: the CLI refuses an option in the middle of the text (`add Move --to x spacing`) or one given twice with different values, so nothing gets dropped silently.
 
 N: position on the track; omitted = the active bubble. `N:M` = N through M, inclusive.
 TYPE: `known-known` · `known-unknown` · `unknown-known` · `unknown-unknown` (or `kk` · `ku` · `uk` · `uu`).
