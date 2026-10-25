@@ -10,8 +10,8 @@ export interface RenderOpts {
 export type Symbols = Record<'done' | 'active' | 'todo' | 'fog' | 'sep' | 'prev' | 'next' | 'more' | 'fork' | 'side' | 'lock' | 'goal' | 'guard', string>;
 
 export const SYMBOLS: { unicode: Symbols; ascii: Symbols } = {
-  unicode: { done: '●', active: '◐', todo: '○', fog: '❓', sep: '──', prev: ' ‹ ', next: ' › ', more: '…', fork: '⑂', side: '↗', lock: '🔒', goal: '→', guard: '¦' },
-  ascii: { done: '*', active: '@', todo: 'o', fog: '?', sep: '--', prev: ' < ', next: ' > ', more: '...', fork: 'Y', side: '/', lock: '#', goal: '>', guard: '!' },
+  unicode: { done: '●', active: '◐', todo: '○', fog: '❓', sep: '──', prev: ' ‹ ', next: ' › ', more: '…', fork: '⑂', side: '↗', lock: '🔒', goal: '⚑', guard: '¦' },
+  ascii: { done: '*', active: '@', todo: 'o', fog: '?', sep: '--', prev: ' < ', next: ' > ', more: '...', fork: 'Y', side: '/', lock: '#', goal: '^', guard: '!' },
 };
 
 // ANSI colors: title dark green, track blue, prev ‹ active › next dark yellow.

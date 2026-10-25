@@ -72,7 +72,7 @@ N is a 1-based position on the track. When N is left out, it means the active bu
 | `handoff <note>` · `handoff -` | Set `handoff` to `{ "note", "at" }`, or delete it with `-`. |
 | `finding N <text>` · `finding N M -` · `finding N -` | Append to `findings`, drop finding M, or delete `findings` with `-`. Delete the field when it ends up empty. `show` lists them as `found 1:`, `found 2:`… |
 | `research [N] [focus]` | Changes nothing. Follow SKILL.md's **Research** section on bubble N, with its context: the track's `goal` and `guards`, the bubble's `title`, `state`, `type`, `why`, `answer`, `hint` and `findings`, and the bubbles before and after it. Not on a closed track. |
-| `goal <text>` · `goal -` | Set `goal`, or delete it with `-`. |
+| `goal <text>` | Set `goal` if the track has none. It's set once: never delete it, and change its wording only after the human confirms (`--force`). A new goal is a new track. |
 | `guard <text>` · `guard N -` · `guard -` · `guard show` | Append to `guards`, drop guard N, or delete `guards` with `-`. Delete the field when it ends up empty. `guard show` lists them; `show` doesn't, only `switch` does. |
 | `done` | Set the active bubble's `state` to `done` (never a fog bubble), then ⏸ stop. If it has a `fork`, don't pop it: that bubble waits for its fork track. |
 | `rename N` · `title` · `remove` · `move N to M` · `fog` | Edit `title`, delete bubbles, reorder the array, or set `state` to `fog`. Done bubbles turn into fog only after the human confirms. |

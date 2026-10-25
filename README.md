@@ -163,7 +163,7 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | `move N --to <track>` · `move N:M --to <track>` | Move a bubble or block to the end of another track |
 | `rename N <title>` | Retitle a planned bubble |
 | `title <text>` | Rename the track itself |
-| `goal <text>` · `goal -` | Set (or clear) the one end result every bubble serves |
+| `goal <text>` | Set the one end result every bubble serves, once (a new goal is a new track; `--force` rewords it) |
 | `guard <text>` · `guard N -` · `guard -` · `guard show` | Add a rule of what not to do, drop one or all, or list them |
 | `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat resumes from |
 | `hint N <text>` · `hint N -` | Attach (or clear) a note for that bubble |

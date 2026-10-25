@@ -42,7 +42,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `move N --to <track>` · `move N:M --to <track>` | Move a bubble or block to the end of another existing track (state, type and hint kept; new ids). Refuses bubbles with a fork or side track. |
 | `rename N <title>` | Retitle a planned bubble (not fog) |
 | `title <text>` | Rename the track itself (keep it short too) |
-| `goal <text>` · `goal -` | Set (or clear) the track's goal: the one end result every bubble serves. `show` prints it. |
+| `goal <text>` | Set the track's goal, **once**: the one end result every bubble serves. `show` prints it. It can't be cleared or replaced: a new goal is a new track (`diverge`). `--force` rewords it, only after the human confirms. |
 | `guard <text>` · `guard N -` · `guard -` | Add a guard (a rule of what **not** to do), drop guard N, or drop them all |
 | `guard show` | List the guards. `switch` (resume) and every guard change print them too; `show` doesn't. |
 | `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat reads to resume this track |

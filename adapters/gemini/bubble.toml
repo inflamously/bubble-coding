@@ -13,7 +13,8 @@ read every bubble, hint, the goal and guards, and continue at the active bubble.
 (e.g. `single commit` -> `single-commit`), use it and say so in one line. If the track is new (or the request is
 "I want X"), plan in chat before creating it: ask for the goal, the guards (what not to do or touch) and the use
 cases, propose name + title, goal, guards and bubbles (fog with its reason), and after the human's ok create it in
-one burst (`switch`, `goal`, `guard` per rule, `add`s, `hint`s). One bubble per use case, its hint naming its
+one burst (`switch`, `goal`, `guard` per rule, `add`s, `hint`s). The goal is set once: a new goal is a new
+track (`diverge`); `goal <text> --force` rewords it only after the human confirms. One bubble per use case, its hint naming its
 boundary (`Boundary: …`); work past it: stop and propose an `insert`. Then list every fog bubble by number and ask the human to answer each one as `N: <their content>`
 (then `fill`), `N:kk|ku|uk|uu` (then `type`), or `N:?` (research it first, then ask again). Every fog gets one line on why it's unclear (`add ? <why>`).
 If their words don't settle a fog yet, it stays fog: keep them verbatim with `answer N <their words>`.

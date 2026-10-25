@@ -51,7 +51,8 @@ export const HELP = `bubble-tracks — the bubble language
   move N | N:M --to <track>     move a bubble or block to the end of another track
   rename N <title>              retitle a planned bubble
   title <text>                  rename the track itself
-  goal <text> | goal -          set (or clear) the track's goal: the one end result every bubble serves
+  goal <text>                   set the track's goal once: the one end result every bubble serves
+                                (a new goal is a new track; --force rewords it, after the human confirms)
   guard <text> | guard N - | guard -
                                 add a guard (what not to do; checked before done), drop guard N, or drop all
   guard show                    list the guards (also printed on switch and after every guard change)

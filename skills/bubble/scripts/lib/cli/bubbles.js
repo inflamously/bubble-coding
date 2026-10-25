@@ -114,7 +114,7 @@ export function runBubbleCommand(cmd, args, { dir, opts, renderOpts }) {
                 msg += ` — in a fresh chat run: /bubble switch ${found.name}`;
             break;
         case 'goal':
-            msg = lib.setGoal(track, args.join(' '));
+            msg = lib.setGoal(track, args.join(' '), { force: opts.force });
             break;
         case 'guard':
             if (args.length === 1 && args[0] === 'show') {
