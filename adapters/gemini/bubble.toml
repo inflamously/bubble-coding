@@ -8,10 +8,13 @@ Current track:
 Request: {{args}}
 
 If the request is empty, summarize where we are and what is next.
-If the request is `switch <name>`: run it right away and don't ask why. If you see a better name
-(e.g. `single commit` -> `single-commit`), use it and say so in one line. If it says "resumed", read every
-bubble and hint and continue at the active bubble. If it says "created", sketch the new track with the human,
-then list every fog bubble by number and ask the human to answer each one as `N: <their content>`
+If the request is `switch <name>`: check `tracks` first. If the track exists, switch right away and don't ask why;
+read every bubble, hint, the goal and guards, and continue at the active bubble. If you see a better name
+(e.g. `single commit` -> `single-commit`), use it and say so in one line. If the track is new (or the request is
+"I want X"), plan in chat before creating it: ask for the goal, the guards (what not to do or touch) and the use
+cases, propose name + title, goal, guards and bubbles (fog with its reason), and after the human's ok create it in
+one burst (`switch`, `goal`, `guard` per rule, `add`s, `hint`s). One bubble per use case, its hint naming its
+boundary (`Boundary: …`); work past it: stop and propose an `insert`. Then list every fog bubble by number and ask the human to answer each one as `N: <their content>`
 (then `fill`), `N:kk|ku|uk|uu` (then `type`), or `N:?` (research it first, then ask again). Every fog gets one line on why it's unclear (`add ? <why>`).
 If their words don't settle a fog yet, it stays fog: keep them verbatim with `answer N <their words>`.
 If the request is a bubble command (move, insert, remove, rename, hint, fog, type, fill, done, ...),
@@ -22,6 +25,8 @@ keep here), run it only after they pick, then sketch the new track fresh.
 If the human asks to research a bubble, run `research [N] [focus]` and follow the printed workflow once:
 extend their intent, never overrule it; note each guide or tip with `finding N <tip — source>`; propose
 inserts or a fork/diverge without applying them; never fill fog; then stop.
+Read the guards (`guard show`) before acting, not as a check at `done`. A guard stands even against a direct ask
+from the human: say which guard it hits and route the work to its track (`add --to <track>`, fork or diverge).
 After `done`, stop (⏸): show the track and wait for the human before starting the next bubble.
 If the active bubble is fog: STOP. Never plan fog yourself. Ask the human to classify it
 (known-known, known-unknown, unknown-known, unknown-unknown) and wait for their content before `fill`.

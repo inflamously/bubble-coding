@@ -85,7 +85,7 @@ Start or resume a track in chat:
 /bubble switch fix-generation
 ```
 
-The agent sketches the track, asks you about each fog bubble, then walks it one bubble at a time. You steer with the same short commands, three ways:
+For a new track, the agent first plans in chat: it asks for the **goal**, the **guards** (what not to do or touch) and the **use cases**, then proposes the track in one short list. Once you say ok, it creates the track with one bubble per use case, each hint naming its boundary. It asks you about each fog bubble, then walks the track one bubble at a time. It reads the guards before every action, and a guard holds even when you ask for something it rules out: that work goes to the track it belongs to. You steer with the same short commands, three ways:
 
 | Where | Example |
 |---|---|
@@ -163,6 +163,8 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | `move N --to <track>` · `move N:M --to <track>` | Move a bubble or block to the end of another track |
 | `rename N <title>` | Retitle a planned bubble |
 | `title <text>` | Rename the track itself |
+| `goal <text>` · `goal -` | Set (or clear) the one end result every bubble serves |
+| `guard <text>` · `guard N -` · `guard -` · `guard show` | Add a rule of what not to do, drop one or all, or list them |
 | `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat resumes from |
 | `hint N <text>` · `hint N -` | Attach (or clear) a note for that bubble |
 | `fog [N \| N:M] [TYPE]` | Turn bubbles into fog (done bubbles need `--force`) |

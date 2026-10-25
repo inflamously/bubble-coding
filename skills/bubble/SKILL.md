@@ -42,6 +42,9 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `move N --to <track>` · `move N:M --to <track>` | Move a bubble or block to the end of another existing track (state, type and hint kept; new ids). Refuses bubbles with a fork or side track. |
 | `rename N <title>` | Retitle a planned bubble (not fog) |
 | `title <text>` | Rename the track itself (keep it short too) |
+| `goal <text>` · `goal -` | Set (or clear) the track's goal: the one end result every bubble serves. `show` prints it. |
+| `guard <text>` · `guard N -` · `guard -` | Add a guard (a rule of what **not** to do), drop guard N, or drop them all |
+| `guard show` | List the guards. `switch` (resume) and every guard change print them too; `show` doesn't. |
 | `handoff <note>` · `handoff -` | Save (or clear) the note a fresh chat reads to resume this track |
 | `hint N <text>` · `hint N -` | Attach (or clear) the human's note for that bubble |
 | `fog [N \| N:M] [TYPE]` | Turn bubbles into fog. Done bubbles need `--force`, after the human confirms. |
@@ -70,21 +73,31 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
 
 ## How to work
 
-0. **Resume or start.** `/bubble switch <name>`, often the first line of a fresh chat, runs `switch <name>`:
-   - `resumed track "<name>"`: you have no memory of this track, so the track is your context. Read every bubble, its `↳` hint and the `✎ handoff` note, then say in one line where you are (prev ‹ active › next) and continue at the active bubble with the usual rules. It's a ⏸ stop if the human hasn't said go.
-   - `created track "<name>"`: it's new, so go to step 1.
+0. **Resume or start.** `/bubble switch <name>` is often the first line of a fresh chat. Check `tracks` for the name first:
+   - **It exists:** run `switch <name>` right away, without asking why. You have no memory of this track, so the track is your context. Read every bubble, its `↳` hint, the `✎ handoff` note, the goal and the guards it prints, then say in one line where you are (prev ‹ active › next) and continue at the active bubble with the usual rules. It's a ⏸ stop if the human hasn't said go.
+   - **It's new** (or the human says "I want X" with no track): go to step 1. Don't create the track yet.
 
-   **Apply `switch` right away. Don't ask why, and don't ask what the track is for first.** If you see a better name, use it and say so in one line instead of asking. For example, `switch single commit` becomes `switch single-commit "Single commit"`, and if `single-commit` looks like a typo of an existing track, say which one. If the human hasn't said what the track is for, the sketch step asks.
-1. **Sketch.** With no track, `switch <name>` (or `init`), then make one rough pass from S to F. Steps that are clear become todo bubbles with short titles; add a `hint` when a step needs more words. Anything unclear becomes `add ? <why>`: fog, plus one line on **why** it's unclear (what's missing or undecided), never what it is. Keep it short and don't over-plan.
+   If you see a better name, use it and say so in one line instead of asking. For example, `switch single commit` becomes `switch single-commit "Single commit"`, and if `single-commit` looks like a typo of an existing track, say which one.
+1. **Plan, in chat, before the track exists.** Keep it short, not a plan-mode wall of text. Ask three short questions:
+   - **Goal:** the one end result every bubble serves.
+   - **Guards:** what not to do or touch (files, domains, approaches).
+   - **Use cases:** the separate jobs the goal breaks into.
+
+   Then make one compact proposal: track name and title, goal, guards, and the bubbles (fog with its reason), or "this fits track X, add it there?" if an existing track already covers it. When the human says ok (or edits it), create it in one burst: `switch <name> <title>`, `goal`, one `guard` per rule, the `add`s and their `hint`s. Then classify the fog (step 2).
+
+   **Seams: one bubble per use case**, not one per file and not one bubble for the whole goal. Its hint names its boundary (`Boundary: …`, the files or domain it may touch), so the work stays scoped and easy to review. If a bubble needs work past its boundary, stop and propose an `insert` instead of doing it.
+2. **Sketch.** For later passes on an existing track (or after `init`), make one rough pass from the active bubble to F. Steps that are clear become todo bubbles with short titles; add a `hint` when a step needs more words. Anything unclear becomes `add ? <why>`: fog, plus one line on **why** it's unclear (what's missing or undecided), never what it is. Keep it short and don't over-plan.
    - **Then always classify every fog bubble in one go.** Do this after every sketch, without skipping it. List every fog bubble by number and ask the human to answer each line with either:
      - `N: <what they think it is>`: their content. Run `fill N` with a short title, and put the detail in a `hint`.
        If their words don't settle it yet (a direction, not a task), it stays fog: keep them **as they said them** with `answer N <their words>`, and type it if they gave a level.
      - `N:kk` · `N:ku` · `N:uk` · `N:uu`: the knowledge level. Run `type N`.
      - `N:?`: they don't know enough to say yet. Run `research N` on it (see **Research**), show the findings, then ask them to classify or fill it again. It stays fog until they do.
 
-     For example: `1:uk  2: tighten the fog gate  3:?`. The levels shape everything after this, because they decide how you work each bubble in step 3.
-2. **Walk.** Run `show`. If the active bubble is known, implement it, then run `done`. Read the bubble's `↳` hint first: it's the human's steer for that bubble.
-3. **Hit fog → STOP.** When the active bubble is fog (`show` exits 3, or an edit is blocked):
+     For example: `1:uk  2: tighten the fog gate  3:?`. The levels shape everything after this, because they decide how you work each bubble in step 4.
+3. **Walk.** Run `show`. If the active bubble is known, implement it, then run `done`. Read the bubble's `↳` hint first: it's the human's steer for that bubble, and its `Boundary:` is how far the bubble reaches.
+   - **Guards come before acting**, not as a check at `done`. Before you implement a bubble or take any other action, read them (`guard show`, or the list `switch` printed) and keep to them.
+   - **A guard stands even against a direct ask from the human.** If they ask for something a guard rules out, don't do it on this track: say which guard it hits and route the work where it belongs (`add <title> --to <track>`, or offer `fork` / `diverge`).
+4. **Hit fog → STOP.** When the active bubble is fog (`show` exits 3, or an edit is blocked):
    - **Never plan fog yourself.** Don't invent its content and don't run `fill` on your own.
    - Ask the human to classify it, using the same `N: text` / `N:kk|ku|uk|uu` / `N:?` reply format (and if more fog lies ahead, ask about all of it at once):
      - **known-known**: they write the bubble.
@@ -94,14 +107,14 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
    - Record the answer with `type`. The type can change as you go.
    - The listing shows the fog's `why:` and, if the human said something, `human:`. Their words are where the work starts: propose turning them into a `fill`, a `hint`, a `guard`, new bubbles or a `fork`, and let them confirm. Don't drop or reword them.
    - Only after the human gives or approves the content, run `fill` (single task). If it's really several tasks, `fill` it with the first and `insert at` the rest right after it on the same line.
-4. **⏸ Stop after every bubble.** After `done`, the CLI prints a ⏸ line. Show the track, summarize what you did, and **wait for the human** before starting the next bubble. This is their chance to move, insert, remove, rename, hint or fog bubbles. Start the next bubble only when they say go (or give an edit, then go).
-5. **Hand off when the chat gets heavy.** At a ⏸ stop, offer a fresh chat if:
+5. **⏸ Stop after every bubble.** After `done`, the CLI prints a ⏸ line. Show the track, summarize what you did, and **wait for the human** before starting the next bubble. This is their chance to move, insert, remove, rename, hint or fog bubbles. Start the next bubble only when they say go (or give an edit, then go).
+6. **Hand off when the chat gets heavy.** At a ⏸ stop, offer a fresh chat if:
    - this chat was compacted or summarized,
    - about 3 or more bubbles were finished in this chat, or
    - the human says the context is too long.
 
    First save what only this chat knows: `handoff <note>` (what's half done, the decisions made and why, gotchas, and the next concrete step), plus `hint`s on the bubbles ahead. Keep the note to a few lines. Then tell the human: *"Context is getting heavy. Run `/clear`, then `/bubble switch <name>`."* The CLI prints that exact line, track name included. Don't push it: if they want to keep going, keep going.
-6. **Show progress.** After every change, show the user the rendered line the CLI prints. Most agents have no status line, so this is how they see the track.
+7. **Show progress.** After every change, show the user the rendered line the CLI prints. Most agents have no status line, so this is how they see the track.
    When the human asks for a list or overview (`list`, "list tracks", "where are we"), run `tracks` (or `show` for one track; `tracks --all` when they ask about closed tracks too) and paste its output **unchanged in a code block**: every line, aligned as printed, nothing summarized or reworded. Then add at most a few short bullets on what stands out (current track, broken or finished tracks).
 
 ## Fork or diverge: keep each track to one domain
@@ -111,7 +124,7 @@ A track stays clean when every bubble on it serves one goal. If the human asks f
 - **`fork`**: the request **builds on** the active bubble (it goes deeper into the same idea). The bubble waits until its fork is finished.
 - **`diverge`**: the request goes **a different direction**. The side track remembers where it came from, but nothing waits for it.
 
-**Ask before splitting.** Suggest the one you think fits, with a one-line reason, and let the human pick: `fork`, `diverge`, or keep it on this track. For example: *"This goes a different direction from 'Login'. Diverge into `auth-sso`? (fork / diverge / keep here)"*. Run the command only after they answer. Then the new track is current and starts **fresh**: ask the human what to do around the new goal, sketch it (step 1), and classify all fog. Small, related follow-ups (a missing step of the same goal) still go on the current track with `insert`.
+**Ask before splitting.** Suggest the one you think fits, with a one-line reason, and let the human pick: `fork`, `diverge`, or keep it on this track. For example: *"This goes a different direction from 'Login'. Diverge into `auth-sso`? (fork / diverge / keep here)"*. Run the command only after they answer. Then the new track is current and starts **fresh**: ask the human what to do around the new goal, plan it (step 1: goal, guards, use cases; the track already exists), and classify all fog. Small, related follow-ups (a missing step of the same goal) still go on the current track with `insert`.
 
 Work that belongs to a track that **already exists** doesn't need a split: record it there with `add <title> --to <track>` (plus `hint N <text> --to <track>`) and keep walking. To regroup bubbles that ended up on the wrong track, `move N:M --to <track>`.
 
@@ -143,4 +156,4 @@ An ability is a short workflow, kept as a file, that the human applies to the ac
 
 ## Fog gate
 
-Before editing project files, check `show`. If it exits 3, don't edit; go to step 3. Some agents (Claude Code, Codex CLI, Gemini CLI) also enforce this with a hook that blocks edits while the active bubble is fog. Edits under `.bubble-tracks/` are always allowed.
+Before editing project files, check `show`. If it exits 3, don't edit; go to step 4. Some agents (Claude Code, Codex CLI, Gemini CLI) also enforce this with a hook that blocks edits while the active bubble is fog. Edits under `.bubble-tracks/` are always allowed.
