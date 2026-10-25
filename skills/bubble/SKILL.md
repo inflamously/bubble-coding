@@ -74,15 +74,17 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
 
 ## How to work
 
-0. **Resume or start.** `/bubble switch <name>` is often the first line of a fresh chat. Check `tracks` for the name first:
+0. **Resume or start.** `/bubble switch <name>` is often the first line of a fresh chat. Run `tracks` first, on its own, and read it before you run `switch`: a `switch` on a name that doesn't exist creates that track.
    - **It exists:** run `switch <name>` right away, without asking why. You have no memory of this track, so the track is your context. Read every bubble, its `↳` hint, the `✎ handoff` note, the goal and the guards it prints, then say in one line where you are (prev ‹ active › next) and continue at the active bubble with the usual rules. It's a ⏸ stop if the human hasn't said go.
    - **It's new** (or the human says "I want X" with no track): go to step 1. Don't create the track yet.
 
-   If you see a better name, use it and say so in one line instead of asking. For example, `switch single commit` becomes `switch single-commit "Single commit"`, and if `single-commit` looks like a typo of an existing track, say which one.
-1. **Plan, in chat, before the track exists.** Keep it short, not a plan-mode wall of text. Ask three short questions:
+   If the name is short for an existing track or close to one (`flow` → `flow-analysis`), resume that track and say so in one line. If you see a better name for a new one, use it and say so instead of asking. For example, `switch single commit` becomes `switch single-commit "Single commit"`.
+1. **Plan, in chat, before the track exists.** Keep it short, not a plan-mode wall of text. The plan needs three things:
    - **Goal:** the one end result every bubble serves.
    - **Guards:** what not to do or touch (files, domains, approaches).
    - **Use cases:** the separate jobs the goal breaks into.
+
+   Ask for the goal. The human often answers only that, so don't ask again for the rest: draft the guards and use cases yourself from the goal and the codebase, and they confirm or edit them in the proposal. Use whatever they did give as they gave it.
 
    Then make one compact proposal: track name and title, goal, guards, and the bubbles (fog with its reason), or "this fits track X, add it there?" if an existing track already covers it. When the human says ok (or edits it), create it in one burst: `switch <name> <title>`, `goal`, one `guard` per rule, the `add`s and their `hint`s. Then classify the fog (step 2).
 

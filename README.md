@@ -85,7 +85,7 @@ Start or resume a track in chat:
 /bubble switch fix-generation
 ```
 
-For a new track, the agent first plans in chat: it asks for the **goal**, the **guards** (what not to do or touch) and the **use cases**, then proposes the track in one short list. Once you say ok, it creates the track with one bubble per use case, each hint naming its boundary. It asks you about each fog bubble, then walks the track one bubble at a time. It reads the guards before every action, and a guard holds even when you ask for something it rules out: that work goes to the track it belongs to. You steer with the same short commands, three ways:
+For a new track, the agent first plans in chat: it asks for the **goal**, drafts the **guards** (what not to do or touch) and the **use cases** unless you give them, then proposes the track in one short list for you to confirm or edit. Once you say ok, it creates the track with one bubble per use case, each hint naming its boundary. It asks you about each fog bubble, then walks the track one bubble at a time. It reads the guards before every action, and a guard holds even when you ask for something it rules out: that work goes to the track it belongs to. You steer with the same short commands, three ways:
 
 | Where | Example |
 |---|---|
