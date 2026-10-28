@@ -27,7 +27,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | Command | Effect |
 |---|---|
 | `show` | Render the track and list its bubbles with addresses. Exits **3** if the active bubble is fog. |
-| `switch [name] [title]` | Resume track `<name>`, or create it if it doesn't exist. It becomes current. No name: resume the current track (else the default `track`). |
+| `switch [name] [title]` | Resume track `<name>`, or create it if it doesn't exist. It becomes current. No name: resume the current track (else the default `track`). A new name that starts an open track's name or is a typo or two from it (`flow` → `flow-analysis`) is refused, naming the match; `create` makes it. |
 | `create <name> [title]` | Create a new track (refuses if it exists) and make it current |
 | `tracks` · `tracks --closed` · `tracks --all` | List the tracks, current marked `→`. Closed tracks are hidden (except the current one) and counted in a footer; `--closed` lists only closed tracks, `--all` lists everything. |
 | `close <name> --force` | Finish a track for good, after the human confirms: read-only, no reopen. Also closes all its forks (side tracks stay open) and pops its parent bubble. Without `--force` it refuses and lists every track it would close. |
@@ -74,7 +74,7 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
 
 ## How to work
 
-0. **Resume or start.** `/bubble switch <name>` is often the first line of a fresh chat. Run `tracks` first, on its own, and read it before you run `switch`: a `switch` on a name that doesn't exist creates that track.
+0. **Resume or start.** `/bubble switch <name>` is often the first line of a fresh chat. Run `tracks` first, on its own, and read it before you run `switch`: a `switch` on a name that doesn't exist creates that track, unless it's close to an open one, which it refuses and names.
    - **It exists:** run `switch <name>` right away, without asking why. You have no memory of this track, so the track is your context. Read every bubble, its `↳` hint, the `✎ handoff` note, the goal and the guards it prints, then say in one line where you are (prev ‹ active › next) and continue at the active bubble with the usual rules. It's a ⏸ stop if the human hasn't said go.
    - **It's new** (or the human says "I want X" with no track): go to step 1. Don't create the track yet.
 
@@ -86,7 +86,7 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
 
    Ask for the goal. The human often answers only that, so don't ask again for the rest: draft the guards and use cases yourself from the goal and the codebase, and they confirm or edit them in the proposal. Use whatever they did give as they gave it.
 
-   Then make one compact proposal: track name and title, goal, guards, and the bubbles (fog with its reason), or "this fits track X, add it there?" if an existing track already covers it. When the human says ok (or edits it), create it in one burst: `switch <name> <title>`, `goal`, one `guard` per rule, the `add`s and their `hint`s. Then classify the fog (step 2).
+   Then make one compact proposal: track name and title, goal, guards, and the bubbles (fog with its reason), or "this fits track X, add it there?" if an existing track already covers it. When the human says ok (or edits it), create it in one burst: `create <name> <title>`, `goal`, one `guard` per rule, the `add`s and their `hint`s. Then classify the fog (step 2).
 
    **Seams: one bubble per use case**, not one per file and not one bubble for the whole goal. Its hint names its boundary (`Boundary: …`, the files or domain it may touch), so the work stays scoped and easy to review. If a bubble needs work past its boundary, stop and propose an `insert` instead of doing it.
 2. **Sketch.** For later passes on an existing track (or after `init`), make one rough pass from the active bubble to F. Steps that are clear become todo bubbles with short titles; add a `hint` when a step needs more words. Anything unclear becomes `add ? <why>`: fog, plus one line on **why** it's unclear (what's missing or undecided), never what it is. Keep it short and don't over-plan.

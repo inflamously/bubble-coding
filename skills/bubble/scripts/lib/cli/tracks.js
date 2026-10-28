@@ -5,6 +5,25 @@ import * as lib from '../index.js';
 import * as links from '../links/index.js';
 import { isAddr } from './args.js';
 import { printTrack } from './print.js';
+/** Open track names: a closed one only shows read-only, so it's no slip target. Unreadable ones count. */
+function openTracks(bubblesDir) {
+    return lib.listTracks(bubblesDir).filter((name) => {
+        try {
+            return !lib.loadTrack(lib.trackPath(bubblesDir, name)).closed;
+        }
+        catch {
+            return true;
+        }
+    });
+}
+/** Refuse a new track whose name looks like a slip for an open one; `create` still makes it. */
+function refuseNearMiss(bubblesDir, name) {
+    const near = lib.nearMisses(name, openTracks(bubblesDir));
+    if (!near.length)
+        return;
+    const list = near.map((n) => `"${n}"`).join(', ');
+    throw new Error(`no track "${name}" — did you mean ${list}? To resume: switch ${near[0]}. For a new track: create ${name}`);
+}
 /** Run a track-level command; returns an exit code, or undefined if `cmd` isn't one. */
 export function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
     const bubblesDir = lib.findBubblesDir(dir) || path.join(dir, lib.TRACK_DIR);
@@ -42,8 +61,10 @@ export function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
             }
             lib.checkName(name);
             const file = lib.trackPath(bubblesDir, name);
-            if (!fs.existsSync(file))
+            if (!fs.existsSync(file)) {
+                refuseNearMiss(bubblesDir, name);
                 return create(name, args.join(' '));
+            }
             const track = lib.loadTrack(file);
             lib.setCurrent(bubblesDir, name);
             const title = args.join(' ');

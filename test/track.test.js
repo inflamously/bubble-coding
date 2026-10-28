@@ -168,3 +168,16 @@ test('handoff: save with timestamp, clear, needs a note', () => {
   assert.strictEqual(t.handoff, undefined);
   assert.throws(() => T.setHandoff(t, ''), /needs a note/);
 });
+
+test('near misses: prefix or edit distance under a length-based cutoff, closest first', () => {
+  assert.strictEqual(T.editDistance('flow-anlysis', 'flow-analysis'), 1);
+  assert.strictEqual(T.editDistance('', 'abc'), 3);
+  assert.deepStrictEqual([3, 4, 5, 12].map((n) => T.nearCutoff('x'.repeat(n))), [0, 1, 2, 2]);
+  assert.ok(T.isNearMiss('flow', 'flow-analysis')); // prefix
+  assert.ok(T.isNearMiss('tesr', 'test')); // 4 characters: 1 edit
+  assert.ok(!T.isNearMiss('tset', 'test')); // a swap is 2 edits
+  assert.ok(T.isNearMiss('auth-ssso', 'auth-sso'));
+  assert.ok(!T.isNearMiss('ui', 'ux'));
+  assert.ok(!T.isNearMiss('same', 'SAME')); // the same name isn't a miss
+  assert.deepStrictEqual(T.nearMisses('flow', ['flow-analysis', 'flow-chart', 'other']), ['flow-chart', 'flow-analysis']);
+});

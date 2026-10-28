@@ -12,6 +12,7 @@ src/
 │   ├── index.ts     ← one import that re-exports store/model/render/ops
 │   ├── model.ts     ← types: Track, Bubble, states, addressing (N, N:M)
 │   ├── store.ts     ← find / load / save .bubble-tracks/*.json
+│   ├── near.ts      ← near-miss track names (prefix or edit distance), for switch
 │   ├── render/      ← draws the track line (line.ts) and the numbered list (list.ts)
 │   ├── ops/         ← the changes, one file each: add, move, fog, fill, done…
 │   ├── links/       ← fork/diverge links: finish, sync, tree

@@ -99,5 +99,6 @@ Changes ignore `printTrack`'s return value and always exit 0, so a successful `f
 - **The quoted-phrase split is all or nothing.** `bubble.js "hint 3" "some text"` is two positionals, so nothing is split and `cmd` is `hint 3`, an unknown command.
 - **`add ? foo` is fog with a reason.** A leading `?` makes fog, and the words after it are its `why`. `--fog foo` still names the fog `foo` instead.
 - **`switch <name> <title>` ignores the title when the track already exists.** The title is only used when `switch` creates the track.
+- **`switch` refuses a new name close to an open track.** Before it creates one, `refuseNearMiss` asks `lib.nearMisses` (`near.ts`): an open track whose name starts with the new one, or is within an edit distance of 0, 1 or 2 by length. Closed tracks don't count. `create` skips the check, so it's the way to make that name anyway.
 - **An unknown command with no track gives the wrong error.** `runBubbleCommand` looks up the track before it reaches `default:`, so a typo in a repo without tracks prints `no bubble track found` instead of `unknown command`.
 - **`after` runs once the track is saved.** If a follow-up fails (say a parent file can't be written), this track's change is already on disk and the command still exits 1.

@@ -47,6 +47,7 @@ describe('e2e: a development track from sketch to close', () => {
     step(['frobnicate'], /unknown command "frobnicate" — try: help/, 1); // named even with no track yet
     step(['create', 'dev', 'Dev track'], [/created track "dev"/, /Dev track {3}S F/]);
     step(['create', 'dev'], /track "dev" already exists — use: switch dev/, 1);
+    step(['switch', 'de'], /no track "de" — did you mean "dev"\? To resume: switch dev\. For a new track: create de/, 1); // a near miss writes nothing
     step(['add', 'Parse input'], [/added bubble "Parse input"/, /→ 1 {3}◐ todo {3}Parse input/]);
     step(['add', '?'], [/added fog "\?\?\?" — no reason yet, say why it's unclear: why 2 <text>/, /S ◐──❓ F/]);
     step(['add', 'Write output'], /S ◐──❓──○ F/);

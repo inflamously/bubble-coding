@@ -57,7 +57,7 @@ test('errors: usage, unknown options, --force for done bubbles', () => {
   assert.strictEqual(track().bubbles[0].state, 'fog');
 });
 
-test('multiple tracks: switch creates then resumes, tracks lists, delete guards', () => {
+test('multiple tracks: switch creates then resumes, refuses a near miss, tracks lists, delete guards', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-multi-'));
   const run = (...args) =>
     spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
@@ -68,7 +68,12 @@ test('multiple tracks: switch creates then resumes, tracks lists, delete guards'
   assert.match(run('switch').stderr, /no tracks yet/);
   assert.match(run('switch', 'idea-a', 'Idea', 'A').stdout, /created track "idea-a"/);
   run('add', 'first');
-  assert.match(run('switch', 'idea-b').stdout, /created track "idea-b"/);
+  const slip = run('switch', 'idea-b'); // one letter off idea-a: a near miss, so create makes it
+  assert.strictEqual(slip.status, 1);
+  assert.match(slip.stderr, /no track "idea-b" — did you mean "idea-a"\? To resume: switch idea-a\. For a new track: create idea-b/);
+  assert.ok(!fs.existsSync(path.join(dir, '.bubble-tracks', 'idea-b.json')));
+  assert.strictEqual(current(), 'idea-a');
+  assert.match(run('create', 'idea-b').stdout, /created track "idea-b"/);
   run('add', 'other');
   assert.strictEqual(current(), 'idea-b');
   assert.deepStrictEqual(read('idea-a'), { title: 'Idea A', bubbles: [{ title: 'first', state: 'todo', id: 1 }], nextId: 2 });
@@ -93,6 +98,22 @@ test('multiple tracks: switch creates then resumes, tracks lists, delete guards'
 
   fs.writeFileSync(path.join(dir, '.bubble-tracks', 'current'), 'gone\n');
   assert.match(run('show').stderr, /current track "gone" not found .*idea-a/);
+});
+
+test('switch: a near-miss name is refused, closed tracks and short names aside', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-near-'));
+  const run = (...args) => spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8' });
+  const exists = (name) => fs.existsSync(path.join(dir, '.bubble-tracks', `${name}.json`));
+  for (const name of ['flow-analysis', 'flow-chart', 'ui', 'old-plan']) run('create', name);
+  run('close', 'old-plan', '--force');
+
+  assert.match(run('switch', 'flow').stderr, /did you mean "flow-chart", "flow-analysis"\? To resume: switch flow-chart/); // prefix, closest first
+  assert.match(run('switch', 'Flow-Anlysis').stderr, /did you mean "flow-analysis"/); // a typo, any case
+  assert.ok(!exists('flow') && !exists('Flow-Anlysis'));
+  assert.match(run('switch', 'ux').stdout, /created track "ux"/); // 3 characters or less: only a prefix counts
+  assert.match(run('switch', 'old-plans').stdout, /created track "old-plans"/); // closed tracks don't count
+  assert.match(run('switch', 'flow-analysis-v2').stdout, /created track "flow-analysis-v2"/); // longer, too far off
+  assert.match(run('create', 'flow').stdout, /created track "flow"/); // create skips the check
 });
 
 test('close: needs --force, marks the track closed, stays current, only once', () => {
