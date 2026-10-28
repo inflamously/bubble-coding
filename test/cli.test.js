@@ -114,6 +114,12 @@ test('switch: a near-miss name is refused, closed tracks and short names aside',
   assert.match(run('switch', 'old-plans').stdout, /created track "old-plans"/); // closed tracks don't count
   assert.match(run('switch', 'flow-analysis-v2').stdout, /created track "flow-analysis-v2"/); // longer, too far off
   assert.match(run('create', 'flow').stdout, /created track "flow"/); // create skips the check
+  // a case-only difference is the same track on every file system: resumed as stored, never created next to it
+  const r = run('switch', 'Flow-Analysis');
+  assert.match(r.stdout, /resumed track "flow-analysis" \(names ignore case: "Flow-Analysis" is "flow-analysis"\)/);
+  assert.strictEqual(fs.readFileSync(path.join(dir, '.bubble-tracks', 'current'), 'utf8').trim(), 'flow-analysis');
+  assert.match(run('create', 'FLOW').stderr, /track "flow" already exists — use: switch flow/);
+  assert.deepStrictEqual(fs.readdirSync(path.join(dir, '.bubble-tracks')).filter((f) => /^flow/i.test(f)).sort(), ['flow-analysis-v2.json', 'flow-analysis.json', 'flow-chart.json', 'flow.json']);
 });
 
 test('close: needs --force, marks the track closed, stays current, only once', () => {

@@ -17,7 +17,8 @@ const flags = (args) => parseFlags({ args, options: OPTIONS, allowPositionals: t
 export const HELP = `bubble-tracks — the bubble language
 
   switch [name] [title]         resume track <name>, or create it; no name = the current (else default) track.
-                                A new name close to an open track (flow for flow-analysis) is refused: create makes it
+                                A new name close to an open track (flow for flow-analysis) is refused: create makes it.
+                                Names ignore case: Dev resumes dev, and create refuses a case-only twin
   create <name> [title]         create a new track (refuses if it exists) and make it current
   tracks [--closed | --all]     list the tracks, current marked →; closed ones are hidden unless
                                 --closed (only closed) or --all (everything)

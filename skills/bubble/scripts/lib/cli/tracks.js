@@ -47,8 +47,9 @@ export function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
         }
         case 'create': {
             const name = lib.checkName(args.shift());
-            if (fs.existsSync(lib.trackPath(bubblesDir, name)))
-                throw new Error(`track "${name}" already exists — use: switch ${name}`);
+            const same = lib.sameName(name, lib.listTracks(bubblesDir));
+            if (same)
+                throw new Error(`track "${same}" already exists — use: switch ${same}`);
             return create(name, args.join(' '));
         }
         case 'switch': {
@@ -60,6 +61,9 @@ export function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
                     throw new Error('no tracks yet — start one with: switch <name>');
             }
             lib.checkName(name);
+            // names ignore case: Flow-Analysis resumes flow-analysis, as stored, on every file system
+            const asked = name;
+            name = lib.sameName(name, lib.listTracks(bubblesDir)) ?? name;
             const file = lib.trackPath(bubblesDir, name);
             if (!fs.existsSync(file)) {
                 refuseNearMiss(bubblesDir, name);
@@ -70,7 +74,8 @@ export function runTrackCommand(cmd, args, { dir, opts, renderOpts }) {
             const title = args.join(' ');
             // a title on an existing track isn't applied: say so, and how to rename it
             const kept = track.title ? `the title stays "${track.title}"` : 'it keeps no title';
-            console.log(title && title !== track.title ? `resumed track "${name}" — ${kept}; to rename it: title ${title}` : `resumed track "${name}"`);
+            const resumed = `resumed track "${name}"${asked !== name ? ` (names ignore case: "${asked}" is "${name}")` : ''}`;
+            console.log(title && title !== track.title ? `${resumed} — ${kept}; to rename it: title ${title}` : resumed);
             console.log('');
             printTrack(file, track, renderOpts, true);
             return 0; // the fog warning still prints; exit 3 is show's alone

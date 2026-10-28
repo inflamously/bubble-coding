@@ -19,6 +19,12 @@ export function editDistance(a: string, b: string): number {
 /** How many edits still count as a slip: none up to 3 characters (`ui` vs `ux`), 1 at 4, 2 from 5 on. */
 export const nearCutoff = (name: string) => Math.min(2, Math.max(0, name.length - 3));
 
+/** The name among `names` that is `name` but for case, the exact one first; undefined if none. Track names ignore case,
+ *  so `Flow-Analysis` and `flow-analysis` never live side by side (they'd be one file on macOS and Windows). */
+export function sameName(name: string, names: string[]): string | undefined {
+  return names.includes(name) ? name : names.find((other) => other.toLowerCase() === name.toLowerCase());
+}
+
 /** Whether `name` looks like a slip for the existing `other`: the start of it, or within the cutoff. Ignores case. */
 export function isNearMiss(name: string, other: string): boolean {
   const a = name.toLowerCase();

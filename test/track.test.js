@@ -181,3 +181,9 @@ test('near misses: prefix or edit distance under a length-based cutoff, closest 
   assert.ok(!T.isNearMiss('same', 'SAME')); // the same name isn't a miss
   assert.deepStrictEqual(T.nearMisses('flow', ['flow-analysis', 'flow-chart', 'other']), ['flow-chart', 'flow-analysis']);
 });
+
+test('sameName: the stored name a name matches ignoring case, the exact one first', () => {
+  assert.strictEqual(T.sameName('Flow-Analysis', ['dev', 'flow-analysis']), 'flow-analysis');
+  assert.strictEqual(T.sameName('Dev', ['DEV', 'Dev']), 'Dev'); // exact wins
+  assert.strictEqual(T.sameName('flow', ['flow-analysis']), undefined);
+});

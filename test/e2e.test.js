@@ -48,6 +48,8 @@ describe('e2e: a development track from sketch to close', () => {
     step(['create', 'dev', 'Dev track'], [/created track "dev"/, /Dev track {3}S F/]);
     step(['create', 'dev'], /track "dev" already exists — use: switch dev/, 1);
     step(['switch', 'de'], /no track "de" — did you mean "dev"\? To resume: switch dev\. For a new track: create de/, 1); // a near miss writes nothing
+    step(['switch', 'Dev'], /resumed track "dev" \(names ignore case: "Dev" is "dev"\)/); // case only: the same track
+    step(['create', 'DEV'], /track "dev" already exists — use: switch dev/, 1);
     step(['add', 'Parse input'], [/added bubble "Parse input"/, /→ 1 {3}◐ todo {3}Parse input/]);
     step(['add', '?'], [/added fog "\?\?\?" — no reason yet, say why it's unclear: why 2 <text>/, /S ◐──❓ F/]);
     step(['add', 'Write output'], /S ◐──❓──○ F/);

@@ -27,7 +27,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | Command | Effect |
 |---|---|
 | `show` | Render the track and list its bubbles with addresses. Exits **3** if the active bubble is fog. |
-| `switch [name] [title]` | Resume track `<name>`, or create it if it doesn't exist. It becomes current. No name: resume the current track (else the default `track`). A new name that starts an open track's name or is a typo or two from it (`flow` → `flow-analysis`) is refused, naming the match; `create` makes it. |
+| `switch [name] [title]` | Resume track `<name>`, or create it if it doesn't exist. It becomes current. No name: resume the current track (else the default `track`). A new name that starts an open track's name or is a typo or two from it (`flow` → `flow-analysis`) is refused, naming the match; `create` makes it. Names ignore case: `switch Flow-Analysis` resumes `flow-analysis`, and `create` refuses a case-only twin. |
 | `create <name> [title]` | Create a new track (refuses if it exists) and make it current |
 | `tracks` · `tracks --closed` · `tracks --all` | List the tracks, current marked `→`. Closed tracks are hidden (except the current one) and counted in a footer; `--closed` lists only closed tracks, `--all` lists everything. |
 | `close <name> --force` | Finish a track early, for good, after the human confirms: read-only, no reopen. Also closes all its forks (side tracks stay open) and pops its parent bubble. Without `--force` it refuses and lists every track it would close. |

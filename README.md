@@ -148,7 +148,7 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | Command | Effect |
 |---|---|
 | `show` | Render the track and list its bubbles (exit 3 = active bubble is fog) |
-| `switch [name] [title]` | Resume a track, or create it (no name: the current one). Refuses a new name close to an open track (`flow` for `flow-analysis`); `create` makes it |
+| `switch [name] [title]` | Resume a track, or create it (no name: the current one). Refuses a new name close to an open track (`flow` for `flow-analysis`); `create` makes it. Names ignore case (`Dev` resumes `dev`) |
 | `create <name> [title]` | Create a new track (refuses if it exists) |
 | `tracks` · `--closed` · `--all` | List tracks, current marked `→`; closed ones are hidden unless `--closed` (only closed) or `--all` |
 | `close <name> --force` | Finish a track for good: read-only, closes its forks, pops its parent bubble |
