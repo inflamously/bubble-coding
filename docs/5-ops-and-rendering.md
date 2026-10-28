@@ -53,7 +53,7 @@ Addresses come from `model.ts`: `resolve(track, addr)` turns `"3"` into index `2
 The ops know nothing about other tracks. The CLI wraps them:
 
 - **Before** `done`: `links.checkForkFinished` refuses if the bubble's fork isn't finished.
-- **After** saving: `syncForkTitle` / `syncTitle` (after `rename` / `title`) and `popFinishedParents` (after `done`) update the linked tracks.
+- **After** saving: `syncForkTitle` / `syncTitle` (after `rename` / `title`) and `closeIfDone` + `popFinishedParents` (after `done`) close a finished track and update the linked tracks.
 - **Closed tracks:** the op runs in memory first, then the CLI throws before `saveTrack`, so nothing is written. One side effect: if the op itself fails, you see that error, not "track is closed".
 
 ### Things worth knowing

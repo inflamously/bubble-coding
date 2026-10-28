@@ -47,9 +47,10 @@ A link is a path relative to the linking file, plus the stable `id` of the bubbl
 - **The fork rules from the skill are carried out here:**
   - `syncTitle` (child retitled → the parent bubble's title follows)
   - `syncForkTitle` (parent bubble renamed → the child's title follows)
-  - `popFinishedParents` (child finished → mark the parent bubble done, then repeat up the chain)
+  - `popFinishedParents` (child finished → mark the parent bubble done, close the parent if that was its last bubble, then repeat up the chain)
 
   All three skip a **closed** parent.
 - **`linkLabel`** shows where a link points right now (`#3 "Title"`). If the target is gone, it falls back to the title stored in the link.
-- **`forkTree`** collects every fork below a track, depth-first, and uses a `seen` set to protect against loops. `close` uses it to find every track it will close. Side tracks aren't forks, so they're never included.
+- **`closeIfDone`** (`links/close.ts`) closes a track whose bubbles are all done (never an empty one), plus its open forks via `closeForks`, which `close` uses too. `done` calls it on the current track before `popFinishedParents`, so the last `done` closes the track without asking.
+- **`forkTree`** collects every fork below a track, depth-first, and uses a `seen` set to protect against loops. `close` and `closeIfDone` use it to find every track they will close. Side tracks aren't forks, so they're never included.
 - **A change that touches several tracks writes several files**, one `saveTrack` each. Each write is safe on its own, but a crash between two writes can leave one track updated and the other not.

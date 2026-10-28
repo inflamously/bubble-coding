@@ -147,7 +147,13 @@ describe('e2e: a development track from sketch to close', () => {
     step(['show'], /Check input {3}S F {3}empty/); // an empty track isn't all done
     step(['done'], /the track is empty — add a bubble first/, 1);
     step(['add', 'Rule list'], /→ 1 {3}◐ todo {3}Rule list/);
-    step(['done'], [/popped "Rule list"/, /fork finished — popped "Check input" in dev.json/]);
+    step(['switch', 'dev'], /resumed track "dev"/);
+    step(['remove', '2'], /"Check input" has an open fork or side track: dev-check.json — close or delete it first/, 1);
+    step(['fog', '2', '--force'], /"Check input" has an open fork: dev-check.json — close or delete it first/, 1);
+    step(['done'], /"Check input" waits for its fork dev-check.json — finish that track first/, 1);
+    step(['switch', 'dev-check'], /resumed track "dev-check"/);
+    step(['done'], [/popped "Rule list"\nall done — closed track "dev-check": read-only from now on; a follow-up is a diverge or a new track\nfork finished — popped "Check input" in dev.json/, /Check input {3}S ● F {3}🔒 closed/]); // the last done closes it, no ask
+    step(['add', 'Late'], /track "dev-check" is closed/, 1);
     step(['switch', 'dev'], [/resumed track "dev"/, /2 {3}● done {3}Check input ⑂ dev-check.json/, /✎ handoff/]);
     step(['switch', 'dev', 'Other'], /resumed track "dev" — the title stays "Dev flow"; to rename it: title Other/);
   });
@@ -156,8 +162,7 @@ describe('e2e: a development track from sketch to close', () => {
     step(['diverge', '2', 'dev-alt', 'Alt idea'], [/diverged from "Check input" into track "dev-alt"/, /↗ diverged from #2/]);
     step(['add', 'Spike'], /◐ Spike/);
     step(['switch', 'dev'], /Check input ⑂ dev-check.json ↗ dev-alt.json/);
-    step(['remove', '2'], /"Check input" has an open fork or side track: dev-check.json, dev-alt.json — close or delete it first/, 1);
-    step(['fog', '2', '--force'], /"Check input" has an open fork: dev-check.json — close or delete it first/, 1);
+    step(['remove', '2'], /"Check input" has an open fork or side track: dev-alt.json — close or delete it first/, 1); // the closed fork no longer holds it
   });
 
   describe('--to: record work on another track', () => {
@@ -188,19 +193,18 @@ describe('e2e: a development track from sketch to close', () => {
   });
 
   describe('tracks, close and delete', () => {
-    step(['tracks'], [/→ dev-alt {10}Alt idea/, /  dev {14}Dev flow/, /  dev-check {8}Check input/]);
+    step(['tracks'], [/→ dev-alt {10}Alt idea/, /  dev {14}Dev flow/, /1 closed hidden/]);
     step(['close', 'dev-alt'], /confirm with the human/, 1);
     step(['close', 'dev-alt', '--force'], [/closed track "dev-alt"/, /🔒 closed/]);
     step(['add', 'Late'], /track "dev-alt" is closed/, 1);
     step(['research', '1'], /track "dev-alt" is closed \(read-only\) — its bubbles can't take findings/, 1);
     step(['switch', 'dev'], /resumed track "dev"/);
-    step(['remove', '2'], /"Check input" has an open fork or side track: dev-check.json — close/, 1); // closed dev-alt no longer holds it
-    step(['tracks'], /1 closed hidden/);
-    step(['tracks', '--closed'], /dev-alt .*🔒 closed/);
+    step(['tracks'], /2 closed hidden/);
+    step(['tracks', '--closed'], [/dev-alt .*🔒 closed/, /dev-check .*🔒 closed/]);
     step(['delete', 'dev-alt'], /confirm with the human/, 1);
     step(['delete', 'dev-alt', '--force'], /deleted track "dev-alt"/);
     it('dev-alt.json is gone', () => assert.ok(!exists('dev-alt')));
-    step(['close', 'dev', '--force'], [/closed track "dev"/, /closed fork "dev-check"/]);
+    step(['close', 'dev', '--force'], [/closed track "dev"/, /fork "dev-check": already closed/]);
     step(['tracks', '--all'], [/dev {14}Dev flow .*🔒 closed/, /dev-check .*🔒 closed/]);
   });
 

@@ -66,7 +66,8 @@ export const HELP = `bubble-tracks — the bubble language
   answer [N] <text> | answer [N] -
                                 keep (or clear) the human's own words on a fog that stays fog
   fill [N] <title>              the human's content for a fog bubble: fog -> todo
-  done                          pop the active bubble, then ⏸ stop
+  done                          pop the active bubble, then ⏸ stop. The last one closes the track (and its
+                                forks, and a parent whose last bubble it pops): no ask, no reopen
 
   research [N] [focus]          print the research workflow and bubble N's context, to run once
                                 (subagents welcome); it changes nothing itself

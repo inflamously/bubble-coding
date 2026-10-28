@@ -52,7 +52,8 @@ bubble done
 bubble done
 ```
 
-The fork's last `done` also pops "Persist to JSON" back on `todo`.
+The fork's last `done` closes `storage` (no ask: a follow-up is a diverge or a new track) and pops
+"Persist to JSON" back on `todo`.
 
 ## 5. Diverge: a different direction
 

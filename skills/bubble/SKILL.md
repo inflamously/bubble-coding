@@ -30,7 +30,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `switch [name] [title]` | Resume track `<name>`, or create it if it doesn't exist. It becomes current. No name: resume the current track (else the default `track`). A new name that starts an open track's name or is a typo or two from it (`flow` → `flow-analysis`) is refused, naming the match; `create` makes it. |
 | `create <name> [title]` | Create a new track (refuses if it exists) and make it current |
 | `tracks` · `tracks --closed` · `tracks --all` | List the tracks, current marked `→`. Closed tracks are hidden (except the current one) and counted in a footer; `--closed` lists only closed tracks, `--all` lists everything. |
-| `close <name> --force` | Finish a track for good, after the human confirms: read-only, no reopen. Also closes all its forks (side tracks stay open) and pops its parent bubble. Without `--force` it refuses and lists every track it would close. |
+| `close <name> --force` | Finish a track early, for good, after the human confirms: read-only, no reopen. Also closes all its forks (side tracks stay open) and pops its parent bubble. Without `--force` it refuses and lists every track it would close. |
 | `delete <name> --force` | Delete a track that isn't current, after the human confirms |
 | `init <title>` | Create the default track (`.bubble-tracks/track.json`) |
 | `fork [N] <name>` | **Build on** bubble N in a new child track `<name>`, titled after the bubble, and make it current. The bubble keeps its state and gets `fork` (relative path to the child); the child gets `parent` (relative path, the bubble's stable `id`, and its title for display). The bubble waits for its fork. |
@@ -53,7 +53,7 @@ Run it from the repo root, or pass `--dir <repo>`. The CLI speaks the **bubble l
 | `type [N] <TYPE>` | Record the human's fog classification |
 | `answer [N] <text>` · `answer [N] -` | Keep (or clear) the human's own words on a fog that stays fog |
 | `fill [N] <title>` | The human's content for a fog bubble: fog → todo |
-| `done` | Pop the active bubble, then ⏸ stop |
+| `done` | Pop the active bubble, then ⏸ stop. The last `done` closes the track, with no ask (see **Closed tracks**). |
 | `research [N] [focus]` | Print the research workflow and bubble N's whole context, to run once. See **Research**. Changes nothing itself. |
 | `finding N <text>` · `finding N M -` · `finding N -` | Note what research found for bubble N (a guide or tip, with its source), drop finding M, or drop them all |
 | `abilities` | List the abilities: name, type, project or user, description (or why one is broken) |
@@ -110,7 +110,7 @@ When the human writes a line in the bubble language, like `bubble move 2 to 3`, 
    - Record the answer with `type`. The type can change as you go.
    - The listing shows the fog's `why:` and, if the human said something, `human:`. Their words are where the work starts: propose turning them into a `fill`, a `hint`, a `guard`, new bubbles or a `fork`, and let them confirm. Don't drop or reword them.
    - Only after the human gives or approves the content, run `fill` (single task). If it's really several tasks, `fill` it with the first and `insert at` the rest right after it on the same line.
-5. **⏸ Stop after every bubble.** After `done`, the CLI prints a ⏸ line. Show the track, summarize what you did, and **wait for the human** before starting the next bubble. This is their chance to move, insert, remove, rename, hint or fog bubbles. Start the next bubble only when they say go (or give an edit, then go).
+5. **⏸ Stop after every bubble.** After `done`, the CLI prints a ⏸ line. After the last one it prints `all done — closed track …` instead: the track is finished, so don't ask whether to close it. Show the track, summarize what you did, and **wait for the human** before starting the next bubble. This is their chance to move, insert, remove, rename, hint or fog bubbles. Start the next bubble only when they say go (or give an edit, then go).
 6. **Hand off when the chat gets heavy.** At a ⏸ stop, offer a fresh chat if:
    - this chat was compacted or summarized,
    - about 3 or more bubbles were finished in this chat, or
@@ -133,9 +133,9 @@ Work that belongs to a track that **already exists** doesn't need a split: recor
 
 Links use the bubble's stable `id` (from the track's `nextId` counter), so `move`, `insert` and `remove` never break them.
 
-A fork stays in sync with its bubble. `title` on the fork renames the bubble, and `rename` on the bubble retitles the fork. The bubble can't be popped until its fork is finished (it has at least one bubble and all are done). When the fork's last bubble is popped, the parent bubble pops too, and so on up the chain. A side track from `diverge` never syncs.
+A fork stays in sync with its bubble. `title` on the fork renames the bubble, and `rename` on the bubble retitles the fork. The bubble can't be popped until its fork is finished (it has at least one bubble and all are done). When the fork's last bubble is popped, the fork closes and the parent bubble pops too, and so on up the chain. A side track from `diverge` never syncs.
 
-A **closed** track (`close`) is read-only: every bubble command on it refuses, and its line shows 🔒 closed. To keep working, `fork`, `diverge` or `switch`. A closed fork counts as finished, so closing it pops its parent bubble; closing a track closes all its forks too. A closed parent is skipped: its child runs on, but pops and title syncs never reach it.
+A **closed** track is read-only: every bubble command on it refuses, and its line shows 🔒 closed. A track closes itself on its last `done` (an empty track never counts as done), with no ask; `close` ends one early. There's no reopen: a follow-up is a `diverge` or a new track. A closed fork counts as finished, so closing it pops its parent bubble; closing a track closes all its forks too. A closed parent is skipped: its child runs on, but pops and title syncs never reach it.
 
 ## Research
 

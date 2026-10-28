@@ -2,6 +2,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { loadTrack, saveTrack } from '../store.js';
+import { closeIfDone } from './close.js';
 import { linked, parentOf } from './follow.js';
 /** A track is finished when it's closed, or has bubbles and all are done (an empty, unsketched track isn't). */
 export const isFinished = (track) => !!track.closed || (track.bubbles.length > 0 && track.bubbles.every((b) => b.state === 'done'));
@@ -19,7 +20,7 @@ export function checkForkFinished(file, bubble, { force = false } = {}) {
         throw new Error(`"${bubble.title}" waits for its fork ${bubble.fork} — finish that track first (switch to it)`);
     }
 }
-/** Child finished (or closed) -> pop its parent bubble, and so on up the chain. Returns one message per popped parent. */
+/** Child finished (or closed) -> pop its parent bubble, and so on up the chain; a parent whose last bubble pops closes too. Returns the lines to print. */
 export function popFinishedParents(childFile, child) {
     const msgs = [];
     for (let file = childFile, track = child; isFinished(track);) {
@@ -29,6 +30,7 @@ export function popFinishedParents(childFile, child) {
         p.bubble.state = 'done';
         saveTrack(p.file, p.track);
         msgs.push(`fork finished — popped "${p.bubble.title}" in ${path.relative(path.dirname(childFile), p.file).split(path.sep).join('/')}`);
+        msgs.push(...closeIfDone(p.file, p.track));
         file = p.file;
         track = p.track;
     }

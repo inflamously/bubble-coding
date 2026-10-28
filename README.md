@@ -114,7 +114,7 @@ Each track is its own idea, stored as one `.json` file in `.bubble-tracks/`. `.b
 
 - **`fork`** builds on a bubble in a child track. The bubble waits until the fork is finished.
 - **`diverge`** goes in a different direction from a bubble, in a side track. Nothing waits for it.
-- **`close`** finishes a track for good. It becomes read-only, shows 🔒 closed, and the fog gate ignores it. `tracks` hides it from then on; `tracks --closed` or `tracks --all` lists it again. Closing a track also closes its forks (side tracks stay open), and closing a fork pops its parent bubble.
+- **The last `done` closes a track** on its own, with no ask, and **`close`** ends one early. Either way it's finished for good. It becomes read-only, shows 🔒 closed, and the fog gate ignores it. `tracks` hides it from then on; `tracks --closed` or `tracks --all` lists it again. Closing a track also closes its forks (side tracks stay open), and closing a fork pops its parent bubble. There's no reopen: a follow-up is a `diverge` or a new track.
 
 ### Research
 
@@ -173,7 +173,7 @@ A leading `bubble` word is optional, and a whole phrase can be passed as one quo
 | `type [N] <TYPE>` | Set the fog type: `kk` · `ku` · `uk` · `uu` (or the full names) |
 | `answer [N] <text>` · `answer [N] -` | Keep (or clear) your own words on a fog that stays fog |
 | `fill [N] <title>` | Plan a fog bubble with your content: fog → todo |
-| `done` | Pop the active bubble, then ⏸ stop |
+| `done` | Pop the active bubble, then ⏸ stop; the last one closes the track |
 | `research [N] [focus]` | Print the research workflow and bubble N's context, to run once |
 | `finding N <text>` · `finding N M -` · `finding N -` | Note (or drop) what research found for bubble N |
 | `abilities` | List the abilities: name, type, project or user, description |

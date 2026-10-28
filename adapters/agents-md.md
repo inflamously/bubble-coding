@@ -27,7 +27,7 @@ Rules:
 - After sketching a track, always list every fog bubble by number and ask the human to answer each one as `N: <their content>` (then `fill`) or `N:kk|ku|uk|uu` (then `type`), or `N:?` when they don't know enough yet (run `research N`, show the findings, then ask again; it stays fog). If their words don't settle it yet, it stays fog: keep them verbatim with `answer N <their words>`, and build on them with the human (fill, hint, guard, new bubbles or a fork).
 - When the human asks to research a bubble (`research [N] [focus]`), run it and follow the printed workflow once: extend their intent, never overrule it; stay on that bubble; bring back at least 2–3 guides or tips with sources (subagents with the printed context, if you have them), note each with `finding N <tip — source>`, propose inserts or a fork/diverge without applying them, never fill fog, then stop.
 - When the chat gets long, save `handoff <note>` (what's half done, the decisions made, the next step) and suggest a fresh chat with `bubble switch <name>`.
-- After `done`, stop (⏸): show the track and wait for the human before starting the next bubble.
+- After `done`, stop (⏸): show the track and wait for the human before starting the next bubble. The last `done` closes the track (no ask, no reopen): a follow-up is a diverge or a new track.
 - When the human writes `bubble <command>`, run exactly that command through the CLI and show the result.
 - After every change, show the user the rendered track line.
 - When the human writes `bubble:<name> [text]` (or `/bubble:<name>`), run that through the CLI and follow the printed workflow once against the printed context (the active bubble or the whole track), then report back and stop. Never apply an ability on your own.

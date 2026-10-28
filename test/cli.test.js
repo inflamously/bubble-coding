@@ -136,24 +136,24 @@ test('tracks hides closed tracks unless current; --closed lists only them, --all
   const { run } = repo();
   for (const t of ['old', 'open', 'done']) run('switch', t);
   run('add', 'D');
-  run('done'); // "done" is all done but not closed: it still shows
+  run('done'); // its last done closes "done"
   run('close', 'old', '--force');
   run('close', 'track', '--force');
   run('switch', 'track'); // current and closed: it still shows
   const names = (out) => out.split('\n').filter((l) => /^[→ ] [a-z]/.test(l)).map((l) => l.slice(2).split(' ')[0]);
   let out = run('tracks').stdout;
-  assert.deepStrictEqual(names(out), ['done', 'open', 'track']);
-  assert.match(out, /  1 closed hidden — tracks --all/);
+  assert.deepStrictEqual(names(out), ['open', 'track']);
+  assert.match(out, /  2 closed hidden — tracks --all/);
   out = run('tracks', '--closed').stdout;
-  assert.deepStrictEqual(names(out), ['old', 'track']);
+  assert.deepStrictEqual(names(out), ['done', 'old', 'track']);
   assert.doesNotMatch(out, /hidden/);
   out = run('tracks', '--all').stdout;
   assert.deepStrictEqual(names(out), ['done', 'old', 'open', 'track']);
   assert.doesNotMatch(out, /hidden/);
   assert.match(run('tracks', '--closed', '--all').stderr, /--closed or --all, not both/);
   run('switch', 'open');
-  assert.deepStrictEqual(names(run('tracks').stdout), ['done', 'open']); // no longer current: hidden too
-  assert.match(run('tracks').stdout, /2 closed hidden/);
+  assert.deepStrictEqual(names(run('tracks').stdout), ['open']); // no longer current: hidden too
+  assert.match(run('tracks').stdout, /3 closed hidden/);
 });
 
 test('tracks --closed with nothing closed says so', () => {
@@ -244,6 +244,7 @@ test('links skip closed tracks: no title sync either way, no pop into a closed p
   // closed child: renaming the open parent's bubble leaves it alone
   run('switch', 'p2');
   run('add', 'X');
+  run('add', 'W'); // keeps p2 open once X pops
   run('fork', '1', 'k2');
   run('add', 'y');
   run('close', 'k2', '--force');
@@ -286,6 +287,53 @@ test('closing a fork counts as finished: the parent bubble pops, on up the chain
   assert.match(run('done').stdout, /popped "Y"/);
 });
 
+test('the last done closes the track, its open forks, and a parent whose last bubble it pops; an empty track stays open', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-autoclose-'));
+  const run = (...args) =>
+    spawnSync(process.execPath, [CLI, '--dir', dir, ...args], { encoding: 'utf8', env: { ...process.env, BUBBLES_ASCII: '' } });
+  const load = (name) => JSON.parse(fs.readFileSync(path.join(dir, '.bubble-tracks', `${name}.json`), 'utf8'));
+  const save = (name, t) => fs.writeFileSync(path.join(dir, '.bubble-tracks', `${name}.json`), JSON.stringify(t));
+
+  // top: A -> mid (one bubble), B; mid's last done closes mid and pops A, top keeps B open
+  run('switch', 'top');
+  run('add', 'A');
+  run('add', 'B');
+  run('fork', '1', 'mid');
+  assert.match(run('done').stderr, /the track is empty/); // empty: nothing to finish
+  assert.strictEqual(load('mid').closed, undefined);
+  run('add', 'm');
+  let r = run('done');
+  assert.strictEqual(r.status, 0, r.stderr);
+  assert.match(r.stdout, /popped "m"\nall done — closed track "mid": read-only from now on; a follow-up is a diverge or a new track\nfork finished — popped "A" in top\.json\n/);
+  assert.match(r.stdout, /🔒 closed/);
+  assert.doesNotMatch(r.stdout, /⏸ stop/);
+  assert.ok(load('mid').closed);
+  assert.strictEqual(load('top').closed, undefined); // B is still open
+
+  // an all-done fork left open (closed before auto-close existed) closes with its parent
+  run('switch', 'top');
+  run('fork', '2', 'kid');
+  run('add', 'k');
+  save('kid', { ...load('kid'), bubbles: load('kid').bubbles.map((b) => ({ ...b, state: 'done' })) });
+  run('switch', 'top');
+  r = run('done');
+  assert.strictEqual(r.status, 0, r.stderr);
+  assert.match(r.stdout, /all done — closed track "top"/);
+  assert.match(r.stdout, /closed fork "kid"/);
+  assert.doesNotMatch(r.stdout, /"mid"/); // already closed: not listed again
+  assert.ok(load('top').closed && load('kid').closed);
+  assert.match(run('add', 'Late').stderr, /track "top" is closed/);
+
+  // a fork's last done closes the parent too when it pops the parent's last bubble
+  run('switch', 'solo');
+  run('add', 'S');
+  run('fork', '1', 'solo-kid');
+  run('add', 's');
+  r = run('done');
+  assert.match(r.stdout, /closed track "solo-kid"[^]*popped "S" in solo\.json\nall done — closed track "solo"/);
+  assert.ok(load('solo').closed);
+});
+
 test('close cascades top down to every fork, whatever its state; side tracks stay open; only the top pops', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-cascade-'));
   const run = (...args) =>
@@ -314,7 +362,7 @@ test('close cascades top down to every fork, whatever its state; side tracks sta
   run('delete', 'gone', '--force');
 
   const ask = run('close', 'top');
-  assert.match(ask.stderr, /closing "top" \(and its forks "mid", "leaf", "done-kid"\) is permanent .*--force/);
+  assert.match(ask.stderr, /closing "top" \(and its forks "mid", "leaf"\) is permanent .*--force/); // done-kid closed on its last done
   assert.strictEqual(load('top').closed, undefined);
 
   const r = run('close', 'top', '--force');
@@ -323,7 +371,7 @@ test('close cascades top down to every fork, whatever its state; side tracks sta
   const at = (re) => lines.findIndex((l) => re.test(l));
   assert.ok(at(/^closed track "top"/) < at(/closed fork "mid"/) && at(/closed fork "mid"/) < at(/closed fork "leaf"/)); // top down
   assert.match(r.stdout, /fork finished — popped "R" in root\.json/); // the top pops its own parent
-  assert.match(r.stdout, /closed fork "done-kid"/);
+  assert.match(r.stdout, /fork "done-kid": already closed/);
   assert.match(r.stdout, /fork "gone": missing, skipped/);
   for (const t of ['top', 'mid', 'leaf', 'done-kid']) assert.ok(load(t).closed, t);
   assert.strictEqual(load('side').closed, undefined); // diverged: independent by design

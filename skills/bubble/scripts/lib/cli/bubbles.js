@@ -197,7 +197,8 @@ export function runBubbleCommand(cmd, args, { dir, opts, renderOpts }) {
             if (active)
                 links.checkForkFinished(file, active, { force: opts.force });
             msg = lib.done(track);
-            after = () => links.popFinishedParents(file, track).join('\n');
+            // The last done closes the track (no ask), then a finished fork pops its parent bubble.
+            after = () => [...links.closeIfDone(file, track), ...links.popFinishedParents(file, track)].join('\n');
             stop = true;
             break;
         }

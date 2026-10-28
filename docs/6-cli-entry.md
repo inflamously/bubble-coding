@@ -87,9 +87,9 @@ Changes ignore `printTrack`'s return value and always exit 0, so a successful `f
    1. `lib.findTrack(dir)` walks up to `.bubble-tracks/`, reads `current` (`src-tour`) and loads `src-tour.json`.
    2. `case 'done'`: gets the active bubble. `links.checkForkFinished` returns at once because it has no `fork`. If it had one, it would load the child and throw unless every bubble there is done (or the child is closed).
    3. `lib.done(track)`: throws if everything is already done or the active bubble is fog; otherwise sets `state = 'done'` → `popped "CLI entry"`.
-   4. `after` is set to `links.popFinishedParents`, and `stop = true`.
+   4. `after` is set to `links.closeIfDone` then `links.popFinishedParents`, and `stop = true`.
    5. Not closed → `lib.saveTrack` writes the file (tmp file + rename, stop 3).
-   6. `after()`: this track isn't finished, so nothing pops. If this had been a fork's last bubble, its parent bubble would be set to done and saved, and so on up the chain, each adding a `fork finished — popped …` line.
+   6. `after()`: this track isn't finished, so it stays open and nothing pops. Had this been its last bubble, it would close (with its open forks) and print `all done — closed track …`. If this had been a fork's last bubble, its parent bubble would be set to done and saved, and so on up the chain, each adding a `fork finished — popped …` line.
    7. Prints the message, a blank line, then `printTrack`.
    8. Something is still active → prints the `⏸ stop — show this track to the human and wait…` line. That line is how the CLI enforces SKILL.md step 4: the agent reads it as the last thing in the output.
 4. Back in **`main.ts`**: `process.exitCode = 0`.

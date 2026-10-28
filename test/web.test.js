@@ -32,8 +32,14 @@ test('the browser CLI prints what the real CLI prints, for every line of the dem
 
   const dir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'bubbles-web-')));
   const web = createMachine({ cwd: '/home/demo/todo-app' });
-  // Paths and the handoff minute differ between the two machines; everything else must match.
-  const norm = (s) => s.split(dir).join(web.cwd()).replace(/\\/g, '/').replace(/\d{4}-\d\d-\d\d \d\d:\d\d UTC/g, '<at> UTC');
+  // Paths, the handoff minute and close times differ between the two machines; everything else must match.
+  const norm = (s) =>
+    s
+      .split(dir)
+      .join(web.cwd())
+      .replace(/\\/g, '/')
+      .replace(/\d{4}-\d\d-\d\d \d\d:\d\d UTC/g, '<at> UTC')
+      .replace(/\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z/g, '<at>');
   for (const argv of commands) {
     const real = spawnSync(process.execPath, [path.join(CLI_DIR, 'cli', 'bubble.js'), ...argv], {
       cwd: dir,
@@ -47,7 +53,7 @@ test('the browser CLI prints what the real CLI prints, for every line of the dem
     assert.strictEqual(norm(text('stderr')), norm(real.stderr), line);
     assert.strictEqual(got.code, real.status, line);
   }
-  // And the disk ends up the same: every track file, byte for byte (but the handoff minute).
+  // And the disk ends up the same: every track file, byte for byte (but the handoff minute and close times).
   const realDir = path.join(dir, '.bubble-tracks');
   const webDir = web.path.join(web.cwd(), '.bubble-tracks');
   assert.deepStrictEqual(web.fs.readdirSync(webDir), fs.readdirSync(realDir).sort());
